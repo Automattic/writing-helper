@@ -183,9 +183,7 @@ Regards,
 			return false;
 		}
 		$requests = $this->get_requests( $post_id );
-		if ( empty( $requests ) ) {
-			bump_stats_extras( 'feedbackrequest', 'post-request');
-		}
+
 		foreach( $emails as $email ) {
 			$email = $this->_normalize_email( $email );
 			if ( !isset( $requests[$email] ) ) {
@@ -248,8 +246,6 @@ Regards,
 		$email_text = str_replace( '[feedback-link]', ' ' . $this->generate_secret_link( $post_id, $request['key'] ) . ' ', $email_text );
 		$post = get_post( $post_id );
 		$subject = sprintf( __( '%1$s asked you for feedback on a new draft: "%2$s"' ), $current_user->display_name, $post->post_title );
-		bump_stats_extras( 'feedbackrequest', 'request-sent' );
-		xmpp_message( 'nbachiyski@im.wordpress.com', "From ".$current_user->user_login . "\nTo $email\n$email_text" );
 		wp_mail( $email, $subject, $email_text, $this->email_headers( $current_user ) );
 		return true;
 	}
@@ -310,7 +306,6 @@ Regards,
 			$overwrite_post = false;
 		}
 		if ( $overwrite_post ) {
-			bump_stats_extras( 'feedbackrequest', 'pageview' );
 			WritingHelper::enqueue_script();
 			wp_localize_script( 'writing_helper_script', 'DraftFeedback', array(
 				/* Use scheme of current page, instead of obeying force_ssl_admin().
@@ -366,7 +361,6 @@ Thanks for flying with WordPress.com' ),
 			$feedback,
 			home_url( '/wp-admin/post.php?post=' . $this->shared_post->ID . '&action=edit&requestfeedback=1#requestfeedback' )
 		);
-		bump_stats_extras( 'feedbackrequest', 'feedback-received' );
 		wp_mail( $post_author->user_email, $subject, $body, $this->email_headers( $post_author ) );
 	}
 
@@ -482,7 +476,6 @@ Thanks for flying with WordPress.com' ),
 					'user_id' 	=> get_current_user_id(),
 				);
 		$this->save_requests( $post_id, $requests );
-		bump_stats_extras( 'feedbackrequest', 'get-link');
 		die( json_encode( array( 'link' => $this->generate_secret_link( $post_id, $key ) ) ) );
 	}
 

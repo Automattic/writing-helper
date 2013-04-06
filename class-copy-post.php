@@ -58,8 +58,6 @@ class WH_CopyPost {
 			$posts = get_posts( $args );
 		}
 
-		bump_stats_extras( 'copy_a_post', 'searched_posts' );
-
 		die( json_encode( $posts ) );
 	}
 
@@ -80,8 +78,6 @@ class WH_CopyPost {
 			$post->post_tags = implode( ', ', (array) $wpdb->get_col( $wpdb->prepare( "SELECT slug FROM {$wpdb->base_prefix}{$current_blog->blog_id}_terms AS t INNER JOIN {$wpdb->base_prefix}{$current_blog->blog_id}_term_taxonomy AS tt ON tt.term_id = t.term_id INNER JOIN {$wpdb->base_prefix}{$current_blog->blog_id}_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.taxonomy IN ( 'post_tag' ) AND tr.object_id = %d", $post_id ) ) );
 			$post->post_categories = get_the_category( $post_id );
 		}
-
-		bump_stats_extras( 'copy_a_post', 'copied_post' );
 
 		die( json_encode( $post ) );
 	}
@@ -117,9 +113,6 @@ class WH_CopyPost {
 
 		if ( empty( $stat ) )
 			die( '-1' );
-
-		if ( 'menu_click' == $stat )
-			bump_stats_extras( 'copy_a_post', 'clicked_menu_link' );
 
 		die( '1' );
 	}
