@@ -75,7 +75,7 @@ class WH_CopyPost {
 		$post = get_post( $post_id );
 
 		if ( 'post' == $post->post_type ) {
-			$post->post_tags = implode( ', ', (array) $wpdb->get_col( $wpdb->prepare( "SELECT slug FROM {$wpdb->base_prefix}{$current_blog->blog_id}_terms AS t INNER JOIN {$wpdb->base_prefix}{$current_blog->blog_id}_term_taxonomy AS tt ON tt.term_id = t.term_id INNER JOIN {$wpdb->base_prefix}{$current_blog->blog_id}_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.taxonomy IN ( 'post_tag' ) AND tr.object_id = %d", $post_id ) ) );
+			$post->post_tags = implode( ', ', (array) $wpdb->get_col( $wpdb->prepare( "SELECT slug FROM {$wpdb->terms} AS t INNER JOIN {$wpdb->term_taxonomy} AS tt ON tt.term_id = t.term_id INNER JOIN {$wpdb->term_relationships} AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.taxonomy IN ( 'post_tag' ) AND tr.object_id = %d", $post_id ) ) );
 			$post->post_categories = get_the_category( $post_id );
 		}
 
