@@ -1,7 +1,6 @@
 <?php
 
-$writing_helper->add_helper( 'draft_feedback', new DraftFeedback() );
-add_action( 'init', array( &$writing_helper->helpers['draft_feedback'], 'init' ) );
+WritingHelper()->add_helper( 'draft_feedback', new WH_DraftFeedback() );
 
 /**
  * Handle the "Share a Draft" and commenting.
@@ -18,7 +17,7 @@ add_action( 'init', array( &$writing_helper->helpers['draft_feedback'], 'init' )
  * - feedbackrequest-pageview: someone has viewed a post and feedback form
  * - feedbackrequest-feedback-received: a feedback has been submitted
  */
-class DraftFeedback {
+class WH_DraftFeedback {
 	/**
 	 * Temporary holder of post object if user is permed to view a draft
 	 */
@@ -40,16 +39,16 @@ class DraftFeedback {
 	function init() {
 		// should work even if not logged in (for testing)
 		if ( isset( $_REQUEST['shareadraft'] ) ) {
-			add_filter( 'the_posts', array( &$this, 'the_posts_intercept' ) );
-			add_filter( 'posts_results', array( &$this, 'posts_results_intercept' ) );
-			add_action( 'wp_ajax_add_feedback', array( &$this, 'add_feedback_ajax_endpoint' ) );
+			add_filter( 'the_posts', array( $this, 'the_posts_intercept' ) );
+			add_filter( 'posts_results', array( $this, 'posts_results_intercept' ) );
+			add_action( 'wp_ajax_add_feedback', array( $this, 'add_feedback_ajax_endpoint' ) );
 			add_action( 'wp_ajax_nopriv_add_feedback', array( &$this, 'add_feedback_ajax_endpoint' ) );
 		}
 
-		add_action( 'wp_ajax_request_feedback', array( &$this, 'add_request_ajax_endpoint' ) );
-		add_action( 'wp_ajax_revoke_draft_access', array( &$this, 'revoke_draft_access_ajax_endpoint' ) );
-		add_action( 'wp_ajax_get_draft_link', array( &$this, 'get_draft_link_ajax_endpoint' ) );
-		add_action( 'transition_post_status', array( &$this, 'post_status_change' ), 10, 3 );
+		add_action( 'wp_ajax_request_feedback', array( $this, 'add_request_ajax_endpoint' ) );
+		add_action( 'wp_ajax_revoke_draft_access', array( $this, 'revoke_draft_access_ajax_endpoint' ) );
+		add_action( 'wp_ajax_get_draft_link', array( $this, 'get_draft_link_ajax_endpoint' ) );
+		add_action( 'transition_post_status', array( $this, 'post_status_change' ), 10, 3 );
 	}
 
 	function can_mail( $post_id ) {

@@ -8,26 +8,47 @@ Version: 1.0-alpha
 Author URI: http://automattic.com/
 */
 
-$writing_helper = new WritingHelper();
-add_action( 'init', array( &$writing_helper, 'init' ) );
-foreach( glob( dirname(__FILE__). '/writing-helper/class-*.php' ) as $php_file_name ) {
-	require $php_file_name;
+foreach( glob( dirname(__FILE__). '/class-*.php' ) as $wh_php_file_name ) {
+	require $wh_php_file_name;
 }
 
 class WritingHelper {
+
 	public $helpers = array();
-	
-	function init() {
-		if ( is_admin() ) {
-			add_action( 'add_meta_boxes', array( &$this, 'add_meta_box' ) );
+
+	private static $instance;
+
+	public static function instance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new WritingHelper;
+			self::$instance->setup_actions();
+		}
+		return self::$instance;
+	}
+
+	private function setup_actions() {
+
+		add_action( 'init', array( $this, 'action_init' ) );
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
+	}
+
+	public function action_init() {
+
+		// Helpers each have an init() method
+		foreach( $this->helpers as $helper ) {
+			if ( method_exists( $helper, 'init' ) )
+				$helper->init();
 		}
 	}
 
 	function add_meta_box() {
+
 		add_meta_box( 
 			'writing_helper_meta_box',
 			__( 'Writing Helper' ),
-			array( &$this, 'meta_box_content' ),
+			array( $this, 'meta_box_content' ),
 			'post',
 			'normal',
 			'high'
@@ -35,7 +56,7 @@ class WritingHelper {
 		add_meta_box( 
 			'writing_helper_meta_box',
 			__( 'Writing Helper' ),
-			array( &$this, 'meta_box_content' ),
+			array( $this, 'meta_box_content' ),
 			'page',
 			'normal',
 			'high'
@@ -46,10 +67,9 @@ class WritingHelper {
 			array(),
 			'06242011'
 		);
-		WritingHelper::enqueue_script();
 	}
 
-	static function enqueue_script() {
+	public function action_admin_enqueue_scripts() {
 		wp_enqueue_script(
 			'writing_helper_script',
 			'/wp-content/mu-plugins/writing-helper/script.js',
@@ -65,10 +85,15 @@ class WritingHelper {
 		$df       = $this->helpers['draft_feedback'];
 		$requests = $df->get_requests( $post_id, $sort = true );
 		$show_feedback_button = ( !empty( $requests ) || ( is_object( $post ) && 'publish' != $post->post_status ) );
-		require_once( dirname( __FILE__ ) . '/writing-helper/meta-box-content.php' );
+		require_once( dirname( __FILE__ ) . '/meta-box-content.php' );
 	}
 
 	function add_helper( $helper_name, $helper_obj ) {
 		$this->helpers[ $helper_name ] = $helper_obj;	
 	}
 }
+
+function WritingHelper() {
+	return WritingHelper::instance();
+}
+add_action( 'plugins_loaded', 'WritingHelper' );

@@ -1,21 +1,22 @@
 <?php
 
-$writing_helper->add_helper( 'copy_post', new CopyPost() );
-add_action( 'init', array( &$writing_helper->helpers['copy_post'], 'init' ) );
+WritingHelper()->add_helper( 'copy_post', new WH_CopyPost() );
 
-class CopyPost {
+class WH_CopyPost {
+
 	function init() {
-		add_action( 'wp_ajax_helper_search_posts', array( &$this, 'add_ajax_search_posts_endpoint' ) );
-		add_action( 'wp_ajax_helper_get_post', array( &$this, 'add_ajax_get_post_endpoint' ) );
-		add_action( 'wp_ajax_helper_stick_post', array( &$this, 'add_ajax_stick_post_endpoint' ) );
-		add_action( 'wp_ajax_helper_record_stat', array( &$this, 'add_ajax_record_stat_endpoint' ) );
+
+		add_action( 'wp_ajax_helper_search_posts', array( $this, 'add_ajax_search_posts_endpoint' ) );
+		add_action( 'wp_ajax_helper_get_post', array( $this, 'add_ajax_get_post_endpoint' ) );
+		add_action( 'wp_ajax_helper_stick_post', array( $this, 'add_ajax_stick_post_endpoint' ) );
+		add_action( 'wp_ajax_helper_record_stat', array( $this, 'add_ajax_record_stat_endpoint' ) );
 
 		// Add "Copy a Post" to the Posts menu.
-		add_action( 'admin_menu', array( &$this, 'add_submenu_page' ) );
+		add_action( 'admin_menu', array( $this, 'add_submenu_page' ) );
 	}
 
 	function add_submenu_page() {
-		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	
 		add_posts_page( __( 'Copy a Post' ), __( 'Copy a Post' ), 'edit_posts', '/post-new.php?&cap#cap' );
 		add_pages_page( __( 'Copy a Page' ), __( 'Copy a Page' ), 'edit_pages', '/post-new.php?post_type=page&cap#cap' );
 	}
