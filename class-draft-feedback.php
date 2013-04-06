@@ -306,7 +306,7 @@ Regards,
 			$overwrite_post = false;
 		}
 		if ( $overwrite_post ) {
-			WritingHelper::enqueue_script();
+			WritingHelper()->enqueue_script();
 			wp_localize_script( 'writing_helper_script', 'DraftFeedback', array(
 				/* Use scheme of current page, instead of obeying force_ssl_admin().
 				 * Otherwise we might end up with Ajax request to a URL with a different scheme, which is not allowed by browsers
@@ -316,7 +316,7 @@ Regards,
 				'shareadraft' => esc_attr( $_GET['shareadraft'] ),
 				'nonce' => wp_create_nonce( 'add_feedback_nonce' ),
 			) );
-			add_action( 'wp_footer', array( &$this, 'inject_feedback_form' ) );
+			add_action( 'wp_footer', array( $this, 'inject_feedback_form' ) );
 			return array( &$this->shared_post );
 		} else {
 			$this->shared_post = null;
