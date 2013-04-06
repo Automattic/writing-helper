@@ -1,4 +1,13 @@
 <?php
+/*
+Plugin Name: Writing Helper
+Plugin URI: http://wordpress.org/extend/plugins/writing-helper/
+Description: Helps you write your posts
+Author: Nikolay Bachiyski, Daniel Bachhuber, Automattic
+Version: 1.0-alpha
+Author URI: http://automattic.com/
+*/
+
 $writing_helper = new WritingHelper();
 add_action( 'init', array( &$writing_helper, 'init' ) );
 foreach( glob( dirname(__FILE__). '/writing-helper/class-*.php' ) as $php_file_name ) {
