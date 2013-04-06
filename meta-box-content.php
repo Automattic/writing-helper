@@ -11,7 +11,7 @@
 <ul id="helpers"<?php if ( isset( $_GET['cap'] ) || isset( $_GET['requestfeedback'] ) ) echo ' style="display:none"'; ?>>
 	<li class="copyapost">
 		<div class="iconbox">
-			<img src="/wp-content/mu-plugins/writing-helper/i/pencilhelper.png" alt="" />
+			<img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/pencilhelper.png' ); ?>" alt="" />
 		</div>
 
 		<div class="helper-text">
@@ -25,7 +25,7 @@
 	<li class="requestfeedback">
 		<div class="border-box">
 			<div class="iconbox">
-				<img src="/wp-content/mu-plugins/writing-helper/i/requestfeedback.png" alt="" />
+				<img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/requestfeedback.png' ); ?>" alt="" />
 			</div>
 
 			<div class="helper-text">
@@ -75,7 +75,7 @@ printf(
 	</div>
 
 	<div id="df-share-link-p">
-		<div id="df-getting-link" style="display:none"><img src="/wp-content/mu-plugins/writing-helper/i/ajax-loader.gif" alt="Loading" /> <?php _e( 'Getting a link...' ) ?></div>
+		<div id="df-getting-link" style="display:none"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" /> <?php _e( 'Getting a link...' ) ?></div>
 		<a id="df-share-link" href="javascript:DraftGetLink(jQuery,<?php the_ID() ?>)"><?php _e( 'Get a share link without sending an email.' ) ?></a>
 	</div>
 </div>
@@ -190,7 +190,7 @@ endif;
 
 		<div class="confirm-copy" style="display: none;">
 			<p class="confirm"><?php ( $on_a_page ) ? _e( 'Replace the current page with the selected page?' ) : _e( 'Replace the current post with the selected post?' ); ?> &nbsp;<input type="button" class="button-secondary" value="<?php _e( 'Cancel' ) ?>" id="cancel-copy" /> <input type="button" class="button-primary" value="<?php _e( 'Confirm Copy' ) ?>" id="confirm-copy" /></p>
-			<p class="copying"><img src="/wp-content/mu-plugins/writing-helper/i/ajax-loader.gif" alt="Loading" />  <?php ( $on_a_page ) ? _e( 'Copying Page...' ) : _e( 'Copying Post...' ); ?></p>
+			<p class="copying"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" />  <?php ( $on_a_page ) ? _e( 'Copying Page...' ) : _e( 'Copying Post...' ); ?></p>
 		</div>
 
 		<div class="copy-posts">
@@ -242,7 +242,7 @@ endif;
 				<?php endwhile; ?>
 				<?php wp_reset_query(); $post = $tmp_post; ?>
 			</ul>
-			<div class="loading"><img src="/wp-content/mu-plugins/writing-helper/i/ajax-loader.gif" alt="Loading" /> <?php _e( 'Searching...' ) ?></div>
+			<div class="loading"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" /> <?php _e( 'Searching...' ) ?></div>
 		</div>
 
 	</div>

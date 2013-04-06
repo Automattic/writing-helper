@@ -16,12 +16,15 @@ class WritingHelper {
 
 	public $helpers = array();
 
+	public $plugin_url;
+
 	private static $instance;
 
 	public static function instance() {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new WritingHelper;
 			self::$instance->setup_actions();
+			self::$instance->setup_globals();
 		}
 		return self::$instance;
 	}
@@ -32,6 +35,11 @@ class WritingHelper {
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
+	}
+
+	private function setup_globals() {
+
+		$this->plugin_url = plugins_url( '/', __FILE__ );
 	}
 
 	public function action_init() {
@@ -63,7 +71,7 @@ class WritingHelper {
 		);
 		wp_enqueue_style(
 			'writing_helper_style',
-			'/wp-content/mu-plugins/writing-helper/writing-helper.css',
+			$this->plugin_url . 'writing-helper.css',
 			array(),
 			'06242011'
 		);
@@ -72,7 +80,7 @@ class WritingHelper {
 	public function action_admin_enqueue_scripts() {
 		wp_enqueue_script(
 			'writing_helper_script',
-			'/wp-content/mu-plugins/writing-helper/script.js',
+			$this->plugin_url . 'script.js',
 			array( 'jquery' ),
 			'21032012',
 			true
