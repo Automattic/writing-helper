@@ -4,6 +4,11 @@ WritingHelper()->add_helper( 'copy_post', new WH_CopyPost() );
 
 class WH_CopyPost {
 
+	public $supported_post_types = array(
+			'post',
+			'page',
+		);
+
 	function init() {
 
 		add_action( 'wp_ajax_helper_search_posts', array( $this, 'add_ajax_search_posts_endpoint' ) );
@@ -15,10 +20,25 @@ class WH_CopyPost {
 		add_action( 'admin_menu', array( $this, 'add_submenu_page' ) );
 	}
 
+	/**
+	 * Add submenu links for each supported post type
+	 */
 	function add_submenu_page() {
 	
-		add_posts_page( __( 'Copy a Post' ), __( 'Copy a Post' ), 'edit_posts', '/post-new.php?&cap#cap' );
-		add_pages_page( __( 'Copy a Page' ), __( 'Copy a Page' ), 'edit_pages', '/post-new.php?post_type=page&cap#cap' );
+		foreach( WritingHelper()->supported_post_types as $post_type ) {
+
+			$post_type_obj = get_post_type_object( $post_type );
+
+			$submenu_page = 'edit.php';
+			if ( 'post' != $post_type )
+				$submenu_page .= '?post_type=' . $post_type;
+
+			$submenu_page_label = sprintf( __( 'Copy a %s' ), $post_type_obj->labels->singular_name );
+
+			$submenu_page_link = str_replace( 'edit.php', '/post-new.php', $submenu_page ) . '&cap#cap';
+
+			add_submenu_page( $submenu_page, $submenu_page_label, $submenu_page_label, $post_type_obj->cap->edit_posts, $submenu_page_link );
+		}
 	}
 
 	function add_ajax_search_posts_endpoint() {
@@ -30,9 +50,7 @@ class WH_CopyPost {
 		$search_terms = $_REQUEST['search'];
 
 		$posts = false;
-		$post_type = 'post';
-		if ( isset( $_REQUEST['post_type'] ) && $_REQUEST['post_type'] == 'page' )
-			$post_type = 'page';
+		$post_type = ! empty( $_REQUEST['post_type'] ) ? sanitize_key( $_REQUEST['post_type'] ) : 'post';
 
 		if ( empty( $search_terms ) || __( 'Search for posts by title' ) == $search_terms ) {
 			$sticky_posts = get_option( 'copy_a_post_sticky_posts' );

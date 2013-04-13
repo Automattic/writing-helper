@@ -40,6 +40,9 @@ class WritingHelper {
 	private function setup_globals() {
 
 		$this->plugin_url = plugins_url( '/', __FILE__ );
+
+		$this->supported_post_types = apply_filters( 'wh_supported_post_types', array( 'post', 'page' ) );
+
 	}
 
 	public function action_init() {
@@ -53,38 +56,23 @@ class WritingHelper {
 
 	function add_meta_box() {
 
-		add_meta_box( 
-			'writing_helper_meta_box',
-			__( 'Writing Helper' ),
-			array( $this, 'meta_box_content' ),
-			'post',
-			'normal',
-			'high'
-		);
-		add_meta_box( 
-			'writing_helper_meta_box',
-			__( 'Writing Helper' ),
-			array( $this, 'meta_box_content' ),
-			'page',
-			'normal',
-			'high'
-		);
-		wp_enqueue_style(
-			'writing_helper_style',
-			$this->plugin_url . 'writing-helper.css',
-			array(),
-			'06242011'
-		);
+		foreach( $this->supported_post_types as $post_type ) {
+				add_meta_box( 'writing_helper_meta_box', __( 'Writing Helper' ), array( $this, 'meta_box_content' ), $post_type, 'normal', 'high' );
+		}
 	}
 
 	public function action_admin_enqueue_scripts() {
-		wp_enqueue_script(
-			'writing_helper_script',
-			$this->plugin_url . 'script.js',
-			array( 'jquery' ),
-			'21032012',
-			true
-		);
+
+		$screen = get_current_screen();
+		if ( 'post' != $screen->base || ! in_array( $screen->post_type, WritingHelper()->supported_post_types ) )
+			return;
+
+		self::enqueue_script();
+	}
+
+	public static function enqueue_script() {
+		wp_enqueue_style( 'writing_helper_style', WritingHelper()->plugin_url . 'writing-helper.css', array(), '06242011' );
+		wp_enqueue_script( 'writing_helper_script', WritingHelper()->plugin_url . 'script.js', array( 'jquery' ), '21032012', true );
 	}
 
 	function meta_box_content() {

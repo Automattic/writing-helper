@@ -1,11 +1,7 @@
 <?php
-	global $post;
-	$on_a_page = FALSE;
-
-	if ( isset( $_GET['post_type'] ) && 'page' == $_GET['post_type'] ) // new page
-		$on_a_page = TRUE;
-	else if ( 'page' == $post->post_type ) // editing a page
-		$on_a_page = TRUE;
+	$post_type = get_post_type();
+	$post_type_obj = get_post_type_object( $post_type );
+	$cap_title = sprintf( __( 'Copy a %s' ), $post_type_obj->labels->singular_name );
 ?>
 
 <ul id="helpers"<?php if ( isset( $_GET['cap'] ) || isset( $_GET['requestfeedback'] ) ) echo ' style="display:none"'; ?>>
@@ -15,9 +11,9 @@
 		</div>
 
 		<div class="helper-text">
-			<a href="#copyapost"><?php ( $on_a_page ) ? _e( 'Copy a Page' ) : _e( 'Copy a Post' ); ?></a>
-			<h4><?php ( $on_a_page ) ? _e( 'Copy a Page' ) : _e( 'Copy a Post' ); ?></h4>
-			<p><?php ( $on_a_page ) ? _e( 'Use an existing page as a template.' ) : _e( 'Use an existing post as a template.' ); ?></p>
+			<a href="#copyapost"><?php echo esc_html( $cap_title ); ?></a>
+			<h4><?php echo esc_html( $cap_title ); ?></h4>
+			<p><?php echo esc_html( sprintf( __( 'Use an existing %s as a template.' ), strtolower( $post_type_obj->labels->singular_name ) ) ); ?></p>
 		</div>
 		<div class="clear"></div>
 	</li>
@@ -105,8 +101,8 @@ if ( $show_feedback_button && is_array( $requests ) && !empty( $requests ) ):
 		$feedbacks = $df->get_user_feedbacks( $post_id, $email );
 		$requested_on = $df->time_to_date( $data['time'] );
 		$secret_url = $df->generate_secret_link( $post_id, $data['key'] );
-		$revoke_display = $data['revoked']? 'none' : 'inline';
-		$unrevoke_display = $data['revoked']? 'inline' : 'none';
+		$revoke_display = ! empty( $data['revoked'] ) ? 'none' : 'inline';
+		$unrevoke_display = ! empty( $data['revoked'] ) ? 'inline' : 'none';
 ?>
 	<tr>
 		<td>
@@ -168,14 +164,15 @@ endif;
 <div id="copyapost" class="helper"<?php if ( isset( $_GET['cap'] ) ) echo ' style="display:block"'; ?>>
 	<div class="helper-header" id="cap">
 		<a href="" class="back"><?php _e( 'Back' ) ?><span></span></a>
-		<h5><?php ( $on_a_page ) ? _e( 'Copy a Page' ) : _e( 'Copy a Post' ); ?></h5>
+		<h5><?php echo esc_html( $cap_title ); ?></h5>
 	</div>
 
 	<div class="inside helper-content">
 		<p>
-			<strong><?php ( $on_a_page ) ? _e( "Use an existing page as a template." ) : _e( "Use an existing post as a template." ); ?></strong>
+			<strong><?php echo esc_html( sprintf( __( "Use an existing %s as a template." ), strtolower( $post_type_obj->labels->singular_name ) ) ); ?></strong>
 			<?php
-				if ( $on_a_page ) :
+				// @todo
+				if ( 'post' != $post_type ) :
 					_e( "Pick a page and we'll copy the title and content. Recent pages are listed below. Search by title to find older pages. You can mark any page to keep it at the top." );
 				else :
 					_e( "Pick a post and we'll copy the title, content, tags and categories. Recent posts are listed below. Search by title to find older posts. You can mark any post to keep it at the top." );
@@ -184,13 +181,13 @@ endif;
 		</p>
 
 		<div class="search-posts">
-			<?php $search_text = ( $on_a_page ) ? __( 'Search for pages by title' ) : __( 'Search for posts by title' ); ?>
-			<input type="search" name="search" id="search-posts" value="<?php echo $search_text ?>" onfocus="if ( this.value == '<?php echo $search_text ?>' ) this.value = '';" onblur="if ( this.value == '' ) this.value = '<?php echo $search_text ?>';" />
+			<?php $search_text = sprintf( __( 'Search for %s by title' ), strtolower( $post_type_obj->labels->name ) ); ?>
+			<input type="search" name="search" id="search-posts" value="<?php echo esc_attr( $search_text ); ?>" onfocus="if ( this.value == '<?php echo esc_js( $search_text ); ?>' ) this.value = '';" onblur="if ( this.value == '' ) this.value = '<?php echo $search_text ?>';" />
 		</div>
 
 		<div class="confirm-copy" style="display: none;">
-			<p class="confirm"><?php ( $on_a_page ) ? _e( 'Replace the current page with the selected page?' ) : _e( 'Replace the current post with the selected post?' ); ?> &nbsp;<input type="button" class="button-secondary" value="<?php _e( 'Cancel' ) ?>" id="cancel-copy" /> <input type="button" class="button-primary" value="<?php _e( 'Confirm Copy' ) ?>" id="confirm-copy" /></p>
-			<p class="copying"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" />  <?php ( $on_a_page ) ? _e( 'Copying Page...' ) : _e( 'Copying Post...' ); ?></p>
+			<p class="confirm"><?php echo esc_html( sprintf( __( 'Replace the current %s with the selected %s?' ), strtolower( $post_type_obj->labels->singular_name ), strtolower( $post_type_obj->labels->singular_name ) ) ); ?> &nbsp;<input type="button" class="button-secondary" value="<?php _e( 'Cancel' ) ?>" id="cancel-copy" /> <input type="button" class="button-primary" value="<?php _e( 'Confirm Copy' ) ?>" id="confirm-copy" /></p>
+			<p class="copying"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" />  <?php echo esc_html( sprintf( __( 'Copying %s...' ), $post_type_obj->labels->singular_name ) ); ?></p>
 		</div>
 
 		<div class="copy-posts">
@@ -203,10 +200,8 @@ endif;
 										'posts_per_page'		=> 3,
 										'ignore_sticky_posts'	=> 1,
 										'post__in'				=> (array) $sticky_posts,
+										'post_type'				=> $post_type,
 									);
-
-					if ( $on_a_page )
-						$stickies_args['post_type'] = 'page';
 
 					$stickies = new WP_Query( $stickies_args );
 				?>
@@ -226,10 +221,8 @@ endif;
 											'posts_per_page'	=> 20,
 											'posts__not_in'		=> (array) $sticky_posts,
 											'post_status'		=> 'any',
+											'post_type'			=> $post_type,
 										);
-
-					if ( $on_a_page )
-						$latest_posts_args['post_type'] = 'page';
 
 					$latest_posts = new WP_Query( $latest_posts_args );
 				?>
