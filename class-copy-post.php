@@ -35,7 +35,7 @@ class WH_CopyPost {
 
 			$submenu_page_label = sprintf( __( 'Copy a %s' ), $post_type_obj->labels->singular_name );
 
-			$submenu_page_link = str_replace( 'edit.php', '/post-new.php', $submenu_page ) . '&cap#cap';
+			$submenu_page_link = add_query_arg( 'cap#cap', '', str_replace( 'edit.php', '/post-new.php', $submenu_page ) );
 
 			add_submenu_page( $submenu_page, $submenu_page_label, $submenu_page_label, $post_type_obj->cap->edit_posts, $submenu_page_link );
 		}
