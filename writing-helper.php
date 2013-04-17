@@ -8,6 +8,8 @@ Version: 1.0-alpha
 Author URI: http://automattic.com/
 */
 
+define( 'WH_VERSION', '1.0-alpha' );
+
 foreach( glob( dirname(__FILE__). '/class-*.php' ) as $wh_php_file_name ) {
 	require $wh_php_file_name;
 }
@@ -71,8 +73,8 @@ class WritingHelper {
 	}
 
 	public static function enqueue_script() {
-		wp_enqueue_style( 'writing_helper_style', WritingHelper()->plugin_url . 'writing-helper.css', array(), '06242011' );
-		wp_enqueue_script( 'writing_helper_script', WritingHelper()->plugin_url . 'script.js', array( 'jquery' ), '21032012', true );
+		wp_enqueue_style( 'writing_helper_style', WritingHelper()->plugin_url . 'writing-helper.css', array(), WH_VERSION );
+		wp_enqueue_script( 'writing_helper_script', WritingHelper()->plugin_url . 'script.js', array( 'jquery' ), WH_VERSION, true );
 	}
 
 	function meta_box_content() {
