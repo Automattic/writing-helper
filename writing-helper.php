@@ -43,11 +43,13 @@ class WritingHelper {
 
 		$this->plugin_url = plugins_url( '/', __FILE__ );
 
-		$this->supported_post_types = apply_filters( 'wh_supported_post_types', array( 'post', 'page' ) );
+		$this->supported_post_types = array( 'post', 'page' );
 
 	}
 
 	public function action_init() {
+
+		$this->supported_post_types = apply_filters( 'wh_supported_post_types', $this->supported_post_types );
 
 		// Helpers each have an init() method
 		foreach( $this->helpers as $helper ) {
