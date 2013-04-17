@@ -171,9 +171,8 @@ endif;
 		<p>
 			<strong><?php echo esc_html( sprintf( __( "Use an existing %s as a template." ), strtolower( $post_type_obj->labels->singular_name ) ) ); ?></strong>
 			<?php
-				// @todo
 				if ( 'post' != $post_type ) :
-					_e( "Pick a page and we'll copy the title and content. Recent pages are listed below. Search by title to find older pages. You can mark any page to keep it at the top." );
+					echo sprintf( __( 'Pick a %1$s and we\'ll copy the title and content. Recent %2$s are listed below. Search by title to find older %3$s. You can mark any %4$s to keep it at the top.' ), strtolower( $post_type_obj->labels->singular_name ), strtolower( $post_type_obj->labels->name ), strtolower( $post_type_obj->labels->name ), strtolower( $post_type_obj->labels->singular_name ) );
 				else :
 					_e( "Pick a post and we'll copy the title, content, tags and categories. Recent posts are listed below. Search by title to find older posts. You can mark any post to keep it at the top." );
 				endif;
