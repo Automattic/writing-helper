@@ -116,25 +116,24 @@ jQuery(function($) {
 
 /* JS to hide/show helper boxes */
 jQuery(document).ready(function($) {
-	$( '#helpers li' ).click(function() {
+	$('#helpers').on( 'click', 'li', function(e) {
+		e.preventDefault();
 
 		$('#helpers').hide();
 		$( $( 'a', this).attr('href') ).show();
 		// ping stats
 		var helper_name = $( 'a', this).attr('href').substr(1); // remove the #
 		new Image().src = document.location.protocol+'//stats.wordpress.com/g.gif?v=wpcom-no-pv&x_writinghelper='+helper_name+'&baba='+Math.random();
-
-		return false;
 	});
-	$('.back').click(function(e) {
+	$('#writing_helper_meta_box').on( 'click', '.back', function(e) {
 		e.preventDefault();
 		$('#helpers').show();
 		$('.helper').hide();
 	});
-	$('#add-request-sent a, .back').click( function() {
-			$('#invitetoshare').show();
-			$('#add-request-sent').hide();
-			return false;
+	$('#helpers').on( 'on', '#add-request-sent a, .back', function(e) {
+		e.preventDefault();
+		$('#invitetoshare').show();
+		$('#add-request-sent').hide();
 	});
 });
 
