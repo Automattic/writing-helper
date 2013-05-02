@@ -71,11 +71,11 @@ jQuery(function($) {
 			if (!parts[i]) parts.splice(i, 1);
 		}
 		if (0 == parts.length || !emails) {
-			to.html('Customize the message');
+			to.text('Customize the message');
 		} else if (1 == parts.length) {
-			to.html('Customize the message to {whom}'.replace('{whom}', parts[0]));
+			to.text('Customize the message to {whom}'.replace('{whom}', parts[0]));
 		} else {
-			to.html('Customize the message to {whom} and {number} more'.replace('{whom}', parts[0]).replace('{number}', parts.length - 1));
+			to.text('Customize the message to {whom} and {number} more'.replace('{whom}', parts[0]).replace('{number}', parts.length - 1));
 		}
 	});
 	$('ol.feedbacks-list li a', $requestfeedback).click(function() {
