@@ -4,11 +4,6 @@ WritingHelper()->add_helper( 'copy_post', new WH_CopyPost() );
 
 class WH_CopyPost {
 
-	public $supported_post_types = array(
-			'post',
-			'page',
-		);
-
 	function init() {
 
 		add_action( 'wp_ajax_helper_search_posts', array( $this, 'add_ajax_search_posts_endpoint' ) );
@@ -24,20 +19,21 @@ class WH_CopyPost {
 	 * Add submenu links for each supported post type
 	 */
 	function add_submenu_page() {
-	
-		foreach( WritingHelper()->supported_post_types as $post_type ) {
+		$post_types = get_post_types();
+		foreach( $post_types as $post_type ) {
+			if( post_type_supports( $post_type, 'writing-helper' ) ) {
+				$post_type_obj = get_post_type_object( $post_type );
 
-			$post_type_obj = get_post_type_object( $post_type );
+				$submenu_page = 'edit.php';
+				if ( 'post' != $post_type )
+					$submenu_page .= '?post_type=' . $post_type;
 
-			$submenu_page = 'edit.php';
-			if ( 'post' != $post_type )
-				$submenu_page .= '?post_type=' . $post_type;
+				$submenu_page_label = sprintf( __( 'Copy a %s' ), $post_type_obj->labels->singular_name );
 
-			$submenu_page_label = sprintf( __( 'Copy a %s' ), $post_type_obj->labels->singular_name );
+				$submenu_page_link = add_query_arg( 'cap#cap', '', str_replace( 'edit.php', '/post-new.php', $submenu_page ) );
 
-			$submenu_page_link = add_query_arg( 'cap#cap', '', str_replace( 'edit.php', '/post-new.php', $submenu_page ) );
-
-			add_submenu_page( $submenu_page, $submenu_page_label, $submenu_page_label, $post_type_obj->cap->edit_posts, $submenu_page_link );
+				add_submenu_page( $submenu_page, $submenu_page_label, $submenu_page_label, $post_type_obj->cap->edit_posts, $submenu_page_link );
+			}
 		}
 	}
 

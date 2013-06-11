@@ -3,7 +3,7 @@
 Plugin Name: Writing Helper
 Plugin URI: http://wordpress.org/extend/plugins/writing-helper/
 Description: Helps you write your posts
-Author: Nikolay Bachiyski, Daniel Bachhuber, Automattic
+Author: Nikolay Bachiyski, Daniel Bachhuber, Prasath Nadarajah, Automattic
 Version: 1.0-alpha
 Author URI: http://automattic.com/
 */
@@ -43,7 +43,8 @@ class WritingHelper {
 
 		$this->plugin_url = plugins_url( '/', __FILE__ );
 
-		$this->supported_post_types = array( 'post', 'page' );
+		add_post_type_support( 'post', 'writing-helper' );
+		add_post_type_support( 'page', 'writing-helper' );
 
 	}
 
@@ -59,16 +60,16 @@ class WritingHelper {
 	}
 
 	function add_meta_box() {
-
-		foreach( $this->supported_post_types as $post_type ) {
-				add_meta_box( 'writing_helper_meta_box', __( 'Writing Helper' ), array( $this, 'meta_box_content' ), $post_type, 'normal', 'high' );
+		$post_type = get_post_type();
+		if( post_type_supports( $post_type, 'writing-helper' ) ) {
+			add_meta_box( 'writing_helper_meta_box', __( 'Writing Helper' ), array( $this, 'meta_box_content' ), $post_type, 'normal', 'high' );
 		}
 	}
 
 	public function action_admin_enqueue_scripts() {
 
 		$screen = get_current_screen();
-		if ( 'post' != $screen->base || ! in_array( $screen->post_type, WritingHelper()->supported_post_types ) )
+		if ( 'post' != $screen->base || ! post_type_supports( $screen->post_type, 'writing-helper' ) )
 			return;
 
 		self::enqueue_script();
