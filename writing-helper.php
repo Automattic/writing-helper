@@ -17,7 +17,8 @@ foreach( glob( dirname(__FILE__). '/class-*.php' ) as $wh_php_file_name ) {
 class WritingHelper {
 
 	public $helpers = array();
-
+	public $supported_post_types = array();
+	
 	public $plugin_url;
 
 	private static $instance;
