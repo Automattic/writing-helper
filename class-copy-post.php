@@ -21,11 +21,6 @@ class WH_CopyPost {
 	function add_submenu_page() {
 		$post_types = get_post_types();
 		foreach( $post_types as $post_type ) {
-			
-			if ( !post_type_exists($post_type) ){
-				continue;
-			}
-			
 			if( post_type_supports( $post_type, 'writing-helper' ) || in_array($post_type, WritingHelper()->supported_post_types) ) {
 				$post_type_obj = get_post_type_object( $post_type );
 
