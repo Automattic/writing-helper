@@ -50,8 +50,6 @@ class WritingHelper {
 
 	public function action_init() {
 
-		$this->supported_post_types = apply_filters( 'wh_supported_post_types', $this->supported_post_types );
-
 		// Helpers each have an init() method
 		foreach( $this->helpers as $helper ) {
 			if ( method_exists( $helper, 'init' ) )
