@@ -21,18 +21,19 @@ class WH_CopyPost {
 	function add_submenu_page() {
 		$post_types = get_post_types();
 		foreach( $post_types as $post_type ) {
-			if( post_type_supports( $post_type, 'writing-helper' ) ) {
+			if( post_type_supports( $post_type, 'writing-helper' ) || in_array($post_type, WritingHelper()->supported_post_types) ) {
 				$post_type_obj = get_post_type_object( $post_type );
-
-				$submenu_page = 'edit.php';
-				if ( 'post' != $post_type )
-					$submenu_page .= '?post_type=' . $post_type;
-
-				$submenu_page_label = sprintf( __( 'Copy a %s' ), $post_type_obj->labels->singular_name );
-
-				$submenu_page_link = add_query_arg( 'cap#cap', '', str_replace( 'edit.php', '/post-new.php', $submenu_page ) );
-
-				add_submenu_page( $submenu_page, $submenu_page_label, $submenu_page_label, $post_type_obj->cap->edit_posts, $submenu_page_link );
+				if ( $post_type_obj ){
+					$submenu_page = 'edit.php';
+					if ( 'post' != $post_type )
+						$submenu_page .= '?post_type=' . $post_type;
+	
+					$submenu_page_label = sprintf( __( 'Copy a %s' ), $post_type_obj->labels->singular_name );
+	
+					$submenu_page_link = add_query_arg( 'cap#cap', '', str_replace( 'edit.php', '/post-new.php', $submenu_page ) );
+	
+					add_submenu_page( $submenu_page, $submenu_page_label, $submenu_page_label, $post_type_obj->cap->edit_posts, $submenu_page_link );
+				}
 			}
 		}
 	}
