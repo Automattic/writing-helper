@@ -25,8 +25,9 @@ class WH_CopyPost {
 				$post_type_obj = get_post_type_object( $post_type );
 
 				$submenu_page = 'edit.php';
-				if ( 'post' != $post_type )
+				if ( 'post' != $post_type ) {
 					$submenu_page .= '?post_type=' . $post_type;
+				}
 
 				if ( $post_type == 'post' ) {
 					$submenu_page_label = __( 'Copy a Post' );

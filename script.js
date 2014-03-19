@@ -6,7 +6,7 @@ jQuery(function($) {
 			var $this = $(this);
 			if ($this.data('replaced-placeholders')) return;
 			var text = $this.val();
-			var excerpt = $('#content').val();
+			var excerpt = $('#content').text();
 			excerpt = $('<div>'+excerpt+'</div>').text().replace(/\n+/g, ' ');
 			if (excerpt.length > 300) {
 				excerpt = excerpt.substr(0, 300)+'...';
@@ -270,8 +270,11 @@ jQuery( function( $ ) {
 	}
 
 	function copy_post( callback ) {
-		switchEditors.go('content', 'html');
 		var post_id = $( 'div.copy-posts li input.selected' ).attr( 'id' ).substr( 3, $( 'div.copy-posts li input.selected' ).attr('id').length );
+		var isSwitchable = typeof switchEditors !== 'undefined';
+
+		if( isSwitchable )
+			switchEditors.go('content', 'html');
 
 		$.post( ajaxurl, {
 			'action': 'helper_get_post',
@@ -293,7 +296,8 @@ jQuery( function( $ ) {
 
 			// Content
 			$( 'textarea#content' ).val( post.post_content );
-			switchEditors.go('content', 'tinymce');
+			if( isSwitchable )
+				switchEditors.go('content', 'tinymce');
 
 			// Tags
 			$( 'div.taghint' ).hide();
