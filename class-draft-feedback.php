@@ -77,7 +77,7 @@ class WH_DraftFeedback {
 	private function email_post_published( $email, $post, $request ) {
 		$sender =  get_userdata( $request['user_id'] );
 		$subject = sprintf(
-			__( '%1$s\'s draft titled "%2$s" has been published' ),
+			__( '%1$s&#8217;s draft titled "%2$s" has been published' ),
 			$sender->display_name,
 			$post->post_title
 		);
@@ -88,7 +88,7 @@ Recently you were kind enough to give feedback on my draft "%1$s".
 
 It is now published! Thanks so much for your help.
 
-Here\'s the published version, and please share if you wish:
+Here&#8217;s the published version, and please share if you wish:
 %2$s
 
 Regards,
@@ -341,11 +341,12 @@ Regards,
 		}
 
 		$post_author = get_userdata( $this->shared_post->post_author );
-		$subject = sprintf(
-			__( 'Feedback received from %1$s for "%2$s"' ),
-			$reviewer? $reviewer : __( 'your friend' ),
-			$this->shared_post->post_title
-		);
+
+		if ( ! empty( $reviewer ) ) {
+			$subject = sprintf( __( 'Feedback received from %1$s for "%2$s"' ), $reviewer, $this->shared_post->post_title );
+		} else {
+			$subject = sprintf( __( 'Feedback received from your friend for "%2$s"' ), $reviewer, $this->shared_post->post_title );
+		}
 		// Note: Keep in one string for easier i18n.
 		$body = sprintf( __(
 'Hi %1$s,
@@ -413,18 +414,18 @@ Thanks for flying with WordPress.com' ),
 				continue;
 			}
 			if ( !is_email( $email ) ) {
-				$this->json_die_with_error( 'Invalid email: ' . $email );
+				$this->json_die_with_error( __( 'Invalid email address' ) . ' ' . $email );
 			}
 		}
 		if ( !$email_text ) {
-			$this->json_die_with_error( 'E-mail text cannot be empty' );
+			$this->json_die_with_error( __( 'E-mail text cannot be empty' ) );
 		}
 		if ( strpos( $email_text, '[feedback-link]' ) === false ) {
-			$this->json_die_with_error( 'You must include [feedback-link] in the e-mail text' );
+			$this->json_die_with_error( __( 'You must include [feedback-link] in the e-mail text' ) );
 		}
 		$res = $this->add_request( $post_id, $single_emails, $email_text );
 		if ( !$res ) {
-			$this->json_die_with_error( 'Error in adding the request' );
+			$this->json_die_with_error( __( 'Error in adding the request' ) );
 		}
 		die( json_encode( array() ) );
 	}

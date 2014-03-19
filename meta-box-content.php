@@ -1,7 +1,34 @@
 <?php
 	$post_type = get_post_type();
 	$post_type_obj = get_post_type_object( $post_type );
-	$cap_title = sprintf( __( 'Copy a %s' ), $post_type_obj->labels->singular_name );
+
+	$cap_strings = array();
+
+	switch ( $post_type ) {
+		case 'post':
+			$cap_strings['title'] = __( 'Copy a Post' );
+			$cap_strings['details'] = __( 'Use an existing post as a template.' );
+			$cap_strings['instructions'] = __( "Pick a post and we'll copy the title, content, tags and categories. Recent posts are listed below. Search by title to find older posts. You can mark any post to keep it at the top." );
+			$cap_strings['search'] = __( 'Search for a post by title' );
+			$cap_strings['confirm'] = __( 'Replace the current post with the selected post?' );
+			$cap_strings['copying'] = __( 'Copying post...' );
+			break;
+		case 'page':
+			$cap_strings['title'] = __( 'Copy a Page' );
+			$cap_strings['details'] = __( 'Use an existing page as a template.' );
+			$cap_strings['instructions'] = __( "Pick a post and we'll copy the title and content. Recent pages are listed below. Search by title to find older pages. You can mark any page to keep it at the top." );
+			$cap_strings['search'] = __( 'Search for a page by title' );
+			$cap_strings['confirm'] = __( 'Replace the current page with the selected page?' );
+			$cap_strings['copying'] = __( 'Copying page...' );
+			break;
+		default:
+			$cap_strings['title'] = sprintf( _x( 'Copy a %s', 'Copy a {post_type}' ), $post_type_obj->labels->singular_name );
+			$cap_strings['details'] = sprintf( _x( 'Use an existing %s as a template.', 'Use an existing {post_type} as a template' ), strtolower( $post_type_obj->labels->singular_name ) );
+			$cap_strings['instructions'] = sprintf( _x( 'Pick a %1$s and we&#8217;ll copy the title and content. Recent %2$s are listed below. Search by title to find older %3$s. You can mark any %4$s to keep it at the top.', 'Copy a {post_type}. First and fourth variables are single, second and third are plurals' ), strtolower( $post_type_obj->labels->singular_name ), strtolower( $post_type_obj->labels->name ), strtolower( $post_type_obj->labels->name ), strtolower( $post_type_obj->labels->singular_name ) );
+			$cap_strings['search'] = sprintf( _x( 'Search for %s by title', 'Search for {post_type} by title' ), strtolower( $post_type_obj->labels->name ) );
+			$cap_strings['confirm'] = sprintf( _x( 'Replace the current %s with the selected %s?', 'Replace the current {post_type} with the selected {post_type}' ), strtolower( $post_type_obj->labels->singular_name ), strtolower( $post_type_obj->labels->singular_name ) );
+			$cap_strings['copying'] = sprintf( _x( 'Copying %s...', 'copying {post_type}' ), $post_type_obj->labels->singular_name );
+	}
 ?>
 
 <ul id="helpers"<?php if ( isset( $_GET['cap'] ) || isset( $_GET['requestfeedback'] ) ) echo ' style="display:none"'; ?>>
@@ -11,9 +38,9 @@
 		</div>
 
 		<div class="helper-text">
-			<a href="#copyapost"><?php echo esc_html( $cap_title ); ?></a>
-			<h4><?php echo esc_html( $cap_title ); ?></h4>
-			<p><?php echo esc_html( sprintf( __( 'Use an existing %s as a template.' ), strtolower( $post_type_obj->labels->singular_name ) ) ); ?></p>
+			<a href="#copyapost"><?php echo esc_html( $cap_strings['title'] ); ?></a>
+			<h4><?php echo esc_html( $cap_strings['title'] ); ?></h4>
+			<p><?php echo esc_html( $cap_strings['details'] ); ?></p>
 		</div>
 		<div class="clear"></div>
 	</li>
@@ -57,8 +84,18 @@
 	<div id="modify-email" style="display: none;">
 	<textarea class="customize" cols="80" rows="8">
 <?php // Note: Keep in one string for easier i18n.
-printf(
-	__( "Hi,\n\nI started writing a new draft titled \"%s\" and would love to get your feedback. I plan on publishing it shortly.\n\nPlease leave your feedback here:\n%s\n\nTitle: %s\nBeginning: %s\n\nRead more: %s\n\nThanks,\n%s" ),
+	printf( __( 'Hi,
+
+I started writing a new draft titled "%1$s" and would love to get your feedback. I plan on publishing it shortly.
+
+Please leave your feedback here:
+%2$s
+
+Title: %3$s
+Beginning: %4$s
+Read more: %5$s
+Thanks,
+%6$s' ),
 	'[title]',
 	'[feedback-link]',
 	'[title]',
@@ -164,29 +201,22 @@ endif;
 <div id="copyapost" class="helper"<?php if ( isset( $_GET['cap'] ) ) echo ' style="display:block"'; ?>>
 	<div class="helper-header" id="cap">
 		<a href="" class="back"><?php _e( 'Back' ) ?><span></span></a>
-		<h5><?php echo esc_html( $cap_title ); ?></h5>
+		<h5><?php echo esc_html( $cap_strings['title'] ); ?></h5>
 	</div>
 
 	<div class="inside helper-content">
 		<p>
-			<strong><?php echo esc_html( sprintf( __( "Use an existing %s as a template." ), strtolower( $post_type_obj->labels->singular_name ) ) ); ?></strong>
-			<?php
-				if ( 'post' != $post_type ) :
-					echo sprintf( __( 'Pick a %1$s and we\'ll copy the title and content. Recent %2$s are listed below. Search by title to find older %3$s. You can mark any %4$s to keep it at the top.' ), strtolower( $post_type_obj->labels->singular_name ), strtolower( $post_type_obj->labels->name ), strtolower( $post_type_obj->labels->name ), strtolower( $post_type_obj->labels->singular_name ) );
-				else :
-					_e( "Pick a post and we'll copy the title, content, tags and categories. Recent posts are listed below. Search by title to find older posts. You can mark any post to keep it at the top." );
-				endif;
-			?>
+			<strong><?php echo esc_html( $cap_strings['details'] ); ?></strong>
+			<?php echo $cap_strings['instructions']; ?>
 		</p>
 
 		<div class="search-posts">
-			<?php $search_text = sprintf( __( 'Search for %s by title' ), strtolower( $post_type_obj->labels->name ) ); ?>
-			<input type="search" name="search" id="search-posts" value="<?php echo esc_attr( $search_text ); ?>" onfocus="if ( this.value == '<?php echo esc_js( $search_text ); ?>' ) this.value = '';" onblur="if ( this.value == '' ) this.value = '<?php echo $search_text ?>';" />
+			<input type="search" name="search" id="search-posts" value="<?php echo esc_attr( $cap_strings['search'] ); ?>" onfocus="if ( this.value == '<?php echo esc_js( $cap_strings['search'] ); ?>' ) this.value = '';" onblur="if ( this.value == '' ) this.value = '<?php echo esc_js( $cap_strings['search'] ) ?>';" />
 		</div>
 
 		<div class="confirm-copy" style="display: none;">
-			<p class="confirm"><?php echo esc_html( sprintf( __( 'Replace the current %s with the selected %s?' ), strtolower( $post_type_obj->labels->singular_name ), strtolower( $post_type_obj->labels->singular_name ) ) ); ?> &nbsp;<input type="button" class="button-secondary" value="<?php _e( 'Cancel' ) ?>" id="cancel-copy" /> <input type="button" class="button-primary" value="<?php _e( 'Confirm Copy' ) ?>" id="confirm-copy" /></p>
-			<p class="copying"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" />  <?php echo esc_html( sprintf( __( 'Copying %s...' ), $post_type_obj->labels->singular_name ) ); ?></p>
+			<p class="confirm"><?php echo esc_html( $cap_strings['confirm']  ); ?> &nbsp;<input type="button" class="button-secondary" value="<?php esc_attr_e( 'Cancel' ) ?>" id="cancel-copy" /> <input type="button" class="button-primary" value="<?php esc_attr_e( 'Confirm Copy' ) ?>" id="confirm-copy" /></p>
+			<p class="copying"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" />  <?php echo esc_html( $cap_strings['copying'] ); ?></p>
 		</div>
 
 		<div class="copy-posts">
@@ -206,7 +236,7 @@ endif;
 				?>
 				<?php while( $stickies->have_posts() ) : $stickies->the_post(); ?>
 					<li>
-						<input type="button" value="<?php _e( 'Copy' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
+						<input type="button" value="<?php esc_attr_e( 'Copy' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
 						<span class="title"><?php the_title() ?></span>
 						<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
 					</li>
@@ -227,14 +257,14 @@ endif;
 				?>
 				<?php while( $latest_posts->have_posts() ) : $latest_posts->the_post(); ?>
 					<li>
-						<input type="button" value="<?php _e( 'Copy' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
+						<input type="button" value="<?php esc_attr_e( 'Copy' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
 						<span class="title"><?php the_title() ?></span>
 						<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
 					</li>
 				<?php endwhile; ?>
 				<?php wp_reset_query(); $post = $tmp_post; ?>
 			</ul>
-			<div class="loading"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" /> <?php _e( 'Searching...' ) ?></div>
+			<div class="loading"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="<?php esc_attr_e( 'Loading'); ?>" /> <?php _e( 'Searching&hellip;' ) ?></div>
 		</div>
 
 	</div>

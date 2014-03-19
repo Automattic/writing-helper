@@ -28,7 +28,13 @@ class WH_CopyPost {
 				if ( 'post' != $post_type )
 					$submenu_page .= '?post_type=' . $post_type;
 
-				$submenu_page_label = sprintf( __( 'Copy a %s' ), $post_type_obj->labels->singular_name );
+				if ( $post_type == 'post' ) {
+					$submenu_page_label = __( 'Copy a Post' );
+				} else if ( $post_type == 'page' ) {
+					$submenu_page_label = __( 'Copy a Page' );
+				} else {
+					$submenu_page_label =  sprintf( _x( 'Copy a %s', 'Copy a {post_type}' ), $post_type_obj->labels->singular_name );
+				}
 
 				$submenu_page_link = add_query_arg( 'cap#cap', '', str_replace( 'edit.php', '/post-new.php', $submenu_page ) );
 
