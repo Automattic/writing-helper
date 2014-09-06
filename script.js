@@ -62,6 +62,13 @@ jQuery(function($) {
 		$('a.customize', $requestfeedback).show();
 		return false;
 	});
+	$( '#send-more', $requestfeedback ).click(function( event ) {
+		$( '#invitelist' ).val( '' ).triggerHandler( 'keyup' );
+		$('a.cancel', $requestfeedback).triggerHandler( 'click' );
+		$( '#invitetoshare' ).show();
+		$( '#add-request-sent' ).hide();
+		event.preventDefault();
+	});
 	$('textarea#invitelist', $requestfeedback).keyup(function() {
 		var emails = $(this).val();
 		var to = $('a.customize', $requestfeedback);
