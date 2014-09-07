@@ -125,7 +125,7 @@ jQuery(function($) {
 				$('#feedback-text').focus();
 			},
 			error: function(xhr, status, error) {
-				display_error("Internal Server Error: "+status);
+				display_error( '#feedback-text', "Internal Server Error: " + error );
 				$( '#feedbackform input:submit' ).val( 'Send Feedback' ).removeAttr( 'disabled' );
 			}
 		});
