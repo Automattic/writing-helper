@@ -116,7 +116,7 @@ Thanks,
 <div id="add-request-sent" class="add-request-message" style="display:none">
 <h4><?php _e( "Requests sent." ); ?></h4>
 <p><?php _e( "When your friends read your draft and give feedback, you'll get an email and the feedback will appear below." ); ?></p>
-<p><a id="send-more" href="#sendmore"><?php _e( "Send more requests." );?></a></p>
+<p><a href="#sendmore"><?php _e( "Send more requests." );?></a></p>
 </div>
 <?php
 if ( $show_feedback_button && is_array( $requests ) && !empty( $requests ) ):

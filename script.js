@@ -38,6 +38,8 @@ jQuery(function($) {
 				if (data['error'])
 					display_error('#invitetoshare', data['error']);
 				else {
+					$( '#invitelist' ).val( '' ).triggerHandler( 'keyup' );
+					$( 'a.cancel', $requestfeedback ).triggerHandler( 'click' );
 					$('#invitetoshare').hide();
 					$('#add-request-sent').show();
 				}
@@ -61,13 +63,6 @@ jQuery(function($) {
 		$('#add-request').show();
 		$('a.customize', $requestfeedback).show();
 		return false;
-	});
-	$( '#send-more', $requestfeedback ).click(function( event ) {
-		$( '#invitelist' ).val( '' ).triggerHandler( 'keyup' );
-		$('a.cancel', $requestfeedback).triggerHandler( 'click' );
-		$( '#invitetoshare' ).show();
-		$( '#add-request-sent' ).hide();
-		event.preventDefault();
 	});
 	$('textarea#invitelist', $requestfeedback).keyup(function() {
 		var emails = $(this).val();
@@ -149,10 +144,10 @@ jQuery(document).ready(function($) {
 		$('#helpers').show();
 		$('.helper').hide();
 	});
-	$('#helpers').on( 'on', '#add-request-sent a, .back', function(e) {
-		e.preventDefault();
-		$('#invitetoshare').show();
-		$('#add-request-sent').hide();
+	$( '#writing_helper_meta_box' ).on( 'click', '.back, #add-request-sent a', function( event ) {
+		event.preventDefault();
+		$( '#invitetoshare' ).show();
+		$( '#add-request-sent' ).hide();
 	});
 });
 
