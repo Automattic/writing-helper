@@ -8,9 +8,9 @@
 <style>
 .draftfeedback-feedback-form {
 position: fixed;
-left: 0;
+left: -1%;
 top: 0;
-padding: 50px 2% 30px 2%;
+padding: 50px 1% 30px 2%;
 height: 100%;
 background: #f7f7f7;
 width: 26%;
@@ -40,7 +40,7 @@ margin-bottom: 1em;
 margin-bottom: 5px;
 }
 .draftfeedback-feedback-form textarea {
-width: 98%;
+width: 97%;
 height: 250px;
 line-height: 1.5em;
 padding: 5px;
@@ -86,6 +86,20 @@ margin-left: 30%;
 #comments, #respond {
 display: none;
 }
+
+@media screen and (max-width: 1024px ) {
+	.draftfeedback-feedback-form {
+		left: -5px;
+		padding: 50px 5px 30px 10px;
+		width: 230px;
+	}
+	.draftfeedback-feedback-form textarea {
+		width: 220px;
+	}
+	body {
+		margin-left: 250px;
+	}
+}
 </style>
 
 <script type="text/javascript">
@@ -110,7 +124,7 @@ jQuery(document).ready(function($) {
 <p><?php _e( 'Note any typos you find, suggestions you have, or links to recommend.' ); ?></p>
 </div>
 <form id="feedbackform" method="post">
-	<textarea name="feedback" rows="4" id="feedback-text"> </textarea>
+	<textarea name="feedback" rows="4" id="feedback-text"></textarea>
 	<input type="submit" name="Send Feedback" value="Send Feedback" />
 </form>
 </div>

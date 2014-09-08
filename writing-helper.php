@@ -45,7 +45,6 @@ class WritingHelper {
 
 		add_post_type_support( 'post', 'writing-helper' );
 		add_post_type_support( 'page', 'writing-helper' );
-
 	}
 
 	public function action_init() {
@@ -69,13 +68,12 @@ class WritingHelper {
 		$screen = get_current_screen();
 		if ( 'post' != $screen->base || ! post_type_supports( $screen->post_type, 'writing-helper' ) )
 			return;
-
 		self::enqueue_script();
 	}
 
 	public static function enqueue_script() {
-		wp_enqueue_style( 'writing_helper_style', WritingHelper()->plugin_url . 'writing-helper.css', array(), WH_VERSION );
-		wp_enqueue_script( 'writing_helper_script', WritingHelper()->plugin_url . 'script.js', array( 'jquery' ), WH_VERSION, true );
+		wp_enqueue_style( 'writing_helper_style', WritingHelper()->plugin_url . 'writing-helper.css', array(), 'WH_VERSION' );
+		wp_enqueue_script( 'writing_helper_script', WritingHelper()->plugin_url . 'script.js', array( 'jquery' ), 'WH_VERSION', true );
 	}
 
 	function meta_box_content() {
@@ -88,7 +86,7 @@ class WritingHelper {
 	}
 
 	function add_helper( $helper_name, $helper_obj ) {
-		$this->helpers[ $helper_name ] = $helper_obj;	
+		$this->helpers[ $helper_name ] = $helper_obj;
 	}
 }
 

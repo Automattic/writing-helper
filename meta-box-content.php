@@ -76,7 +76,7 @@
 	<p><strong><?php _e( 'Get feedback on this draft before publishing.' ); ?></strong></p>
 
 	<p class="invitetext"><label for="invitelist"><?php _e( 'Enter email addresses of people you would like to get feedback from:' ) ?></label></p>
-	<textarea id="invitelist" rows="2" placeholder="bob@example.org, sarah@example.org"></textarea>
+	<textarea id="invitelist" rows="2" placeholder="bob@example.org, sarah@example.org" class="first-focus"></textarea>
 
 	<input type="submit" id="add-request" value="Send Requests" class="button-secondary" />
 
@@ -238,7 +238,11 @@ endif;
 					<li>
 						<input type="button" value="<?php esc_attr_e( 'Copy' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
 						<span class="title"><?php the_title() ?></span>
-						<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
+						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
+							<span class="excerpt"><?php esc_html_e( 'Excerpt cannot be retrieved.' ); ?></span>
+						<?php else: ?>
+							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
+						<?php endif; ?>
 					</li>
 				<?php endwhile; ?>
 			</ul>
@@ -259,7 +263,11 @@ endif;
 					<li>
 						<input type="button" value="<?php esc_attr_e( 'Copy' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
 						<span class="title"><?php the_title() ?></span>
-						<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
+						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
+							<span class="excerpt"><?php esc_html_e( 'Excerpt cannot be retrieved.' ); ?></span>
+						<?php else: ?>
+							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
+						<?php endif; ?>
 					</li>
 				<?php endwhile; ?>
 				<?php wp_reset_query(); $post = $tmp_post; ?>

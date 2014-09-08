@@ -144,4 +144,3 @@ class WH_CopyPost {
 		die( '1' );
 	}
 }
-

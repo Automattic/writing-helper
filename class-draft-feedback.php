@@ -138,11 +138,12 @@ Regards,
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = isset( $_REQUEST['post_ID'] )? (int) $_REQUEST['post_ID'] : 0;
 		$feedback = isset( $_REQUEST['feedback'] )? $_REQUEST['feedback'] : '';
+		$callback = isset( $_REQUEST['callback'] )? $_REQUEST['callback'] : '';
+
 		if ( mb_strlen( $feedback ) < 5 )
-			$this->json_die_with_error( __( 'Please, write a feedback.' ) );
+			$this->jsonp_die_with_error( __( 'Please, write a feedback.' ), $callback );
 
 		$secret = isset( $_REQUEST['shareadraft'] )? $_REQUEST['shareadraft'] : '';
-		$callback = isset( $_REQUEST['callback'] )? $_REQUEST['callback'] : '';
 
 		if ( $this->can_view( $post_id ) ) {
 			$this->shared_post = get_post( $post_id );

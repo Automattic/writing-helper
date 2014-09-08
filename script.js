@@ -38,6 +38,8 @@ jQuery(function($) {
 				if (data['error'])
 					display_error('#invitetoshare', data['error']);
 				else {
+					$( '#invitelist' ).val( '' ).triggerHandler( 'keyup' );
+					$( 'a.cancel', $requestfeedback ).triggerHandler( 'click' );
 					$('#invitetoshare').hide();
 					$('#add-request-sent').show();
 				}
@@ -60,6 +62,7 @@ jQuery(function($) {
 		$('#modify-email').hide();
 		$('#add-request').show();
 		$('a.customize', $requestfeedback).show();
+		$( '.first-focus', $requestfeedback ).focus();
 		return false;
 	});
 	$('textarea#invitelist', $requestfeedback).keyup(function() {
@@ -71,7 +74,7 @@ jQuery(function($) {
 			if (!parts[i]) parts.splice(i, 1);
 		}
 		if (0 == parts.length || !emails) {
-			to.text('Customize the message');
+			to.html('Customize the message');
 		} else if (1 == parts.length) {
 			to.text('Customize the message to {whom}'.replace('{whom}', parts[0]));
 		} else {
@@ -83,7 +86,14 @@ jQuery(function($) {
 		return false;
 	});
 	/* JS for the new feedback */
-	$('#feedbackform').submit(function() {
+	$('#feedbackform').submit(function( e ) {
+		e.preventDefault();
+
+		// Don't send empty feedback
+		if ( '' == $('#feedback-text').val() ) {
+			return false;
+		}
+
 		$.ajax({
 			type: 'GET',
 			url: DraftFeedback.ajaxurl,
@@ -95,21 +105,26 @@ jQuery(function($) {
 				post_ID: DraftFeedback.post_ID
 			},
 			dataType: 'jsonp',
+			beforeSend: function() {
+				// Disable the button so it can't be clicked more than once to submit
+				$( '#feedbackform input:submit' ).val( 'Sending Feedback...' ).attr( 'disabled', true );
+			},
 			success: function(data, status, xhr) {
-				if (data['error'])
+				if (data['error']) {
 					display_error('#feedback-text', data['error']);
-				else {
+				} else {
 					$('#draftfeedback-intro').hide();
 					$('#feedback-text').val('');
 					$('#draftfeedback-thanks').show();
+					$( '#feedbackform input:submit' ).val( 'Send Feedback' ).removeAttr( 'disabled' );
 				}
 				$('#feedback-text').focus();
 			},
 			error: function(xhr, status, error) {
-				display_error("Internal Server Error: "+status);
+				display_error( '#feedback-text', "Internal Server Error: " + error );
+				$( '#feedbackform input:submit' ).val( 'Send Feedback' ).removeAttr( 'disabled' );
 			}
 		});
-		return false;
 	});
 	$('#feedback-text').focus();
 });
@@ -117,23 +132,28 @@ jQuery(function($) {
 /* JS to hide/show helper boxes */
 jQuery(document).ready(function($) {
 	$('#helpers').on( 'click', 'li', function(e) {
+		var helper_container;
 		e.preventDefault();
 
 		$('#helpers').hide();
-		$( $( 'a', this).attr('href') ).show();
+		helper_container = $( $( 'a', this).attr( 'href' ) ).show();
+		helper_container.find( '.first-focus' ).focus();
 		// ping stats
 		var helper_name = $( 'a', this).attr('href').substr(1); // remove the #
-		new Image().src = document.location.protocol+'//stats.wordpress.com/g.gif?v=wpcom-no-pv&x_writinghelper='+helper_name+'&baba='+Math.random();
+		new Image().src = document.location.protocol+'//pixel.wp.com/g.gif?v=wpcom-no-pv&x_writinghelper='+helper_name+'&baba='+Math.random();
 	});
 	$('#writing_helper_meta_box').on( 'click', '.back', function(e) {
 		e.preventDefault();
 		$('#helpers').show();
 		$('.helper').hide();
 	});
-	$('#helpers').on( 'on', '#add-request-sent a, .back', function(e) {
-		e.preventDefault();
-		$('#invitetoshare').show();
-		$('#add-request-sent').hide();
+	$( '#writing_helper_meta_box' ).on( 'click', '.back, #add-request-sent a', function( event ) {
+		event.preventDefault();
+		$( '#invitetoshare' )
+			.show()
+			.find( '.first-focus' )
+		.focus();
+		$( '#add-request-sent' ).hide();
 	});
 });
 
@@ -186,8 +206,7 @@ function DraftGetLink($, post_id) {
 
 jQuery( function( $ ) {
 	var post_search_timeout = null;
-
-	$( 'div.copy-posts li' ).on( 'click', 'input[type=button]', function() {
+	$( 'div.copy-posts ul' ).on( 'click', 'input[type=button]', function() {
 		$( this ).addClass( 'selected' );
 		$( 'div.copy-posts input' ).prop( 'disabled', true );
 		$( 'div.copy-posts li' ).not( $(this).parent('li') ).animate({ 'opacity': 0.3 }, 'fast' );
