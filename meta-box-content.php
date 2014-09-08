@@ -76,7 +76,7 @@
 	<p><strong><?php _e( 'Get feedback on this draft before publishing.' ); ?></strong></p>
 
 	<p class="invitetext"><label for="invitelist"><?php _e( 'Enter email addresses of people you would like to get feedback from:' ) ?></label></p>
-	<textarea id="invitelist" rows="2" placeholder="bob@example.org, sarah@example.org"></textarea>
+	<textarea id="invitelist" rows="2" placeholder="bob@example.org, sarah@example.org" class="first-focus"></textarea>
 
 	<input type="submit" id="add-request" value="Send Requests" class="button-secondary" />
 

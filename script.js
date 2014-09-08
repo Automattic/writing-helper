@@ -62,6 +62,7 @@ jQuery(function($) {
 		$('#modify-email').hide();
 		$('#add-request').show();
 		$('a.customize', $requestfeedback).show();
+		$( '.first-focus', $requestfeedback ).focus();
 		return false;
 	});
 	$('textarea#invitelist', $requestfeedback).keyup(function() {
@@ -131,10 +132,12 @@ jQuery(function($) {
 /* JS to hide/show helper boxes */
 jQuery(document).ready(function($) {
 	$('#helpers').on( 'click', 'li', function(e) {
+		var helper_container;
 		e.preventDefault();
 
 		$('#helpers').hide();
-		$( $( 'a', this).attr('href') ).show();
+		helper_container = $( $( 'a', this).attr( 'href' ) ).show();
+		helper_container.find( '.first-focus' ).focus();
 		// ping stats
 		var helper_name = $( 'a', this).attr('href').substr(1); // remove the #
 		new Image().src = document.location.protocol+'//pixel.wp.com/g.gif?v=wpcom-no-pv&x_writinghelper='+helper_name+'&baba='+Math.random();
@@ -146,7 +149,10 @@ jQuery(document).ready(function($) {
 	});
 	$( '#writing_helper_meta_box' ).on( 'click', '.back, #add-request-sent a', function( event ) {
 		event.preventDefault();
-		$( '#invitetoshare' ).show();
+		$( '#invitetoshare' )
+			.show()
+			.find( '.first-focus' )
+		.focus();
 		$( '#add-request-sent' ).hide();
 	});
 });
