@@ -13,7 +13,7 @@
 	z-index: 100;
 	height: 100%;
 	width: 26%;
-	padding: 50px 1% 30px 2%;
+	padding: 20px 1% 0px 2%;
 	background: #f7f7f7;
 	border-right: 1px solid #ccc;
 }
