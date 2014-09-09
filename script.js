@@ -91,6 +91,7 @@ jQuery(function($) {
 
 		// Don't send empty feedback
 		if ( '' == $('#feedback-text').val() ) {
+			display_error( '#feedback-text', 'The feedback text can not be blank.' );
 			return false;
 		}
 
