@@ -135,19 +135,19 @@ jQuery(document).ready(function($) {
 </script>
 <div class="draftfeedback-feedback-form">
 
-<div class="draftfeedback-thanks" id="draftfeedback-thanks">
-<h3><?php _e( 'Thank you for your feedback!' ); ?></h3>
-<p><?php _e( "If you want to send anything else you can use the same form below, otherwise feel free to close this page and we'll email you when the draft is published for everyone to see." ); ?></p>
-</div>
-<div class="draftfeedback-intro" id="draftfeedback-intro">
-<h3><?php the_author(); ?> <?php _e('would like your feedback.'); ?></h3>
+	<div class="draftfeedback-thanks" id="draftfeedback-thanks">
+		<h3><?php _e( 'Thank you for your feedback!' ); ?></h3>
+		<p><?php _e( "If you want to send anything else you can use the same form below, otherwise feel free to close this page and we'll email you when the draft is published for everyone to see." ); ?></p>
+	</div>
+	<div class="draftfeedback-intro" id="draftfeedback-intro">
+		<h3><?php the_author(); ?> <?php _e( 'would like your feedback.' ); ?></h3>
 
-<p><?php _e( 'This is a private, unpublished draft. Please review it and leave your feedback in the box below.' ); ?></p>
+		<p><?php _e( 'This is a private, unpublished draft. Please review it and leave your feedback in the box below.' ); ?></p>
 
-<p><?php _e( 'Note any typos you find, suggestions you have, or links to recommend.' ); ?></p>
-</div>
-<form id="feedbackform" method="post">
-	<textarea name="feedback" rows="4" id="feedback-text"></textarea>
-	<input type="submit" name="Send Feedback" value="Send Feedback" />
-</form>
+		<p><?php _e( 'Note any typos you find, suggestions you have, or links to recommend.' ); ?></p>
+	</div>
+	<form id="feedbackform" method="post">
+		<textarea name="feedback" rows="4" id="feedback-text"></textarea>
+		<input type="submit" name="Send Feedback" value="Send Feedback" />
+	</form>
 </div>
