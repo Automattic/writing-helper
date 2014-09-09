@@ -10,7 +10,7 @@
 position: fixed;
 left: -1%;
 top: 0;
-padding: 50px 1% 30px 2%;
+padding: 20px 1% 0px 2%;
 height: 100%;
 background: #f7f7f7;
 width: 26%;
