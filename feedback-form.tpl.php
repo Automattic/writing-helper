@@ -41,7 +41,7 @@ margin-bottom: 5px;
 }
 .draftfeedback-feedback-form textarea {
 width: 97%;
-height: 250px;
+min-height: 70px;
 line-height: 1.5em;
 padding: 5px;
 font-size: 14px;
@@ -104,10 +104,16 @@ display: none;
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-	var sidebar_height = $('.draftfeedback-feedback-form').height();
-	var intro_height = $('.draftfeedback-intro').height();
-	var textarea_height = sidebar_height - intro_height;
-	$('#feedbackform textarea').css('height', (textarea_height - 130) + 'px');
+	var feedback_textarea = $('#feedbackform textarea');
+	var resize_handler = function() {
+		var sidebar_height = $( '.draftfeedback-feedback-form' ).height();
+		var intro_height = $( '.draftfeedback-intro' ).height();
+		var textarea_height = sidebar_height - intro_height;
+		feedback_textarea.css( 'height', (textarea_height - 130) + 'px' );
+	};
+
+	$( window ).resize( resize_handler );
+	resize_handler();
 });
 </script>
 <div class="draftfeedback-feedback-form">
