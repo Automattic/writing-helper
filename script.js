@@ -150,6 +150,17 @@ jQuery(function($) {
 			});
 		});
 	});
+	$( '#draftfeedback-activate' ).on( 'click', function( event ) {
+		event.preventDefault();
+		$( '.draftfeedback-first-screen' ).show();
+		$( '.draftfeedback-second-screen' ).hide();
+		$( 'body' ).removeClass( 'draftfeedback-closed' ).addClass( 'draftfeedback-open' );
+		$( window ).triggerHandler( 'resize' );
+	});
+	$( '.draftfeedback-feedback-form' ).on( 'click', '.draftfeedback-deactivate', function( event ) {
+		event.preventDefault();
+		$( 'body' ).removeClass( 'draftfeedback-open' ).addClass( 'draftfeedback-closed' );
+	});
 	$('#feedback-text').focus();
 });
 
