@@ -77,7 +77,7 @@ class WH_DraftFeedback {
 	private function email_post_published( $email, $post, $request ) {
 		$sender =  get_userdata( $request['user_id'] );
 		$subject = sprintf(
-			__( '%1$s&#8217;s draft titled "%2$s" has been published' ),
+			__( '%1$s’s draft titled "%2$s" has been published' ),
 			$sender->display_name,
 			$post->post_title
 		);
@@ -88,11 +88,12 @@ Recently you were kind enough to give feedback on my draft "%1$s".
 
 It is now published! Thanks so much for your help.
 
-Here&#8217;s the published version, and please share if you wish:
+Here’s the published version, and please share if you wish:
 %2$s
 
 Regards,
 %3$s' ), $post->post_title, get_permalink( $post->ID ), $sender->display_name );
+
 		wp_mail( $email, $subject, $body, $this->email_headers( $sender  ) );
 	}
 
