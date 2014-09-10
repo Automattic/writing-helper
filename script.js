@@ -111,20 +111,43 @@ jQuery(function($) {
 				$( '#feedbackform input:submit' ).val( 'Sending Feedback...' ).attr( 'disabled', true );
 			},
 			success: function(data, status, xhr) {
+				var promise;
+
 				if (data['error']) {
 					display_error('#feedback-text', data['error']);
 				} else {
-					$('#draftfeedback-intro').hide();
-					$('#feedback-text').val('');
-					$('#draftfeedback-thanks').show();
-					$( '#feedbackform input:submit' ).val( 'Send Feedback' ).removeAttr( 'disabled' );
+
+					// Starting to fade out the first screen of the feedback interface
+					promise = $( '.draftfeedback-first-screen' ).fadeOut( 400 ).promise();
+
+					promise.done(function(){
+
+						// Fading is done, resetting the form and fading in the thank you screen
+						$( '#feedback-text' ).val( '' );
+						$( '#feedbackform input:submit' )
+							.val( 'Send Feedback' )
+							.removeAttr( 'disabled ');
+						$( '.draftfeedback-second-screen' ).fadeIn( 400 );
+					});
 				}
-				$('#feedback-text').focus();
 			},
 			error: function(xhr, status, error) {
 				display_error( '#feedback-text', "Internal Server Error: " + error );
 				$( '#feedbackform input:submit' ).val( 'Send Feedback' ).removeAttr( 'disabled' );
 			}
+		});
+	});
+	$( '#feedback-more' ).on( 'click', function( event ) {
+		var promise = $( '.draftfeedback-second-screen' ).fadeOut( 400 ).promise();
+
+		promise.done(function() {
+
+			// When the second screen is completely faded away, we start fading the first screen in
+			$( '.draftfeedback-first-screen' ).fadeIn( 400 ).promise().done(function() {
+
+				// After the first screen is visible, we focus on the textarea
+				$('#feedback-text').focus();
+			});
 		});
 	});
 	$('#feedback-text').focus();
