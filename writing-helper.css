@@ -192,6 +192,11 @@ width: 100%;
 #requestfeedback table .name {
   width: 25%;
 }
+
+#requestfeedback table .no-feedback {
+	font-style: italic;
+	color: #90aec2;
+}
 .has-right-sidebar #requestfeedback table .name {
 width: 100%;
 }
@@ -233,7 +238,7 @@ width: 55%;
 display: none;
 }
 #requestfeedback table tr:nth-child(2n+2) {
-background: #f9f9f9;
+background: #f4f8fa;
 }
 #requestfeedback table thead tr {
 background: #fff;
@@ -245,12 +250,13 @@ text-align: left;
 	text-indent: -1000em;
 	height: 0px;
 }
+
 #requestfeedback table tr td,
 #requestfeedback table tr th {
-border-bottom: 1px solid #ccc;
-padding: 10px 10px 7px 10px;
-margin: 0;
+	padding: 8px 10px 8px 10px;
+	margin: 0;
 }
+
 #requestfeedback table tr td {
 vertical-align: top;
 }

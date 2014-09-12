@@ -212,6 +212,10 @@ if ( $show_feedback_button && is_array( $requests ) && !empty( $requests ) ):
 				endforeach;
 ?>
 			</ol>
+<?php	elseif ( empty( $feedbacks ) ): ?>
+			<span class="no-feedback">
+				<?php _e( 'No feedback has been given yet '); ?>
+			</span>
 <?php
 		endif;
 ?>
