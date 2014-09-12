@@ -372,11 +372,11 @@ Thanks for flying with WordPress.com' ),
 	}
 
 	function inject_feedback_form() {
-		include( dirname(__FILE__) . '/feedback-form.tpl.php' );
+		include( dirname(__FILE__) . '/templates/feedback-form.tpl.php' );
 	}
 
 	function inject_published_notice() {
-		include( dirname(__FILE__) . '/post-published.tpl.php' );
+		include( dirname(__FILE__) . '/templates/post-published.tpl.php' );
 	}
 
 	private function _do_template( $file, $template_vars = array() ) {
