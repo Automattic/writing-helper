@@ -140,13 +140,15 @@ if ( $show_feedback_button && is_array( $requests ) && !empty( $requests ) ):
 		$secret_url = $df->generate_secret_link( $post_id, $data['key'] );
 		$revoke_display = ! empty( $data['revoked'] ) ? 'none' : 'inline';
 		$unrevoke_display = ! empty( $data['revoked'] ) ? 'inline' : 'none';
+		$display_name = __( 'Anonymous user with a link' );
+		$avatar_class = is_email( $email ) ? '' : 'anonymous';
+		if ( 'anonymous' != $avatar_class ) {
+			$user = get_user_by( 'email', $email );
+			$display_name = $user ? $user->display_name : $email;
+		}
 ?>
 	<tr>
 		<td>
-			<?php if ( is_email( $email ) ) : ?>
-			<?php echo get_avatar( $email, 24 ); ?>
-    		<?php echo esc_html( $email ); ?>
-			<?php endif; ?>
 			<div class="links">
 				<?php echo esc_html( $requested_on  ); ?> |
 				<a href="<?php echo esc_attr( $secret_url );  ?>" title="<?php esc_attr__( 'The secret link this person received in order to see and give feedback on your draft' ); ?>" target="_blank"><?php _e( 'Link' ); ?></a> |
@@ -155,6 +157,12 @@ if ( $show_feedback_button && is_array( $requests ) && !empty( $requests ) ):
 					<span class="unrevoke" style="display: <?php echo $unrevoke_display; ?>"><?php _e( 'Give Back Access' ); ?></span>
 				</a>
 			</div>
+			<p class="avatar <?php echo $avatar_class ?>">
+				<?php if ( 'anonymous' != $avatar_class ): ?>
+					<?php echo get_avatar( $email, 24 ); ?>
+				<?php endif; ?>
+				<?php echo $display_name ?>
+			</p>
 <?php	if ( 1 == $screen_layout_columns ): ?>
 		</td>
 		<td>

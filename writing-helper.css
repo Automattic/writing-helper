@@ -195,9 +195,22 @@ width: 100%;
 .has-right-sidebar #requestfeedback table .name {
 width: 100%;
 }
+#requestfeedback table .avatar {
+	line-height: 2;
+	font-weight: bold;
+}
+
+#requestfeedback table .anonymous {
+	padding-left: 26px;
+}
+
+#requestfeedback table .avatar img {
+	vertical-align: middle;
+}
+
 #requestfeedback table .links {
+float: right;
 font-size: 10px;
-margin-top: 10px;
 color: #666;
 margin-bottom: 3px;
 }
