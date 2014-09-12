@@ -195,9 +195,14 @@ width: 100%;
 .has-right-sidebar #requestfeedback table .name {
 width: 100%;
 }
-#requestfeedback table .avatar {
+#requestfeedback table .avatar .name {
 	line-height: 2;
 	font-weight: bold;
+}
+
+#requestfeedback table .avatar .added {
+	font-size: 95%;
+	color: #b1c6d4;
 }
 
 #requestfeedback table .anonymous {
@@ -209,11 +214,18 @@ width: 100%;
 }
 
 #requestfeedback table .links {
-float: right;
-font-size: 10px;
-color: #666;
-margin-bottom: 3px;
+	float: right;
+	font-size: 10px;
+	color: #666;
+	margin-bottom: 3px;
 }
+
+#requestfeedback table .links .input-small {
+	height:24px;
+	line-height:22px;
+	font-size:11px;
+}
+
 #requestfeedback table .feedback {
 width: 55%;
 }

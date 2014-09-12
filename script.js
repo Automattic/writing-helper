@@ -81,6 +81,17 @@ jQuery(function($) {
 			to.text('Customize the message to {whom} and {number} more'.replace('{whom}', parts[0]).replace('{number}', parts.length - 1));
 		}
 	});
+
+	// Making the link get selected automatically on click
+	$requestfeedback.on( 'click', 'input.link', function() {
+		this.select();
+	});
+
+	// Reverting changes to the link field
+	$requestfeedback.on( 'change', 'input.link', function() {
+		$(this).val( this.defaultValue );
+	});
+
 	$('ol.feedbacks-list li a', $requestfeedback).click(function() {
 		$(this).parents('li').children('.full,.truncated').toggle();
 		return false;
