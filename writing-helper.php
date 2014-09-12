@@ -92,7 +92,7 @@ class WritingHelper {
 		wp_localize_script( 'writing_helper_script', 'WritingHelperBox', array( 'nonce' => wp_create_nonce( 'writing_helper_nonce' ) ) );
 		$df       = $this->helpers['draft_feedback'];
 		$requests = $df->get_requests( $post_id, $sort = true );
-		$show_feedback_button = ( !empty( $requests ) || ( is_object( $post ) && 'publish' != $post->post_status ) );
+		$show_feedback_button = ( is_object( $post ) && 'publish' != $post->post_status );
 		require_once( dirname( __FILE__ ) . '/templates/meta-box.tpl.php' );
 	}
 

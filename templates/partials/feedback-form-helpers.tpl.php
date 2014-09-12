@@ -11,7 +11,7 @@
 		</div>
 		<div class="clear"></div>
 	</li>
-<?php if ( $show_feedback_button ): ?>
+<?php if ( is_array( $requests ) && !empty( $requests ) ): ?>
 	<li class="requestfeedback">
 		<div class="border-box">
 			<div class="iconbox">
@@ -21,7 +21,11 @@
 			<div class="helper-text">
 				<a href="#requestfeedback"><?php _e( 'Request Feedback' ) ?></a>
 				<h4><?php _e( 'Request Feedback' ) ?></h4>
-				<p><?php _e( 'Get feedback on this draft before publishing.' ); ?></p>
+				<?php if ( $show_feedback_button ): ?>
+					<p><?php _e( 'Get feedback on this draft before publishing.' ); ?></p>
+				<?php else: ?>
+					<p><?php _e( 'See the feedback provided for a draft of this post.' ); ?></p>
+				<?php endif; ?>
 			</div>
 		</div>
 	</li>

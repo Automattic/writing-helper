@@ -9,6 +9,7 @@
 
 <div class="inside helper-content">
 
+<?php if ( $show_feedback_button ): ?>
 <div id="invitetoshare">
 	<p><strong><?php _e( 'Get feedback on this draft before publishing.' ); ?></strong></p>
 
@@ -49,6 +50,9 @@ Thanks,
 		<a id="df-share-link" href="javascript:DraftGetLink(jQuery,<?php the_ID() ?>)"><?php _e( 'Get a share link without sending an email.' ) ?></a>
 	</div>
 </div>
+<?php else: ?>
+<p><strong><?php _e( 'This post has already been published, so you can not request any more feedback, but you can see the feedback that has been provided before that. ' ); ?></strong></p>
+<?php endif; ?>
 
 <div id="add-request-sent" class="add-request-message" style="display:none">
 <h4><?php _e( "Requests sent." ); ?></h4>

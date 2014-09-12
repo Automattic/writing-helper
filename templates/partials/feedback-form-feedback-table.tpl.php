@@ -1,5 +1,5 @@
 <?php
-if ( $show_feedback_button && is_array( $requests ) && !empty( $requests ) ):
+if ( is_array( $requests ) && !empty( $requests ) ):
 ?>
   <table
 		cellspacing="0"
