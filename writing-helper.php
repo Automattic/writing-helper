@@ -72,8 +72,19 @@ class WritingHelper {
 	}
 
 	public static function enqueue_script() {
-		wp_enqueue_style( 'writing_helper_style', WritingHelper()->plugin_url . 'writing-helper.css', array(), 'WH_VERSION' );
-		wp_enqueue_script( 'writing_helper_script', WritingHelper()->plugin_url . 'script.js', array( 'jquery' ), 'WH_VERSION', true );
+		wp_enqueue_style(
+			'writing_helper_style',
+			WritingHelper()->plugin_url . 'css/writing-helper.css',
+			array(),
+			'WH_VERSION'
+		);
+		wp_enqueue_script(
+			'writing_helper_script',
+			WritingHelper()->plugin_url . 'js/writing-helper.js',
+			array( 'jquery' ),
+			'WH_VERSION',
+			true
+		);
 	}
 
 	function meta_box_content() {
@@ -82,7 +93,7 @@ class WritingHelper {
 		$df       = $this->helpers['draft_feedback'];
 		$requests = $df->get_requests( $post_id, $sort = true );
 		$show_feedback_button = ( !empty( $requests ) || ( is_object( $post ) && 'publish' != $post->post_status ) );
-		require_once( dirname( __FILE__ ) . '/meta-box-content.php' );
+		require_once( dirname( __FILE__ ) . '/templates/meta-box.tpl.php' );
 	}
 
 	function add_helper( $helper_name, $helper_obj ) {

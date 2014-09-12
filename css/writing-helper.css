@@ -140,7 +140,7 @@ div.helper-header {
 a.back {
 	position: relative;
 	display: inline-block;
-	background: #fff url( ./i/back-back.png ) top left repeat-x;
+	background: #fff url( ../i/back-back.png ) top left repeat-x;
 	padding: 1px 5px 1px 5px;
 	max-height: 18px;
 	font-size: 11px;
@@ -162,7 +162,7 @@ a.back span {
 	position: absolute;
 	left: -8px;
 	top: 0;
-	background: url( ./i/back-arrow-ltr.gif) no-repeat;
+	background: url( ../i/back-arrow-ltr.gif) no-repeat;
 }
 
 /* REQUEST FEEDBACK */
