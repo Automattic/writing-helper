@@ -189,7 +189,7 @@ margin-bottom: 6px;
 #requestfeedback table {
 width: 100%;
 }
-#requestfeedback table .name {
+#requestfeedback table .user {
   width: 25%;
 }
 
@@ -208,10 +208,15 @@ width: 100%;
 #requestfeedback table .avatar .added {
 	font-size: 95%;
 	color: #b1c6d4;
+	white-space: nowrap;
 }
 
 #requestfeedback table .anonymous {
 	padding-left: 26px;
+}
+
+#requestfeedback table.wide .anonymous {
+	padding-left: 0;
 }
 
 #requestfeedback table .avatar img {
@@ -229,6 +234,20 @@ width: 100%;
 	height:24px;
 	line-height:22px;
 	font-size:11px;
+}
+
+#requestfeedback table.wide .links {
+	float: none;
+	height: 26px;
+}
+
+#requestfeedback table.wide .links input {
+	width: 60%;
+	float: left;
+}
+
+#requestfeedback table.wide .links .button {
+	float: right;
 }
 
 #requestfeedback table .feedback {

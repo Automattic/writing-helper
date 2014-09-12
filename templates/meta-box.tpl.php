@@ -121,11 +121,18 @@ Thanks,
 <?php
 if ( $show_feedback_button && is_array( $requests ) && !empty( $requests ) ):
 ?>
-  <table cellspacing="0" cellpadding="0" id="requests-list">
+  <table
+		cellspacing="0"
+		cellpadding="0"
+		id="requests-list"
+		<?php if ( 1 == $screen_layout_columns ): ?>
+			class="wide"
+		<?php endif; ?>
+		>
 <?php if ( 1 == $screen_layout_columns ): ?>
     <thead>
       <tr>
-	  <th class="name"><?php _e( 'Email' ); ?></th>
+	  <th class="user"><?php _e( 'User' ); ?></th>
 	  <th class="feedback"><?php _e( 'Feedback' ); ?></th>
       </tr>
     </thead>
@@ -156,13 +163,13 @@ if ( $show_feedback_button && is_array( $requests ) && !empty( $requests ) ):
 						value="<?php echo esc_attr( $secret_url ); ?>"
 						title="<?php esc_attr__( 'The secret link this person received in order to see and give feedback on your draft' ); ?>" />
 				<a
-					class="button button-small"
-					href="javascript:DraftRevokeAccess(jQuery, <?php
-							echo esc_js( $post_id );
-						?>, '<?php
-							echo esc_js( $email )
-						?>', '#revoke-<?php echo $i ?>')"
-					id="revoke-<?php echo $i++; ?>">
+						class="button button-small"
+						href="javascript:DraftRevokeAccess(jQuery, <?php
+								echo esc_js( $post_id );
+							?>, '<?php
+								echo esc_js( $email )
+							?>', '#revoke-<?php echo $i ?>')"
+						id="revoke-<?php echo $i++; ?>">
 					<span
 							class="revoke"
 							style="display: <?php echo $revoke_display; ?>">
