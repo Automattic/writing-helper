@@ -429,7 +429,22 @@ Thanks for flying with WordPress.com' ),
 		if ( !$res ) {
 			$this->json_die_with_error( __( 'Error in adding the request' ) );
 		}
-		die( json_encode( array() ) );
+
+		ob_start();
+		WritingHelper()->meta_box_content(
+			$post_id,
+			NULL,
+			array(
+				'show_helper_selector' => false,
+				'show_copy_block' => false,
+				'show_feedback_block' => true,
+				'wrap_feedback_table' => false
+			)
+		);
+		$response = ob_get_contents();
+		ob_end_clean();
+
+		die( json_encode( array( 'response' => $response ) ) );
 	}
 
 	/**

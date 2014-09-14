@@ -1,3 +1,5 @@
+<?php if ( $parameters['wrap_feedback_table'] ): ?>
+
 <div id="requestfeedback" class="helper"<?php
 	if ( isset( $_GET['requestfeedback'] ) )
 		echo ' style="display:block"';
@@ -64,3 +66,9 @@ Thanks,
 
 </div>
 </div>
+
+<?php else: ?>
+
+<?php require( dirname( __FILE__ ) . '/feedback-form-feedback-table.tpl.php' ); ?>
+
+<?php endif; ?>

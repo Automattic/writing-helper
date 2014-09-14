@@ -31,10 +31,18 @@
 	}
 ?>
 
-<?php require( dirname( __FILE__ ) . '/partials/feedback-form-helpers.tpl.php' ); ?>
+<?php
+if ( $parameters['show_helper_selector'] ) {
+	require( dirname( __FILE__ ) . '/partials/feedback-form-helpers.tpl.php' );
+}
 
-<?php require( dirname( __FILE__ ) . '/partials/feedback-form-feedback.tpl.php' ); ?>
+if ( $parameters['show_feedback_block'] ) {
+	require( dirname( __FILE__ ) . '/partials/feedback-form-feedback.tpl.php' );
+}
 
-<?php require( dirname( __FILE__ ) . '/partials/feedback-form-copy.tpl.php' ); ?>
+if ( $parameters['show_copy_block'] ) {
+	require( dirname( __FILE__ ) . '/partials/feedback-form-copy.tpl.php' );
+}
+?>
 
 <div class="clear"></div>

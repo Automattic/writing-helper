@@ -38,6 +38,7 @@ jQuery(function($) {
 				if (data['error'])
 					display_error('#invitetoshare', data['error']);
 				else {
+					$( '#requests-list' ).replaceWith( data.response );
 					$( '#invitelist' ).val( '' ).triggerHandler( 'keyup' );
 					$( 'a.cancel', $requestfeedback ).triggerHandler( 'click' );
 					$('#invitetoshare').hide();

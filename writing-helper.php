@@ -87,12 +87,30 @@ class WritingHelper {
 		);
 	}
 
-	function meta_box_content() {
+	function meta_box_content(
+			$entry = NULL, $metabox = NULL, $parameters = array() ) {
 		global $post_id, $current_user, $post, $screen_layout_columns;
+
+		// If the function is called with a post ID
+		if( !is_object( $entry ) && isset( $entry ) && ! isset( $post_id ) ) {
+			$post_id = $entry;
+		}
+
 		wp_localize_script( 'writing_helper_script', 'WritingHelperBox', array( 'nonce' => wp_create_nonce( 'writing_helper_nonce' ) ) );
 		$df       = $this->helpers['draft_feedback'];
 		$requests = $df->get_requests( $post_id, $sort = true );
 		$show_feedback_button = ( is_object( $post ) && 'publish' != $post->post_status );
+
+		$parameters = array_merge(
+			array(
+				'show_helper_selector' => true,
+				'show_copy_block' => true,
+				'show_feedback_block' => true,
+				'wrap_feedback_table' => true
+			),
+			$parameters
+		);
+
 		require_once( dirname( __FILE__ ) . '/templates/meta-box.tpl.php' );
 	}
 
