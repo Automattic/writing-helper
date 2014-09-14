@@ -1,16 +1,49 @@
 jQuery(document).ready(function($) {
 
-	var display_error = function(id, notice) {
-		$(id).after('<div id="draft-error" class="error"><p>' + notice + '</p></div>');
-		$('#draft-error').delay(4000).fadeOut('slow');
+	var display_error = function( id, notice, hide_on_keydown ) {
+		var error_container = $( '#draft-error' );
+		if ( error_container.length) {
+			hide_error( false, true ).done( function() {
+				display_error( id, notice, hide_on_keydown );
+			});
+			return;
+		} else {
+			error_container = '<div id="draft-error" class="error"><p>' + notice + '</p></div>';
+		}
+
+		$(id).after(error_container);
+		if ( hide_on_keydown ) {
+			$( hide_on_keydown ).on( 'keydown', function() {
+				hide_error( false );
+			});
+		} else {
+			hide_error( true );
+		}
 	}
+
+	var hide_error = function( delayed, fast ) {
+		var error_container = $('#draft-error');
+
+		if ( delayed ) {
+			error_container = error_container.delay( 4000 );
+		}
+
+		return error_container
+			.fadeOut( fast ? 'fast' : 'slow' )
+				.promise()
+			.done( function() { $( '#draft-error' ).remove(); } );
+	};
 
 	$('#feedbackform').submit(function( e ) {
 		e.preventDefault();
 
 		// Don't send empty feedback
 		if ( '' == $('#feedback-text').val() ) {
-			display_error( '#feedback-text', 'The feedback text can not be blank.' );
+			display_error(
+				'#feedback-text',
+				'The feedback text can not be blank.',
+				'#feedback-text'
+			);
 			return false;
 		}
 
@@ -43,16 +76,15 @@ jQuery(document).ready(function($) {
 
 						// Fading is done, resetting the form and fading in the thank you screen
 						$( '#feedback-text' ).val( '' );
-						$( '#feedbackform input:submit' )
-							.val( 'Send Feedback' )
-							.removeAttr( 'disabled ');
 						$( '.draftfeedback-second-screen' ).fadeIn( 400 );
 					});
 				}
 			},
 			error: function(xhr, status, error) {
 				display_error( '#feedback-text', "Internal Server Error: " + error );
-				$( '#feedbackform input:submit' ).val( 'Send Feedback' ).removeAttr( 'disabled' );
+			},
+			complete: function() {
+				$( '#feedbackform input:submit' ).val( 'Send Feedback' ).removeAttr( 'disabled ');
 			}
 		});
 	});
