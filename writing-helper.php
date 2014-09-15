@@ -96,7 +96,26 @@ class WritingHelper {
 			$post_id = $entry;
 		}
 
-		wp_localize_script( 'writing_helper_script', 'WritingHelperBox', array( 'nonce' => wp_create_nonce( 'writing_helper_nonce' ) ) );
+		$object_values = array(
+			'nonce' => wp_create_nonce( 'writing_helper_nonce' )
+		);
+
+		/**
+		 * The tracking image URL can be defined as a string constant.
+		 * The string must contain two placeholder substrings:
+		 *		* {helper_name} - the helper identifier
+		 *		* {random} - a random number
+		 * The specified substrings will be replaced in the client side code
+		 */
+		if ( defined ( 'WH_TRACKING_IMAGE' ) ) {
+			$object_values['tracking_image'] = WH_TRACKING_IMAGE;
+		}
+
+		wp_localize_script(
+			'writing_helper_script',
+			'WritingHelperBox',
+			$object_values
+		);
 		$df       = $this->helpers['draft_feedback'];
 		$requests = $df->get_requests( $post_id, $sort = true );
 		$show_feedback_button = ( is_object( $post ) && 'publish' != $post->post_status );

@@ -151,7 +151,13 @@ jQuery(document).ready(function($) {
 		helper_container.find( '.first-focus' ).focus();
 		// ping stats
 		var helper_name = $( 'a', this).attr('href').substr(1); // remove the #
-		new Image().src = document.location.protocol+'//pixel.wp.com/g.gif?v=wpcom-no-pv&x_writinghelper='+helper_name+'&baba='+Math.random();
+
+		if ( WritingHelperBox.tracking_image ) {
+			new Image().src = WritingHelperBox
+				.tracking_image
+						.replace( '{helper_name}', helper_name )
+						.replace( '{random}', Math.random() );
+		}
 	});
 	$('#writing_helper_meta_box').on( 'click', '.back', function(e) {
 		e.preventDefault();
