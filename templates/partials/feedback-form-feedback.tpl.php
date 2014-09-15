@@ -13,14 +13,14 @@
 
 <?php if ( $show_feedback_button ): ?>
 <div id="invitetoshare">
-	<p><strong><?php _e( 'Get feedback on this draft before publishing.' ); ?></strong></p>
+	<p><strong><?php _e( 'Get feedback on this draft before publishing' ); ?></strong></p>
 
 	<p class="invitetext"><label for="invitelist"><?php _e( 'Enter email addresses of people you would like to get feedback from:' ) ?></label></p>
 	<textarea id="invitelist" rows="2" placeholder="bob@example.org, sarah@example.org" class="first-focus"></textarea>
 
 	<input type="submit" id="add-request" value="Send Requests" class="button-secondary" />
+	<a class="customize" href=""><?php _e( 'Customize the message' ) ?></a>
 
-	&nbsp; <a class="customize" href=""><?php _e( 'Customize the message' ) ?></a>
 	<div id="modify-email" style="display: none;">
 	<textarea class="customize" cols="80" rows="8">
 <?php // Note: Keep in one string for easier i18n.
@@ -48,8 +48,21 @@ Thanks,
 	</div>
 
 	<div id="df-share-link-p">
-		<div id="df-getting-link" style="display:none"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" /> <?php _e( 'Getting a link...' ) ?></div>
-		<a id="df-share-link" href="javascript:DraftGetLink(jQuery,<?php the_ID() ?>)"><?php _e( 'Get a share link without sending an email.' ) ?></a>
+		<p><?php _e( 'or get a share link without sending an email' ) ?></p>
+		<div
+				id="df-getting-link"
+				style="display:none">
+			<img
+					src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>"
+					alt="Loading" />
+			<?php _e( 'Getting a link...' ) ?>
+		</div>
+		<a
+				class="button"
+				id="df-share-link"
+				data-post-id="<?php the_ID() ?>">
+			<?php _e( 'Get a link' ) ?>
+		</a>
 	</div>
 </div>
 <?php else: ?>

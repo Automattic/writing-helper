@@ -21,6 +21,19 @@ jQuery(function($) {
 		$(id).after('<div id="draft-error" class="error"><p>' + notice + '</p></div>');
 		$('#draft-error').delay(4000).fadeOut('slow');
 	}
+	var publish_new_requests = function( data ) {
+		var $first_row, background_color;
+		$( '#requests-list' ).replaceWith( data.response );
+
+		// Getting the newly inserted requests list's first row
+		$first_row = $( '#requests-list tr:first' );
+		background_color = $first_row.css('background-color');
+
+		// Highlighting the first row
+		$first_row.animate({ 'background-color': '#78dcfa' }).promise().done(function() {
+			$first_row.animate({ 'background-color': background_color });
+		});
+	};
 	$('#add-request, #add-request-custom', $requestfeedback).click(function() {
 		$('textarea.customize').replace_placeholders();
 		$.ajax({
@@ -38,7 +51,7 @@ jQuery(function($) {
 				if (data['error'])
 					display_error('#invitetoshare', data['error']);
 				else {
-					$( '#requests-list' ).replaceWith( data.response );
+					publish_new_requests( data );
 					$( '#invitelist' ).val( '' ).triggerHandler( 'keyup' );
 					$( 'a.cancel', $requestfeedback ).triggerHandler( 'click' );
 					$('#invitetoshare').hide();
@@ -99,6 +112,32 @@ jQuery(function($) {
 		$(this).parents('li').children('.full,.truncated').toggle();
 		return false;
 	});
+
+	/* Get a link without sending an email */
+	$( '#df-share-link' ).on( 'click', function ( event ) {
+		var elements = $( '#df-share-link,#df-getting-link' );
+		event.preventDefault();
+
+		elements.toggle();
+		$.ajax({
+			type: 'POST',
+			url: ajaxurl,
+			data: {
+				action: 'get_draft_link',
+				nonce: WritingHelperBox.nonce,
+				post_id: $( this ).data('post-id')
+			},
+			dataType: 'json',
+			success: function(data) {
+				if (!data['error']) {
+					publish_new_requests( data );
+				}
+			},
+			complete: function(){
+				elements.toggle();
+			}
+		});
+	});
 });
 
 /* JS to hide/show helper boxes */
@@ -148,30 +187,6 @@ function DraftRevokeAccess($, post_id, email, link_id){
 			}
 		},
 		error: function() {
-		}
-	});
-}
-
-/* Get a link without sending an email */
-function DraftGetLink($, post_id) {
-	$('#df-share-link,#df-getting-link').toggle();
-	$.ajax({
-		type: 'POST',
-		url: ajaxurl,
-		data: {
-			action: 'get_draft_link',
-			nonce: WritingHelperBox.nonce,
-			post_id: post_id
-		},
-		dataType: 'json',
-		success: function(data) {
-			if (!data['error']) {
-				$('#df-share-link-p').html('<a href="' + data['link']+ '">' + data['link'] + '</a>');
-				$('#df-getting-link').hide();
-			}
-		},
-		error: function(){
-			$('#df-share-link,#df-getting-link').toggle();
 		}
 	});
 }

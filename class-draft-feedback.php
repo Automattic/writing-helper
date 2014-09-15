@@ -430,6 +430,18 @@ Thanks for flying with WordPress.com' ),
 			$this->json_die_with_error( __( 'Error in adding the request' ) );
 		}
 
+		die( json_encode( array( 'response' => $this->_get_meta_box_content( $post_id ) ) ) );
+	}
+
+	/**
+	 * Normalize an e-mail address.
+	 */
+	private function _normalize_email( $email ) {
+		// TODO: add more sanitization functions here
+		return strtolower( trim( $email ) ); // light sanitization
+	}
+
+	private function _get_meta_box_content( $post_id ) {
 		ob_start();
 		WritingHelper()->meta_box_content(
 			$post_id,
@@ -443,16 +455,7 @@ Thanks for flying with WordPress.com' ),
 		);
 		$response = ob_get_contents();
 		ob_end_clean();
-
-		die( json_encode( array( 'response' => $response ) ) );
-	}
-
-	/**
-	 * Normalize an e-mail address.
-	 */
-	private function _normalize_email( $email ) {
-		// TODO: add more sanitization functions here
-		return strtolower( trim( $email ) ); // light sanitization
+		return $response;
 	}
 
 	/**
@@ -499,7 +502,7 @@ Thanks for flying with WordPress.com' ),
 				);
 		$this->save_requests( $post_id, $requests );
 		do_action( 'wh_draftfeedback_generate_link' );
-		die( json_encode( array( 'link' => $this->generate_secret_link( $post_id, $key ) ) ) );
+		die( json_encode( array( 'response' => $this->_get_meta_box_content( $post_id ) ) ) );
 	}
 
 	static function array_map_deep( $value, $function ) {
