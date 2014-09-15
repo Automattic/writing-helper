@@ -59,7 +59,9 @@ jQuery(function($) {
 		return false;
 	});
 	$('a.cancel', $requestfeedback).click(function() {
-		$('textarea.customize', $requestfeedback).val(default_email_text);
+		$('textarea.customize', $requestfeedback)
+			.val(default_email_text)
+			.data('replaced-placeholders', false);
 		$('#modify-email').hide();
 		$('#add-request').show();
 		$('a.customize', $requestfeedback).show();
