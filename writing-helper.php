@@ -76,13 +76,13 @@ class WritingHelper {
 			'writing_helper_style',
 			WritingHelper()->plugin_url . 'css/writing-helper.css',
 			array(),
-			'WH_VERSION'
+			WH_VERSION
 		);
 		wp_enqueue_script(
 			'writing_helper_script',
 			WritingHelper()->plugin_url . 'js/writing-helper.js',
 			array( 'jquery' ),
-			'WH_VERSION',
+			WH_VERSION,
 			true
 		);
 	}
