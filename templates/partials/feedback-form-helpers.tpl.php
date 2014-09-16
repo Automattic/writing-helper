@@ -1,7 +1,7 @@
 <ul id="helpers"<?php if ( isset( $_GET['cap'] ) || isset( $_GET['requestfeedback'] ) ) echo ' style="display:none"'; ?>>
 	<li class="copyapost">
 		<div class="iconbox">
-			<img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/pencilhelper.png' ); ?>" alt="" />
+			<img src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/pencilhelper.png' ); ?>" alt="" />
 		</div>
 
 		<div class="helper-text">
@@ -15,7 +15,7 @@
 	<li class="requestfeedback">
 		<div class="border-box">
 			<div class="iconbox">
-				<img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/requestfeedback.png' ); ?>" alt="" />
+				<img src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/requestfeedback.png' ); ?>" alt="" />
 			</div>
 
 			<div class="helper-text">

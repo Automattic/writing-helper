@@ -15,7 +15,7 @@ foreach( glob( dirname(__FILE__). '/class-*.php' ) as $wh_php_file_name ) {
 	require $wh_php_file_name;
 }
 
-class WritingHelper {
+class Writing_Helper {
 
 	public $helpers = array();
 
@@ -25,7 +25,7 @@ class WritingHelper {
 
 	public static function instance() {
 		if ( ! isset( self::$instance ) ) {
-			self::$instance = new WritingHelper;
+			self::$instance = new Writing_Helper;
 			self::$instance->setup_actions();
 			self::$instance->setup_globals();
 		}
@@ -75,13 +75,13 @@ class WritingHelper {
 	public static function enqueue_admin_scripts() {
 		wp_enqueue_style(
 			'writing_helper_style',
-			WritingHelper()->plugin_url . 'css/writing-helper.css',
+			Writing_Helper()->plugin_url . 'css/writing-helper.css',
 			array(),
 			WH_VERSION
 		);
 		wp_enqueue_script(
 			'writing_helper_script',
-			WritingHelper()->plugin_url . 'js/writing-helper.js',
+			Writing_Helper()->plugin_url . 'js/writing-helper.js',
 			array( 'jquery' ),
 			WH_VERSION,
 			true
@@ -91,13 +91,13 @@ class WritingHelper {
 	public static function enqueue_front_end_scripts() {
 		wp_enqueue_style(
 			'writing_helper_style',
-			WritingHelper()->plugin_url . 'css/feedback-form.css',
+			Writing_Helper()->plugin_url . 'css/feedback-form.css',
 			array(),
 			WH_VERSION
 		);
 		wp_enqueue_script(
 			'writing_helper_script',
-			WritingHelper()->plugin_url . 'js/feedback-form.js',
+			Writing_Helper()->plugin_url . 'js/feedback-form.js',
 			array( 'jquery' ),
 			WH_VERSION,
 			true
@@ -169,7 +169,7 @@ class WritingHelper {
 	}
 }
 
-function WritingHelper() {
-	return WritingHelper::instance();
+function Writing_Helper() {
+	return Writing_Helper::instance();
 }
-add_action( 'plugins_loaded', 'WritingHelper' );
+add_action( 'plugins_loaded', 'Writing_Helper' );

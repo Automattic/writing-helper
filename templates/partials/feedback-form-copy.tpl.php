@@ -16,7 +16,7 @@
 
 		<div class="confirm-copy" style="display: none;">
 			<p class="confirm"><?php echo esc_html( $cap_strings['confirm']  ); ?> &nbsp;<input type="button" class="button-secondary" value="<?php esc_attr_e( 'Cancel', 'writing-helper' ) ?>" id="cancel-copy" /> <input type="button" class="button-primary" value="<?php esc_attr_e( 'Confirm Copy', 'writing-helper' ) ?>" id="confirm-copy" /></p>
-			<p class="copying"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" />  <?php echo esc_html( $cap_strings['copying'] ); ?></p>
+			<p class="copying"><img src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" />  <?php echo esc_html( $cap_strings['copying'] ); ?></p>
 		</div>
 
 		<div class="copy-posts">
@@ -72,7 +72,7 @@
 				<?php endwhile; ?>
 				<?php wp_reset_query(); $post = $tmp_post; ?>
 			</ul>
-			<div class="loading"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="<?php esc_attr_e( 'Loading', 'writing-helper' ); ?>" /> <?php _e( 'Searching&hellip;', 'writing-helper' ) ?></div>
+			<div class="loading"><img src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="<?php esc_attr_e( 'Loading', 'writing-helper' ); ?>" /> <?php _e( 'Searching&hellip;', 'writing-helper' ) ?></div>
 		</div>
 
 	</div>

@@ -1,6 +1,6 @@
 <?php
 
-WritingHelper()->add_helper( 'draft_feedback', new WH_DraftFeedback() );
+Writing_Helper()->add_helper( 'draft_feedback', new WH_DraftFeedback() );
 
 /**
  * Handle the "Share a Draft" and commenting.
@@ -321,7 +321,7 @@ Regards,
 		}
 		if ( $overwrite_post ) {
 			do_action( 'wh_draftfeedback_load_feedback_form' );
-			WritingHelper()->enqueue_front_end_scripts();
+			Writing_Helper()->enqueue_front_end_scripts();
 			wp_localize_script( 'writing_helper_script', 'DraftFeedback', array(
 				/* Use scheme of current page, instead of obeying force_ssl_admin().
 				 * Otherwise we might end up with Ajax request to a URL with a different scheme, which is not allowed by browsers
@@ -485,7 +485,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 
 	private function _get_meta_box_content( $post_id ) {
 		ob_start();
-		WritingHelper()->meta_box_content(
+		Writing_Helper()->meta_box_content(
 			$post_id,
 			NULL,
 			array(

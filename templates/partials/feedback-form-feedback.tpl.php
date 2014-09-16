@@ -53,7 +53,7 @@ Thanks,
 				id="df-getting-link"
 				style="display:none">
 			<img
-					src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>"
+					src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/ajax-loader.gif' ); ?>"
 					alt="Loading" />
 			<?php _e( 'Getting a link...', 'writing-helper' ) ?>
 		</div>

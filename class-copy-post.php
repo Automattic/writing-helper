@@ -1,6 +1,6 @@
 <?php
 
-WritingHelper()->add_helper( 'copy_post', new WH_CopyPost() );
+Writing_Helper()->add_helper( 'copy_post', new WH_CopyPost() );
 
 class WH_CopyPost {
 
