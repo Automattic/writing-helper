@@ -19,12 +19,12 @@
 			</div>
 
 			<div class="helper-text">
-				<a href="#requestfeedback"><?php _e( 'Request Feedback' ) ?></a>
-				<h4><?php _e( 'Request Feedback' ) ?></h4>
+				<a href="#requestfeedback"><?php _e( 'Request Feedback', 'writing-helper' ) ?></a>
+				<h4><?php _e( 'Request Feedback', 'writing-helper' ) ?></h4>
 				<?php if ( $show_feedback_button ): ?>
-					<p><?php _e( 'Get feedback on this draft before publishing.' ); ?></p>
+					<p><?php _e( 'Get feedback on this draft before publishing.', 'writing-helper' ); ?></p>
 				<?php else: ?>
-					<p><?php _e( 'See the feedback provided for a draft of this post.' ); ?></p>
+					<p><?php _e( 'See the feedback provided for a draft of this post.', 'writing-helper' ); ?></p>
 				<?php endif; ?>
 			</div>
 		</div>

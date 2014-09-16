@@ -20,5 +20,5 @@ font-family: Helvetica, Arial, sans-serif;
 }
 </style>
 <div id="draft-post-published">
-<?php _e("The draft you're looking for has been published. Please, leave me a comment!"); ?>
+<?php _e("The draft you're looking for has been published. Please, leave me a comment!", 'writing-helper'); ?>
 </div>

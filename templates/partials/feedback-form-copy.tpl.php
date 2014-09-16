@@ -1,6 +1,6 @@
 <div id="copyapost" class="helper"<?php if ( isset( $_GET['cap'] ) ) echo ' style="display:block"'; ?>>
 	<div class="helper-header" id="cap">
-		<a href="" class="back"><?php _e( 'Back' ) ?><span></span></a>
+		<a href="" class="back"><?php _e( 'Back', 'writing-helper' ) ?><span></span></a>
 		<h5><?php echo esc_html( $cap_strings['title'] ); ?></h5>
 	</div>
 
@@ -15,7 +15,7 @@
 		</div>
 
 		<div class="confirm-copy" style="display: none;">
-			<p class="confirm"><?php echo esc_html( $cap_strings['confirm']  ); ?> &nbsp;<input type="button" class="button-secondary" value="<?php esc_attr_e( 'Cancel' ) ?>" id="cancel-copy" /> <input type="button" class="button-primary" value="<?php esc_attr_e( 'Confirm Copy' ) ?>" id="confirm-copy" /></p>
+			<p class="confirm"><?php echo esc_html( $cap_strings['confirm']  ); ?> &nbsp;<input type="button" class="button-secondary" value="<?php esc_attr_e( 'Cancel', 'writing-helper' ) ?>" id="cancel-copy" /> <input type="button" class="button-primary" value="<?php esc_attr_e( 'Confirm Copy', 'writing-helper' ) ?>" id="confirm-copy" /></p>
 			<p class="copying"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" />  <?php echo esc_html( $cap_strings['copying'] ); ?></p>
 		</div>
 
@@ -36,10 +36,10 @@
 				?>
 				<?php while( $stickies->have_posts() ) : $stickies->the_post(); ?>
 					<li>
-						<input type="button" value="<?php esc_attr_e( 'Copy' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
+						<input type="button" value="<?php esc_attr_e( 'Copy', 'writing-helper' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
 						<span class="title"><?php the_title() ?></span>
 						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
-							<span class="excerpt"><?php esc_html_e( 'Excerpt cannot be retrieved.' ); ?></span>
+							<span class="excerpt"><?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?></span>
 						<?php else: ?>
 							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
 						<?php endif; ?>
@@ -61,10 +61,10 @@
 				?>
 				<?php while( $latest_posts->have_posts() ) : $latest_posts->the_post(); ?>
 					<li>
-						<input type="button" value="<?php esc_attr_e( 'Copy' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
+						<input type="button" value="<?php esc_attr_e( 'Copy', 'writing-helper' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
 						<span class="title"><?php the_title() ?></span>
 						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
-							<span class="excerpt"><?php esc_html_e( 'Excerpt cannot be retrieved.' ); ?></span>
+							<span class="excerpt"><?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?></span>
 						<?php else: ?>
 							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
 						<?php endif; ?>
@@ -72,12 +72,12 @@
 				<?php endwhile; ?>
 				<?php wp_reset_query(); $post = $tmp_post; ?>
 			</ul>
-			<div class="loading"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="<?php esc_attr_e( 'Loading'); ?>" /> <?php _e( 'Searching&hellip;' ) ?></div>
+			<div class="loading"><img src="<?php echo esc_url( WritingHelper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="<?php esc_attr_e( 'Loading', 'writing-helper' ); ?>" /> <?php _e( 'Searching&hellip;', 'writing-helper' ) ?></div>
 		</div>
 
 	</div>
 
-	<span class="explain" style="display: none;"><?php _e( 'Stick to Top' ) ?></span>
+	<span class="explain" style="display: none;"><?php _e( 'Stick to Top', 'writing-helper' ) ?></span>
 
 	<?php if ( isset( $_GET['cap'] ) ) : ?>
 		<script type="text/javascript">

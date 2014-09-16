@@ -12,8 +12,8 @@ if ( is_array( $requests ) && !empty( $requests ) ):
 <?php if ( 1 == $screen_layout_columns ): ?>
     <thead>
       <tr>
-	  <th class="user"><?php _e( 'User' ); ?></th>
-	  <th class="feedback"><?php _e( 'Feedback' ); ?></th>
+	  <th class="user"><?php _e( 'User', 'writing-helper' ); ?></th>
+	  <th class="feedback"><?php _e( 'Feedback', 'writing-helper' ); ?></th>
       </tr>
     </thead>
 <?php endif; ?>
@@ -41,7 +41,7 @@ if ( is_array( $requests ) && !empty( $requests ) ):
 						class="input-small link"
 						type="text"
 						value="<?php echo esc_attr( $secret_url ); ?>"
-						title="<?php esc_attr__( 'The secret link this person received in order to see and give feedback on your draft' ); ?>" />
+						title="<?php esc_attr__( 'The secret link this person received in order to see and give feedback on your draft', 'writing-helper' ); ?>" />
 				<a
 						class="button button-small"
 						href="javascript:DraftRevokeAccess(jQuery, <?php
@@ -53,12 +53,12 @@ if ( is_array( $requests ) && !empty( $requests ) ):
 					<span
 							class="revoke"
 							style="display: <?php echo $revoke_display; ?>">
-						<?php _e( 'Revoke Access' ); ?>
+						<?php _e( 'Revoke Access', 'writing-helper' ); ?>
 					</span>
 					<span
 							class="unrevoke"
 							style="display: <?php echo $unrevoke_display; ?>">
-						<?php _e( 'Give Back Access' ); ?>
+						<?php _e( 'Give Back Access', 'writing-helper' ); ?>
 					</span>
 				</a>
 			</div>
@@ -68,7 +68,7 @@ if ( is_array( $requests ) && !empty( $requests ) ):
 				<?php endif; ?>
 				<span class="name"><?php echo $display_name ?></span>
 				<span class="added">
-					<?php _ex( 'added on', 'Feedback request date prefix' ); ?>
+					<?php _ex( 'added on', 'Feedback request date prefix', 'writing-helper' ); ?>
 					<?php echo esc_html( $requested_on ); ?>
 				</span>
 			</p>
@@ -85,12 +85,12 @@ if ( is_array( $requests ) && !empty( $requests ) ):
 				foreach ( $feedbacks as $feedback ):
 					$feedback_content = wpautop( esc_html( $feedback['content'] ) );
 					$feedback_content_truncated = ( mb_strlen( $feedback_content ) > 70 ) ? wp_html_excerpt( $feedback_content, 70 ) . '&hellip;' : $feedback_content;
-					$feedback_date_info = esc_attr( sprintf( __( 'Submitted on %s' ), $df->time_to_date( $feedback['time'] ) ) );
+					$feedback_date_info = esc_attr( sprintf( __( 'Submitted on %s', 'writing-helper' ), $df->time_to_date( $feedback['time'] ) ) );
 ?>
 					<li>
 						<?php if ( $feedback_content_truncated != $feedback_content ) : ?>
 							<a href="#" title="<?php echo esc_attr( $feedback_date_info ); ?>" class="truncated">[+] <?php echo $feedback_content_truncated; ?></a>
-							<div title="<?php echo esc_attr( $feedback_date_info ); ?>" class="full"><?php echo $feedback_content; ?><a href="#"><?php _e( '[-] Collapse' ); ?></a></div>
+							<div title="<?php echo esc_attr( $feedback_date_info ); ?>" class="full"><?php echo $feedback_content; ?><a href="#"><?php _e( '[-] Collapse', 'writing-helper' ); ?></a></div>
 						<?php else: ?>
 							<?php echo $feedback_content; ?>
 						<?php endif; ?>
@@ -101,7 +101,7 @@ if ( is_array( $requests ) && !empty( $requests ) ):
 			</ol>
 <?php	elseif ( empty( $feedbacks ) ): ?>
 			<span class="no-feedback">
-				<?php _e( 'No feedback has been given yet '); ?>
+				<?php _e( 'No feedback has been given yet ', 'writing-helper' ); ?>
 			</span>
 <?php
 		endif;

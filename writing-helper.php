@@ -6,6 +6,7 @@ Description: Helps you write your posts
 Author: Nikolay Bachiyski, Daniel Bachhuber, Prasath Nadarajah, Automattic
 Version: 1.0-alpha
 Author URI: http://automattic.com/
+Text Domain: writing-helper
 */
 
 define( 'WH_VERSION', '1.0-alpha' );
@@ -116,14 +117,14 @@ class WritingHelper {
 			'nonce' => wp_create_nonce( 'writing_helper_nonce' ),
 			'i18n' => array (
 				'error_message' => sprintf(
-					__( 'Internal Server Error: %s' ), '{error}'
+					__( 'Internal Server Error: %s', 'writing-helper' ), '{error}'
 				),
-				'customize_message' => __( 'Customize the message' ),
+				'customize_message' => __( 'Customize the message', 'writing-helper' ),
 				'customize_message_single' => sprintf(
-					__( 'Customize the message to %s' ), '{whom}'
+					__( 'Customize the message to %s', 'writing-helper' ), '{whom}'
 				),
 				'customize_message_multiple' => sprintf(
-					__( 'Customize the message to %s and %s more' ),
+					__( 'Customize the message to %s and %s more', 'writing-helper' ),
 					'{whom}',
 					'{number}'
 				)
