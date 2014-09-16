@@ -311,7 +311,7 @@ Regards,
 		}
 		if ( $overwrite_post ) {
 			do_action( 'wh_draftfeedback_load_feedback_form' );
-			WritingHelper()->enqueue_script();
+			WritingHelper()->enqueue_front_end_scripts();
 			wp_localize_script( 'writing_helper_script', 'DraftFeedback', array(
 				/* Use scheme of current page, instead of obeying force_ssl_admin().
 				 * Otherwise we might end up with Ajax request to a URL with a different scheme, which is not allowed by browsers

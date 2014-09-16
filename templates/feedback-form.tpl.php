@@ -3,13 +3,6 @@
  * Template file for the Draft Feedback Form
  */
 ?>
-<style>
-<?php require( dirname(__FILE__) . '/../css/feedback-form.css' ); ?>
-</style>
-
-<script type="text/javascript">
-<?php require( dirname(__FILE__) . '/../js/feedback-form.js' ); ?>
-</script>
 
 <div class="draftfeedback-container draftfeedback-feedback-pulldown">
 	<h3><?php the_author(); ?> <?php _e( 'would like your feedback.' ); ?></h3>

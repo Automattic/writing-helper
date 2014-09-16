@@ -68,10 +68,10 @@ class WritingHelper {
 		$screen = get_current_screen();
 		if ( 'post' != $screen->base || ! post_type_supports( $screen->post_type, 'writing-helper' ) )
 			return;
-		self::enqueue_script();
+		self::enqueue_admin_scripts();
 	}
 
-	public static function enqueue_script() {
+	public static function enqueue_admin_scripts() {
 		wp_enqueue_style(
 			'writing_helper_style',
 			WritingHelper()->plugin_url . 'css/writing-helper.css',
@@ -81,6 +81,22 @@ class WritingHelper {
 		wp_enqueue_script(
 			'writing_helper_script',
 			WritingHelper()->plugin_url . 'js/writing-helper.js',
+			array( 'jquery' ),
+			WH_VERSION,
+			true
+		);
+	}
+
+	public static function enqueue_front_end_scripts() {
+		wp_enqueue_style(
+			'writing_helper_style',
+			WritingHelper()->plugin_url . 'css/feedback-form.css',
+			array(),
+			WH_VERSION
+		);
+		wp_enqueue_script(
+			'writing_helper_script',
+			WritingHelper()->plugin_url . 'js/feedback-form.js',
 			array( 'jquery' ),
 			WH_VERSION,
 			true
