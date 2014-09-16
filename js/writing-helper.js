@@ -59,7 +59,9 @@ jQuery(function($) {
 				}
 			},
 			error: function(xhr, status, error) {
-				display_error("Internal Server Error: "+status);
+				display_error(
+					WritingHelperBox.i18n.error_message.replace( '{error}', error )
+				);
 			}
 		});
 		return false;
@@ -90,11 +92,15 @@ jQuery(function($) {
 			if (!parts[i]) parts.splice(i, 1);
 		}
 		if (0 == parts.length || !emails) {
-			to.html('Customize the message');
+			to.html( WritingHelperBox.i18n.customize_message );
 		} else if (1 == parts.length) {
-			to.text('Customize the message to {whom}'.replace('{whom}', parts[0]));
+			to.text( WritingHelperBox.i18n.customize_message_single.replace( '{whom}', parts[0] ) );
 		} else {
-			to.text('Customize the message to {whom} and {number} more'.replace('{whom}', parts[0]).replace('{number}', parts.length - 1));
+			to.text(
+				WritingHelperBox.i18n.customize_message_multiple
+						.replace('{whom}', parts[0])
+						.replace('{number}', parts.length - 1)
+			);
 		}
 	});
 

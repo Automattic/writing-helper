@@ -113,7 +113,21 @@ class WritingHelper {
 		}
 
 		$object_values = array(
-			'nonce' => wp_create_nonce( 'writing_helper_nonce' )
+			'nonce' => wp_create_nonce( 'writing_helper_nonce' ),
+			'i18n' => array (
+				'error_message' => sprintf(
+					__( 'Internal Server Error: %s' ), '{error}'
+				),
+				'customize_message' => __( 'Customize the message' ),
+				'customize_message_single' => sprintf(
+					__( 'Customize the message to %s' ), '{whom}'
+				),
+				'customize_message_multiple' => sprintf(
+					__( 'Customize the message to %s and %s more' ),
+					'{whom}',
+					'{number}'
+				)
+			)
 		);
 
 		/**
