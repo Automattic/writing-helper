@@ -26,7 +26,10 @@
 
 .draftfeedback-container .button,
 .draftfeedback-container .button-primary,
-.draftfeedback-container .button-secondary {
+.draftfeedback-container .button-secondary,
+.draftfeedback-container .button:active,
+.draftfeedback-container .button-primary:active,
+.draftfeedback-container .button-secondary:active  {
 	display: inline-block;
 	text-decoration: none;
 	font-size: 13px;
@@ -233,19 +236,19 @@
 	box-shadow: 0 0 2px rgba( 30, 140, 190, 0.8 );
 }
 
-div.error{
+.draftfeedback-container div.error{
 	border-left:4px solid #dd3d36;
 	background:#fff;
 	-webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);
 	box-shadow:0 1px 1px 0 rgba(0,0,0,.1);
 	padding:1px 12px;
 	margin:5px 15px 2px 0;
-	font-size: 12px;
 }
 
-div.error p {
+.draftfeedback-container div.error p {
 	margin:.5em 0;
-	padding:2px
+	padding:2px;
+	font-size: 12px;
 }
 
 .draftfeedback-thanks {
