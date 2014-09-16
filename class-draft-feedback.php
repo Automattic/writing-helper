@@ -1,6 +1,6 @@
 <?php
 
-Writing_Helper()->add_helper( 'draft_feedback', new WH_DraftFeedback() );
+Writing_Helper()->add_helper( 'draft_feedback', new Writing_Helper_Draft_Feedback() );
 
 /**
  * Handle the "Share a Draft" and commenting.
@@ -17,7 +17,7 @@ Writing_Helper()->add_helper( 'draft_feedback', new WH_DraftFeedback() );
  * - feedbackrequest-pageview: someone has viewed a post and feedback form
  * - feedbackrequest-feedback-received: a feedback has been submitted
  */
-class WH_DraftFeedback {
+class Writing_Helper_Draft_Feedback {
 	/**
 	 * Temporary holder of post object if user is permed to view a draft
 	 */
