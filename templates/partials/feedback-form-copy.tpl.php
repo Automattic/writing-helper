@@ -11,12 +11,36 @@
 		</p>
 
 		<div class="search-posts">
-			<input type="search" name="search" id="search-posts" value="<?php echo esc_attr( $cap_strings['search'] ); ?>" onfocus="if ( this.value == '<?php echo esc_js( $cap_strings['search'] ); ?>' ) this.value = '';" onblur="if ( this.value == '' ) this.value = '<?php echo esc_js( $cap_strings['search'] ) ?>';" />
+			<input
+					type="search"
+					name="search"
+					id="search-posts"
+					value="<?php echo esc_attr( $cap_strings['search'] ); ?>"
+					onfocus="if ( this.value == '<?php echo esc_js( $cap_strings['search'] ); ?>' ) this.value = '';"
+					onblur="if ( this.value == '' ) this.value = '<?php echo esc_js( $cap_strings['search'] ) ?>';" />
 		</div>
 
 		<div class="confirm-copy" style="display: none;">
-			<p class="confirm"><?php echo esc_html( $cap_strings['confirm']  ); ?> &nbsp;<input type="button" class="button-secondary" value="<?php esc_attr_e( 'Cancel', 'writing-helper' ) ?>" id="cancel-copy" /> <input type="button" class="button-primary" value="<?php esc_attr_e( 'Confirm Copy', 'writing-helper' ) ?>" id="confirm-copy" /></p>
-			<p class="copying"><img src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="Loading" />  <?php echo esc_html( $cap_strings['copying'] ); ?></p>
+			<p class="confirm">
+				<?php echo esc_html( $cap_strings['confirm']  ); ?>
+				&nbsp;
+				<input
+						type="button"
+						class="button-secondary"
+						value="<?php esc_attr_e( 'Cancel', 'writing-helper' ) ?>"
+						id="cancel-copy" />
+				<input
+						type="button"
+						class="button-primary"
+						value="<?php esc_attr_e( 'Confirm Copy', 'writing-helper' ) ?>"
+						id="confirm-copy" />
+			</p>
+			<p class="copying">
+				<img
+						src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/ajax-loader.gif' ); ?>"
+						alt="Loading" />
+				<?php echo esc_html( $cap_strings['copying'] ); ?>
+			</p>
 		</div>
 
 		<div class="copy-posts">
@@ -36,10 +60,17 @@
 				?>
 				<?php while( $stickies->have_posts() ) : $stickies->the_post(); ?>
 					<li>
-						<input type="button" value="<?php esc_attr_e( 'Copy', 'writing-helper' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
+						<input
+								type="button"
+								value="<?php esc_attr_e( 'Copy', 'writing-helper' ) ?>"
+								class="button-secondary"
+								id="cp-<?php the_ID() ?>" />
+						&nbsp;
 						<span class="title"><?php the_title() ?></span>
 						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
-							<span class="excerpt"><?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?></span>
+							<span class="excerpt">
+								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
+							</span>
 						<?php else: ?>
 							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
 						<?php endif; ?>
@@ -61,10 +92,17 @@
 				?>
 				<?php while( $latest_posts->have_posts() ) : $latest_posts->the_post(); ?>
 					<li>
-						<input type="button" value="<?php esc_attr_e( 'Copy', 'writing-helper' ) ?>" class="button-secondary" id="cp-<?php the_ID() ?>" /> &nbsp;
+						<input
+								type="button"
+								value="<?php esc_attr_e( 'Copy', 'writing-helper' ) ?>"
+								class="button-secondary"
+								id="cp-<?php the_ID() ?>" />
+						&nbsp;
 						<span class="title"><?php the_title() ?></span>
 						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
-							<span class="excerpt"><?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?></span>
+							<span class="excerpt">
+								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
+							</span>
 						<?php else: ?>
 							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
 						<?php endif; ?>
@@ -72,7 +110,12 @@
 				<?php endwhile; ?>
 				<?php wp_reset_query(); $post = $tmp_post; ?>
 			</ul>
-			<div class="loading"><img src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/ajax-loader.gif' ); ?>" alt="<?php esc_attr_e( 'Loading', 'writing-helper' ); ?>" /> <?php _e( 'Searching&hellip;', 'writing-helper' ) ?></div>
+			<div class="loading">
+				<img
+						src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/ajax-loader.gif' ); ?>"
+						alt="<?php esc_attr_e( 'Loading', 'writing-helper' ); ?>" />
+				<?php _e( 'Searching&hellip;', 'writing-helper' ) ?>
+			</div>
 		</div>
 
 	</div>
