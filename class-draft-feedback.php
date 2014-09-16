@@ -320,6 +320,14 @@ Regards,
 				'post_ID' => $this->shared_post->ID,
 				'shareadraft' => esc_attr( $_GET['shareadraft'] ),
 				'nonce' => wp_create_nonce( 'add_feedback_nonce' ),
+				'i18n' => array (
+					'error_empty_feedback' => __( 'The feedback text can not be blank.' ),
+					'error_message' => sprintf(
+						__( 'Internal Server Error: %s' ), '{error}'
+					),
+					'button_send_feedback' => __( 'Send Feedback' ),
+					'button_sending_feedback' => __( 'Sending Feedback...' )
+				)
 			) );
 			add_action( 'wp_footer', array( $this, 'inject_feedback_form' ) );
 			return array( &$this->shared_post );

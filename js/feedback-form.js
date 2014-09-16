@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
 		if ( '' == $('#feedback-text').val() ) {
 			display_error(
 				'#feedback-text',
-				'The feedback text can not be blank.',
+				DraftFeedback.i18n.error_empty_feedback,
 				'#feedback-text'
 			);
 			return false;
@@ -60,7 +60,9 @@ jQuery(document).ready(function($) {
 			dataType: 'jsonp',
 			beforeSend: function() {
 				// Disable the button so it can't be clicked more than once to submit
-				$( '#feedbackform input:submit' ).val( 'Sending Feedback...' ).attr( 'disabled', true );
+				$( '#feedbackform input:submit' )
+					.val( DraftFeedback.i18n.button_sending_feedback )
+					.attr( 'disabled', true );
 			},
 			success: function(data, status, xhr) {
 				var promise;
@@ -81,10 +83,15 @@ jQuery(document).ready(function($) {
 				}
 			},
 			error: function(xhr, status, error) {
-				display_error( '#feedback-text', "Internal Server Error: " + error );
+				display_error(
+					'#feedback-text',
+					DraftFeedback.i18n.error_message.replace( '{error}', error )
+				);
 			},
 			complete: function() {
-				$( '#feedbackform input:submit' ).val( 'Send Feedback' ).removeAttr( 'disabled ');
+				$( '#feedbackform input:submit' )
+					.val( DraftFeedback.i18n.button_send_feedback )
+					.removeAttr( 'disabled ');
 			}
 		});
 	});
