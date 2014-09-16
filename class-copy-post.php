@@ -1,8 +1,8 @@
 <?php
 
-Writing_Helper()->add_helper( 'copy_post', new WH_CopyPost() );
+Writing_Helper()->add_helper( 'copy_post', new Writer_Helper_Copy_Post() );
 
-class WH_CopyPost {
+class Writer_Helper_Copy_Post {
 
 	function init() {
 
