@@ -1,3 +1,16 @@
+/**
+ * Stylesheet for the admin page part of the plugin. It handles the helpers
+ * meta box with two its available tabs: feedback requester and post copier.
+ *
+ * Contents:
+ * 1. Helpers header
+ * 2. Common helper meta box styles
+ * 3. Feedback requester tab styles
+ * 4. Post copier tab styles
+ */
+
+
+/* 1. Helpers header */
 
 #poststuff #writing_helper_meta_box .inside {
 	margin: 0;
@@ -11,6 +24,7 @@
 	margin: 0;
 	overflow: hidden;
 }
+
 #helpers li {
 	float: left;
 	width: 50%;
@@ -20,69 +34,77 @@
 	margin-bottom: 1px;
 	-webkit-transition-duration: .3s;
 }
-	#helpers li:hover {
-		background-color: #ddd;
-		cursor: pointer;
-		-webkit-transition-duration: .3s;
-	}
 
-	#helpers li div.border-box {
-		overflow: hidden;
-	}
+#helpers li:hover {
+	background-color: #ddd;
+	cursor: pointer;
+	-webkit-transition-duration: .3s;
+}
 
-	#side-sortables #helpers li {
-		float: none;
-		width: 100%;
-		border: none;
-		border-bottom: 1px solid #ddd;
-	}
-		#side-sortables #helpers li:last-child {
-			border: none;
-		}
+#helpers li div.border-box {
+	overflow: hidden;
+}
 
-		#side-sortables #helpers li div.border-box {
-			border: none;
-		}
+#side-sortables #helpers li {
+	float: none;
+	width: 100%;
+	border: none;
+	border-bottom: 1px solid #ddd;
+}
+
+#side-sortables #helpers li:last-child {
+	border: none;
+}
+
+#side-sortables #helpers li div.border-box {
+	border: none;
+}
 
 #helpers a {
-display: block;
-position: absolute;
-z-index: 100;
-top: 0;
-left: 0;
-min-height: 80px;
-width: 50%;
-text-indent: -1000em;
+	display: block;
+	position: absolute;
+	z-index: 100;
+	top: 0;
+	left: 0;
+	min-height: 80px;
+	width: 50%;
+	text-indent: -1000em;
 }
+
 #helpers a:hover {
--webkit-animation-name: borderglow;
--webkit-animation-duration: 1s;
--webkit-animation-iteration-count: infinite;
--webkit-animation-timing-function: ease-in-out;
+	-webkit-animation-name: borderglow;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: ease-in-out;
 }
+
 #helpers .comingsoon a:hover {
--webkit-animation-name: none;
+	-webkit-animation-name: none;
 }
+
 #helpers h4 {
-font-size: 14px;
-font-weight: bold;
-padding: 10px 0 5px 0;
-margin: 0;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 10px 0 5px 0;
+	margin: 0;
 }
+
 #poststuff .inside #helpers p {
-margin: 0;
+	margin: 0;
 }
+
 #poststuff .helper .inside p {
-margin: 0 0 5px 0;
-line-height: 150%;
+	margin: 0 0 5px 0;
+	line-height: 150%;
 }
 
 #helpers .helper-text {
 	padding: 13px 10px 10px;
 }
-	#helpers li:hover .helper-text {
-		color: #333;
-	}
+
+#helpers li:hover .helper-text {
+	color: #333;
+}
 
 #helpers .helper-text h4 {
 	margin: 0 0 5px 0;
@@ -92,7 +114,9 @@ line-height: 150%;
 	font-size: 14px;
 }
 
-#helpers .helper-text p { color: #888; }
+#helpers .helper-text p {
+	color: #888;
+}
 
 #helpers .iconbox {
 	float: right;
@@ -103,20 +127,22 @@ line-height: 150%;
 	border-right: 1px solid #fff;
 	-webkit-transition-duration: .3s;
 }
-	#helpers li:hover .iconbox {
-		background: #e4e4e4;
-		-webkit-transition-duration: .3s;
-	}
 
-	#side-sortables #helpers .iconbox {
-		border: none !important;
-	}
+#helpers li:hover .iconbox {
+	background: #e4e4e4;
+	-webkit-transition-duration: .3s;
+}
+
+#side-sortables #helpers .iconbox {
+	border: none !important;
+}
 
 
-/* Common Helper box styles */
+/* 2. Common helper meta box box styles */
+
 .helper {
-clear: both;
-display: none;
+	clear: both;
+	display: none;
 }
 
 div.helper-header {
@@ -127,15 +153,15 @@ div.helper-header {
 	margin: 1px 0 15px;
 }
 
-	div.helper-header h5 {
-		margin: 0;
-		padding: 0;
-		font-size: 12px;
-		font-weight: normal;
-		color: #333;
-		text-shadow: 1px 1px -1px #fff;
-		display: inline-block;
-	}
+div.helper-header h5 {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+	font-weight: normal;
+	color: #333;
+	text-shadow: 1px 1px -1px #fff;
+	display: inline-block;
+}
 
 a.back {
 	position: relative;
@@ -165,32 +191,39 @@ a.back span {
 	background: url( ../i/back-arrow-ltr.gif) no-repeat;
 }
 
-/* REQUEST FEEDBACK */
+
+/* 3. Feedback requester tab styles */
 
 #requestfeedback #invitetoshare {
-  padding: 0px 0px 15px 0;
-  font-size: 11px;
-  border: none !important;
+	padding: 0px 0px 15px 0;
+	font-size: 11px;
+	border: none !important;
 }
+
 .helper-content label {
-  display: block;
-  clear: both;
+	display: block;
+	clear: both;
 }
+
 #requestfeedback #invitetoshare .invitetext {
-margin-bottom: 5px;
-color: #666;
+	margin-bottom: 5px;
+	color: #666;
 }
-#requestfeedback #invitetoshare textarea#invitelist, #requestfeedback textarea.customize {
-  display: block;
-width: 100%;
-clear: both;
-margin-bottom: 6px;
+
+#requestfeedback #invitetoshare textarea#invitelist,
+#requestfeedback textarea.customize {
+	display: block;
+	width: 100%;
+	clear: both;
+	margin-bottom: 6px;
 }
+
 #requestfeedback table {
-width: 100%;
+	width: 100%;
 }
+
 #requestfeedback table .user {
-  width: 25%;
+	width: 25%;
 }
 
 #requestfeedback table .no-feedback {
@@ -198,8 +231,9 @@ width: 100%;
 	color: #90aec2;
 }
 .has-right-sidebar #requestfeedback table .name {
-width: 100%;
+	width: 100%;
 }
+
 #requestfeedback table .avatar .name {
 	line-height: 2;
 	font-weight: bold;
@@ -251,20 +285,25 @@ width: 100%;
 }
 
 #requestfeedback table .feedback {
-width: 55%;
+	width: 55%;
 }
+
 .has-right-sidebar #requestfeedback table .feedback {
-display: none;
+	display: none;
 }
+
 #requestfeedback table tr:nth-child(2n+2) {
-background: #f4f8fa;
+	background: #f4f8fa;
 }
+
 #requestfeedback table thead tr {
-background: #fff;
+	background: #fff;
 }
+
 #requestfeedback table tr th {
-text-align: left;
+	text-align: left;
 }
+
 .has-right-sidebar #requestfeedback table tr th {
 	text-indent: -1000em;
 	height: 0px;
@@ -277,28 +316,38 @@ text-align: left;
 }
 
 #requestfeedback table tr td {
-vertical-align: top;
+	vertical-align: top;
 }
+
 .has-right-sidebar #requestfeedback table tr td {
 	width: auto;
 	clear: both;
 }
+
 #requestfeedback ol.feedbacks-list li .truncated {
 	display: block;
 }
+
 #requestfeedback ol.feedbacks-list li .full {
 	display: none;
 }
+
 #requestfeedback ol.feedbacks-list {
-list-style: none;
-margin-left: 0;
+	list-style: none;
+	margin-left: 0;
 }
+
 #requestfeedback ol.feedbacks-list.multiple {
-list-style: decimal;
-margin-left: 20px;
+	list-style: decimal;
+	margin-left: 20px;
 }
-#df-share-link-p{margin-top:12px;}
-/* COPY POSTS */
+
+#df-share-link-p {
+	margin-top:12px;
+}
+
+
+/* 4. Post copier tab styles */
 
 .copy-posts {
 	position: relative;
@@ -311,71 +360,78 @@ margin-left: 20px;
 	border-top-right-radius: 0;
 	border-top: 1px solid #e4e4e4;
 }
-	.copy-posts li {
-		position: relative;
-		padding: 3px 5px;
-		margin: 0;
-		overflow: hidden;
-		white-space: nowrap;
-	}
 
-	.copy-posts li:nth-child(odd) {
-		background: #fff;
-	}
+.copy-posts li {
+	position: relative;
+	padding: 3px 5px;
+	margin: 0;
+	overflow: hidden;
+	white-space: nowrap;
+}
 
-		.copy-posts #s-posts li {
-			background: #eaf2fa;
-		}
+.copy-posts li:nth-child(odd) {
+	background: #fff;
+}
 
-		.copy-posts #s-posts li:nth-child(even) {
-			background: #dae8f7;
-		}
+.copy-posts #s-posts li {
+	background: #eaf2fa;
+}
 
-	.copy-posts li span.title {
-		color: #444;
-	}
-	.copy-posts li span.excerpt {
-		white-space: nowrap;
-		overflow: hidden;
-		color: #aaa;
-		margin-left: 3px;
-	}
+.copy-posts #s-posts li:nth-child(even) {
+	background: #dae8f7;
+}
 
-	.copy-posts .loading {
-		background: rgba( 255, 255, 255, 0.8 );
-		padding: 10px 20px;
-		text-align: center;
-		position: absolute;
-		top: 35px;
-		left: 41%;
-		vertical-align: middle;
-		font-size: 16px;
-		color: #555;
-		border-radius: 5px;
-		opacity: 0.8;
-		display: none;
-	}
-		.copy-posts .loading img, .copying img {
-			padding-right: 5px;
-		}
+.copy-posts li span.title {
+	color: #444;
+}
+.copy-posts li span.excerpt {
+	white-space: nowrap;
+	overflow: hidden;
+	color: #aaa;
+	margin-left: 3px;
+}
 
-		#side-sortables .copy-posts .loading {
-			left: 20%;
-		}
+.copy-posts .loading {
+	background: rgba( 255, 255, 255, 0.8 );
+	padding: 10px 20px;
+	text-align: center;
+	position: absolute;
+	top: 35px;
+	left: 41%;
+	vertical-align: middle;
+	font-size: 16px;
+	color: #555;
+	border-radius: 5px;
+	opacity: 0.8;
+	display: none;
+}
 
-	.copy-posts li div.stick {
-		position: absolute;
-		right: -5px;
-		top: 4px;
-		background-color: inherit;
-		padding: 2px 10px 3px 5px;
-		vertical-align: middle;
-		background: rgba( 255, 255, 255, 0.85 );
-		border-radius: 3px;
-	}
-		.copy-posts li div.stick span.up-arrow { padding-top: 1px; }
-		.copy-posts li div.stick span.explain { display: none; }
+.copy-posts .loading img, .copying img {
+	padding-right: 5px;
+}
 
+#side-sortables .copy-posts .loading {
+	left: 20%;
+}
+
+.copy-posts li div.stick {
+	position: absolute;
+	right: -5px;
+	top: 4px;
+	background-color: inherit;
+	padding: 2px 10px 3px 5px;
+	vertical-align: middle;
+	background: rgba( 255, 255, 255, 0.85 );
+	border-radius: 3px;
+}
+
+.copy-posts li div.stick span.up-arrow {
+	padding-top: 1px;
+}
+
+.copy-posts li div.stick span.explain {
+	display: none;
+}
 
 .search-posts {
 	background: #f0f0f0;
@@ -390,17 +446,18 @@ margin-left: 20px;
 .search-posts input {
 	width: 100%;
 }
-	@-moz-document url-prefix() {
-		.search-posts input {
-			border-radius: 5px;
-			border: 1px inset #ccc;
-			width: 98.3%;
-		}
 
-		#side-sortables .search-posts input {
-			width: 97%;
-		}
+@-moz-document url-prefix() {
+	.search-posts input {
+		border-radius: 5px;
+		border: 1px inset #ccc;
+		width: 98.3%;
 	}
+
+	#side-sortables .search-posts input {
+		width: 97%;
+	}
+}
 
 .confirm-copy {
 	border: 1px solid #ddd;
@@ -411,5 +468,12 @@ margin-left: 20px;
 	text-shadow: 1px 1px -1px #fff;
 	font-size: 12px;
 }
-	.confirm-copy p { margin: 0 !important; }
-	.confirm-copy p.copying { display: none; vertical-align: middle; }
+
+.confirm-copy p {
+	margin: 0 !important;
+}
+
+.confirm-copy p.copying {
+	display: none;
+	vertical-align: middle;
+}
