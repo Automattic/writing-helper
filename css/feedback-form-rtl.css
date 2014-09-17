@@ -1,0 +1,313 @@
+/* This file was automatically generated on Sep 17 2014 10:18:28 */
+
+/**
+ * Stylesheet covering the user-facing part of the plugin that
+ * shows the feedback form.
+ *
+ * Contents
+ * 1. Container styles
+ * 2. Button and textarea styles
+ * 3. Post controls styles
+ * 4. Error container styles
+ */
+
+
+/* 1. Container styles */
+
+.draftfeedback-container {
+	display: none;
+	width: 300px;
+	position: fixed;
+	right: 0;
+	top: 0;
+	padding: 30px 20px 20px 20px;
+	background-color: #f4f8fa;
+}
+
+.draftfeedback-container * {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 14px;
+	color: #324155;
+}
+
+.draftfeedback-container h3 {
+	font-weight: normal;
+	font-size: 20px;
+	margin-bottom: 15px;
+}
+
+.draftfeedback-container p {
+	margin-bottom: 15px;
+}
+
+.draftfeedback-thanks {
+	display: none;
+}
+
+.draftfeedback-open {
+	margin-right: 320px;
+}
+
+.draftfeedback-feedback-pulldown {
+	z-index: 99;
+	background: #f4f8fa;
+	border-color: #ccc;
+	border-style: solid;
+	border-width: 0 0 1px 1px;
+}
+
+.draftfeedback-open .draftfeedback-feedback-form {
+	display: block;
+}
+
+.draftfeedback-closed .draftfeedback-feedback-pulldown {
+	display: block;
+}
+
+/**
+ * 2. Button and textarea styles 
+ * Note: those styles have been copied over from the WordPress admin stylesheets
+ * located in the wp-admin/css/forms.css file.
+ */
+
+.draftfeedback-container .button,
+.draftfeedback-container .button-primary,
+.draftfeedback-container .button-secondary,
+.draftfeedback-container .button:active,
+.draftfeedback-container .button-primary:active,
+.draftfeedback-container .button-secondary:active  {
+	display: inline-block;
+	text-decoration: none;
+	font-size: 13px;
+	line-height: 26px;
+	height: 28px;
+	margin: 0;
+	padding: 0 10px 1px;
+	cursor: pointer;
+	border-width: 1px;
+	border-style: solid;
+	-webkit-appearance: none;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	white-space: nowrap;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+/* Remove the dotted border on :focus and the extra padding in Firefox */
+.draftfeedback-container button::-moz-focus-inner,
+.draftfeedback-container input[type="reset"]::-moz-focus-inner,
+.draftfeedback-container input[type="button"]::-moz-focus-inner,
+.draftfeedback-container input[type="submit"]::-moz-focus-inner {
+	border-width: 0;
+	border-style: none;
+	padding: 0;
+}
+
+.draftfeedback-container .button:active,
+.draftfeedback-container .button:focus {
+	outline: none;
+}
+
+.draftfeedback-container .button.hidden {
+	display: none;
+}
+
+.draftfeedback-container .button,
+.draftfeedback-container .button-secondary {
+	color: #555;
+	border-color: #cccccc;
+	background: #f7f7f7;
+	-webkit-box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba( 0, 0, 0, 0.08 );
+	box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba( 0, 0, 0, 0.08 );
+	vertical-align: top;
+}
+
+.draftfeedback-container .button.hover,
+.draftfeedback-container .button:hover,
+.draftfeedback-container .button-secondary:hover,
+.draftfeedback-container .button.focus,
+.draftfeedback-container .button:focus,
+.draftfeedback-container .button-secondary:focus {
+	background: #fafafa;
+	border-color: #999;
+	color: #222;
+}
+
+.draftfeedback-container .button.focus,
+.draftfeedback-container .button:focus,
+.draftfeedback-container .button-secondary:focus {
+	-webkit-box-shadow:
+		0 1px 0 0 #5b9dd9,
+		0 1px 2px 0 rgba(30, 140, 190, .8);
+	box-shadow:
+		0 1px 0 0 #5b9dd9,
+		0 1px 2px 0 rgba(30, 140, 190, .8);
+}
+
+.draftfeedback-container .button.active,
+.draftfeedback-container .button.active:hover,
+.draftfeedback-container .button:active,
+.draftfeedback-container .button-secondary:active {
+	background: #eee;
+	border-color: #999;
+	color: #333;
+ 	-webkit-box-shadow: inset 0 -3px 5px 2px rgba( 0, 0, 0, 0.5 );
+ 	box-shadow: inset 0 -3px 5px 2px rgba( 0, 0, 0, 0.5 );
+}
+
+.draftfeedback-container .button.active:focus {
+	-webkit-box-shadow:
+		inset 0 -3px 5px 2px rgba( 0, 0, 0, 0.5 ),
+		0 1px 0 0 #5b9dd9,
+		0 1px 2px 0 rgba(30, 140, 190, .8);
+	box-shadow:
+		inset 0 -3px 5px 2px rgba( 0, 0, 0, 0.5 ),
+		0 1px 0 0 #5b9dd9,
+		0 1px 2px 0 rgba(30, 140, 190, .8);
+}
+
+.draftfeedback-container .button[disabled],
+.draftfeedback-container .button:disabled,
+.draftfeedback-container .button.disabled,
+.draftfeedback-container .button-secondary[disabled],
+.draftfeedback-container .button-secondary:disabled,
+.draftfeedback-container .button-secondary.disabled,
+.draftfeedback-container .button-disabled {
+	color: #aaa !important;
+	border-color: #ddd !important;
+	background: #f7f7f7 !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+	text-shadow: 0 1px 0 #fff !important;
+	cursor: default;
+}
+
+.draftfeedback-container .button-primary {
+	background: #2ea2cc;
+	border-color: #0074a2;
+	-webkit-box-shadow:
+		inset 0 1px 0 rgba( 120, 200, 230, 0.5),
+		0 1px 0 rgba( 0, 0, 0, 0.15 );
+	box-shadow:
+		inset 0 1px 0 rgba( 120, 200, 230, 0.5 ),
+		0 1px 0 rgba( 0, 0, 0, 0.15 );
+	color: #fff;
+	text-decoration: none;
+}
+
+.draftfeedback-container .button-primary.hover,
+.draftfeedback-container .button-primary:hover,
+.draftfeedback-container .button-primary.focus,
+.draftfeedback-container .button-primary:focus {
+	background: #1e8cbe;
+	border-color: #0074a2;
+	-webkit-box-shadow: inset 0 1px 0 rgba( 120, 200, 230, 0.6 );
+	box-shadow: inset 0 1px 0 rgba( 120, 200, 230, 0.6 );
+	color: #fff;
+}
+
+.draftfeedback-container .button-primary.focus,
+.draftfeedback-container .button-primary:focus {
+	border-color: #0e3950;
+	-webkit-box-shadow:
+		inset 0 1px 0 rgba( 120, 200, 230, 0.6 ),
+		0 1px 0 0 #5b9dd9,
+		0 1px 2px 0 rgba(30, 140, 190, .8);
+	box-shadow:
+		inset 0 1px 0 rgba( 120, 200, 230, 0.6 ),
+		0 1px 0 0 #5b9dd9,
+		0 1px 2px 0 rgba(30, 140, 190, .8);
+}
+
+.draftfeedback-container .button-primary.active,
+.draftfeedback-container .button-primary.active:hover,
+.draftfeedback-container .button-primary.active:focus,
+.draftfeedback-container .button-primary:active {
+	background: #1b7aa6;
+	border-color: #005684;
+	color: rgba( 255, 255, 255, 0.95 );
+	-webkit-box-shadow: inset 0 1px 0 rgba( 0, 0, 0, 0.1 );
+	box-shadow: inset 0 1px 0 rgba( 0, 0, 0, 0.1 );
+	vertical-align: top;
+}
+
+.draftfeedback-container .button-primary[disabled],
+.draftfeedback-container .button-primary:disabled,
+.draftfeedback-container .button-primary-disabled,
+.draftfeedback-container .button-primary.disabled {
+	color: #94cde7 !important;
+	background: #298cba !important;
+	border-color: #1b607f !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+	text-shadow: 0 -1px 0 rgba( 0, 0, 0, 0.1 ) !important;
+	cursor: default;
+}
+
+.draftfeedback-feedback-form {
+	z-index: 100;
+	height: 100%;
+	background: #f7f7f7;
+	border-left: 1px solid #ccc;
+}
+
+.draftfeedback-feedback-form input,
+.draftfeedback-feedback-form textarea {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.draftfeedback-feedback-form textarea {
+	width: 99%;
+	margin-bottom: 5px;
+	overflow: auto;
+	padding: 2px 6px;
+	line-height: 1.4;
+	font-size: 14px;
+	padding: 3px 5px;
+	-webkit-border-radius: 0;
+	border-radius: 0; /* Reset mobile webkit's default element styling */
+	border: 1px solid #ddd;
+	-webkit-box-shadow: inset 0 1px 2px rgba( 0, 0, 0, 0.07 );
+	box-shadow: inset 0 1px 2px rgba( 0, 0, 0, 0.07 );
+	background-color: #fff;
+	color: #333;
+	outline: none;
+	-webkit-transition: 0.05s border-color ease-in-out;
+	transition: 0.05s border-color ease-in-out;
+}
+
+.draftfeedback-feedback-form textarea:focus {
+	border-color: #5b9dd9;
+	-webkit-box-shadow: 0 0 2px rgba( 30, 140, 190, 0.8 );
+	box-shadow: 0 0 2px rgba( 30, 140, 190, 0.8 );
+}
+
+
+/* 3. Post controls styles */
+
+#comments,
+#respond {
+	display: none;
+}
+
+
+/* 4. Error container styles */
+
+.draftfeedback-container div.error{
+	border-right:4px solid #dd3d36;
+	background:#fff;
+	-webkit-box-shadow:0 0 1px 1px rgba(0,0,0,.1);
+	box-shadow:0 0 1px 1px rgba(0,0,0,.1);
+	padding:1px 12px;
+	margin:5px 0 2px 15px;
+}
+
+.draftfeedback-container div.error p {
+	margin:.5em 0;
+	padding:2px;
+	font-size: 12px;
+}
