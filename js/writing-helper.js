@@ -1,12 +1,25 @@
 jQuery(function($) {
-	var $requestfeedback = $('#requestfeedback');
-	var default_email_text = $('textarea.customize', $requestfeedback).val();
+	var $requestfeedback = $( '#requestfeedback' ),
+		$textarea_custom = $( 'textarea.customize', $requestfeedback ),
+		$textarea_invite = $( '#invitelist', $requestfeedback ),
+		$link_cancel = $( 'a.cancel', $requestfeedback ),
+		$link_customize = $( 'a.customize', $requestfeedback ),
+		$section_modify = $( '#modify-email', $requestfeedback ),
+		$section_sent = $( '#add-request-sent', $requestfeedback ),
+		$section_invite = $( '#invitetoshare', $requestfeedback ),
+		$block_meta_box = $( '#writing_helper_meta_box' ),
+		$block_helpers = $( '#helpers' ),
+		$button_add = $( '#add-request', $requestfeedback),
+		$button_add_custom = $( '#add-request-custom', $requestfeedback),
+		default_email_text = $textarea_custom.val(),
+		$post_content = $( '#content' );
+
 	$.fn.replace_placeholders = function() {
 		return this.each(function() {
 			var $this = $(this);
 			if ($this.data('replaced-placeholders')) return;
 			var text = $this.val();
-			var excerpt = $('#content').text();
+			var excerpt = $post_content.text();
 			excerpt = $('<div>'+excerpt+'</div>').text().replace(/\n+/g, ' ');
 			if (excerpt.length > 300) {
 				excerpt = excerpt.substr(0, 300)+'...';
@@ -34,28 +47,28 @@ jQuery(function($) {
 			$first_row.animate({ 'background-color': background_color });
 		});
 	};
-	$('#add-request, #add-request-custom', $requestfeedback).click(function() {
-		$('textarea.customize').replace_placeholders();
+	$button_add.add( $button_add_custom ).click(function() {
+		$textarea_custom.replace_placeholders();
 		$.ajax({
 			type: 'POST',
 			url: ajaxurl,
 			data: {
 				action: 'request_feedback',
-				emails: $('#invitelist').val(),
-				email_text: $('textarea.customize').val(),
+				emails: $textarea_invite.val(),
+				email_text: $textarea_custom.val(),
 				nonce: WritingHelperBox.nonce,
 				post_id: $('#post_ID').val()
 			},
 			dataType: 'json',
 			success: function(data, status, xhr) {
 				if (data['error'])
-					display_error('#invitetoshare', data['error']);
+					display_error( $section_invite, data['error']);
 				else {
 					publish_new_requests( data );
-					$( '#invitelist' ).val( '' ).triggerHandler( 'keyup' );
-					$( 'a.cancel', $requestfeedback ).triggerHandler( 'click' );
-					$('#invitetoshare').hide();
-					$('#add-request-sent').show();
+					$textarea_invite.val( '' ).triggerHandler( 'keyup' );
+					$link_cancel.triggerHandler( 'click' );
+					$section_invite.hide();
+					$section_sent.show();
 				}
 			},
 			error: function(xhr, status, error) {
@@ -66,29 +79,31 @@ jQuery(function($) {
 		});
 		return false;
 	});
-	$('a.customize', $requestfeedback).click(function() {
-		$('textarea.customize').replace_placeholders().data('replaced-placeholders', false);
-		$('#modify-email').show();
-		$('#add-request').hide();
+	$link_customize.click(function() {
+		$textarea_custom.replace_placeholders().data('replaced-placeholders', false);
+		$section_modify.show();
+		$button_add.hide();
 		$(this).hide();
 		return false;
 	});
-	$('a.cancel', $requestfeedback).click(function() {
-		$('textarea.customize', $requestfeedback)
+	$link_cancel.click(function() {
+		$textarea_custom
 			.val(default_email_text)
 			.data('replaced-placeholders', false);
-		$('#modify-email').hide();
-		$('#add-request').show();
-		$('a.customize', $requestfeedback).show();
+		$section_modify.hide();
+		$button_add.show();
+		$link_customize.show();
 		$( '.first-focus', $requestfeedback ).focus();
 		return false;
 	});
-	$('textarea#invitelist', $requestfeedback).keyup(function() {
-		var emails = $(this).val();
-		var to = $('a.customize', $requestfeedback);
+	$textarea_invite.keyup(function() {
+		var i, parts,
+			emails = $(this).val(),
+			to = $link_customize;
+
 		emails = emails.replace(/^\s+/, '').replace(/\s+$/, '');
-		var parts = emails.split(/\s*[,\n]\s*/);
-		for(var i=0; i<parts.length; ++i) {
+		parts = emails.split(/\s*[,\n]\s*/);
+		for( i = 0; i < parts.length; ++i ) {
 			if (!parts[i]) parts.splice(i, 1);
 		}
 		if (0 == parts.length || !emails) {
@@ -144,15 +159,13 @@ jQuery(function($) {
 			}
 		});
 	});
-});
 
-/* JS to hide/show helper boxes */
-jQuery(document).ready(function($) {
-	$('#helpers').on( 'click', 'li', function(e) {
+	/* JS to hide/show helper boxes */
+	$block_helpers.on( 'click', 'li', function(e) {
 		var helper_container;
 		e.preventDefault();
 
-		$('#helpers').hide();
+		$block_helpers.hide();
 		helper_container = $( $( 'a', this).attr( 'href' ) ).show();
 		helper_container.find( '.first-focus' ).focus();
 		// ping stats
@@ -165,18 +178,15 @@ jQuery(document).ready(function($) {
 						.replace( '{random}', Math.random() );
 		}
 	});
-	$('#writing_helper_meta_box').on( 'click', '.back', function(e) {
-		e.preventDefault();
-		$('#helpers').show();
+	$block_meta_box.on( 'click', '.back', function( event ) {
+		event.preventDefault();
+		$block_helpers.show();
 		$('.helper').hide();
 	});
-	$( '#writing_helper_meta_box' ).on( 'click', '.back, #add-request-sent a', function( event ) {
+	$block_meta_box.on( 'click', '.back, #add-request-sent a', function( event ) {
 		event.preventDefault();
-		$( '#invitetoshare' )
-			.show()
-			.find( '.first-focus' )
-		.focus();
-		$( '#add-request-sent' ).hide();
+		$section_invite.show().find( '.first-focus' ).focus();
+		$section_sent.hide();
 	});
 });
 
@@ -204,72 +214,81 @@ function DraftRevokeAccess($, post_id, email, link_id){
 }
 
 jQuery( function( $ ) {
-	var post_search_timeout = null;
-	$( 'div.copy-posts ul' ).on( 'click', 'input[type=button]', function() {
-		$( this ).addClass( 'selected' );
-		$( 'div.copy-posts input' ).prop( 'disabled', true );
-		$( 'div.copy-posts li' ).not( $(this).parent('li') ).animate({ 'opacity': 0.3 }, 'fast' );
+	var
+		$container_helper = $( '#copyapost' ),
+		$block_posts = $( '.copy-posts', $container_helper ),
+		$block_confirm = $( '.confirm-copy', $container_helper ),
+		$block_search = $( '.search-posts', $container_helper ),
+		$input_search = $( 'input', $block_search ),
+		post_search_timeout = null;
 
-		$( 'div.confirm-copy' ).slideDown( 'fast' );
+	$( 'ul', $block_posts ).on( 'click', 'input[type=button]', function() {
+		$( this ).addClass( 'selected' );
+		$( 'input', $block_posts ).prop( 'disabled', true );
+		$( 'li', $block_posts ).not( $(this).parent('li') ).animate({ 'opacity': 0.3 }, 'fast' );
+
+		$block_confirm.slideDown( 'fast' );
 
 		if ( $( 'input#title' ).val() == '' ) {
-			$( '.confirm-copy p.copying' ).show();
-			$( '.confirm-copy p.confirm' ).hide();
+			$( 'p.copying', $block_confirm ).show();
+			$( 'p.confirm', $block_confirm ).hide();
 			copy_post();
 		}
 	});
 
-	$( '.confirm-copy' ).on( 'click', 'input#cancel-copy', function() {
-		$( 'div.copy-posts li input.selected' ).removeClass( 'selected' );
-		$( 'div.copy-posts input' ).prop( 'disabled', false );
-		$( 'div.copy-posts li' ).animate({ 'opacity': 1 }, 'fast' );
-		$( 'div.confirm-copy' ).slideUp( 'fast' );
+	$block_confirm.on( 'click', 'input#cancel-copy', function() {
+		$( 'li input.selected', $block_posts ).removeClass( 'selected' );
+		$( 'input', $block_posts ).prop( 'disabled', false );
+		$( 'li', $block_posts ).animate({ 'opacity': 1 }, 'fast' );
+		$block_confirm.slideUp( 'fast' );
 	});
 
-	$( '.confirm-copy' ).on( 'click', 'input#confirm-copy', function() {
-		$( '.confirm-copy p.confirm' ).fadeOut( 'fast', function() { $( '.confirm-copy p.copying' ).fadeIn( 'fast' ); });
+	$block_confirm.on( 'click', 'input#confirm-copy', function() {
+		$( 'p.confirm', $block_confirm ).fadeOut( 'fast', function() {
+			$( 'p.copying', $block_confirm ).fadeIn( 'fast' );
+		});
 		copy_post();
 	});
 
-	$( '.search-posts input' ).unbind( 'keyup' ).bind( 'keyup', function() {
+	$input_search.unbind( 'keyup' ).bind( 'keyup', function() {
 		search_posts( $(this) );
 	});
 
-	$( '.search-posts' ).on( 'click', 'input', function(e) {
-  		var offset = $(this).offset();
+	$block_search.on( 'click', 'input', function(e) {
+		var offset = $(this).offset();
 
-  		if (e.pageX > offset.left + $(this).width() - 16 )
- 			search_posts( $(this) );
+		if (e.pageX > offset.left + $(this).width() - 16 )
+			search_posts( $(this) );
 	});
 
 	// Disable the enter key in the search posts box so ppl don't publish posts by mistake.
 	$(window).on( "keydown", function(e) {
-  		if (e.keyCode == 13 && $('.search-posts input').is(':focus') ) return false;
+		if (e.keyCode == 13 && $input_search.is(':focus') ) return false;
 	});
 
 	function search_posts(el) {
-		$( '.copy-posts' ).scrollTo( 0, 'fast' );
+		$block_posts.scrollTo( 0, 'fast' );
 
-		if ( $( '.search-posts input' ).val() != '' )
+		if ( $input_search.val() != '' )
 			$( 'ul#s-posts' ).slideUp('fast');
 
-		$( 'div.copy-posts li' ).not( el.parent('li') ).animate({ 'opacity': 0.3 }, 'fast' );
-		$( 'div.copy-posts .loading' ).fadeIn( 'fast' );
+		$( 'li', $block_posts ).not( el.parent('li') ).animate({ 'opacity': 0.3 }, 'fast' );
+		$( '.loading', $block_posts ).fadeIn( 'fast' );
 
 		clearTimeout( post_search_timeout );
 		post_search_timeout = setTimeout( function() {
 			$.post( ajaxurl, {
 				'action': 'helper_search_posts',
-				'search': $( '.search-posts input' ).val(),
+				'search': $input_search.val(),
 				'post_type': typenow,
 				'nonce': WritingHelperBox.nonce
 			}, function( posts ) {
-				$( 'div.copy-posts ul#l-posts li' ).remove();
+				$( '#l-posts li', $block_posts ).remove();
 
 				$.each( posts, function( i, post ) {
 					$tmp = $('<div></div>')
 					$tmp.html( post.post_content.substr(0,200) );
-					$( 'div.copy-posts ul#l-posts' ).append( '\
+					$( '#l-posts', $block_posts ).append( '\
 						<li>\
 							<input type="button" value="Copy" class="button-secondary" id="cp-' + post.ID + '" /> &nbsp;\
 							<span class="title">' + post.post_title + '</span> \
@@ -278,18 +297,20 @@ jQuery( function( $ ) {
 					' );
 				} );
 
-				$( 'div.copy-posts li' ).css( {'opacity': 0} ).animate({ 'opacity': 1 }, 'fast' );
-				$( 'div.copy-posts .loading' ).fadeOut( 'fast' );
+				$( 'li', $block_posts ).css( {'opacity': 0} ).animate({ 'opacity': 1 }, 'fast' );
+				$( '.loading', $block_posts ).fadeOut( 'fast' );
 
-				if ( $( '.search-posts input' ).val() == '' )
-					$( 'ul#s-posts' ).slideDown('fast');
+				if ( $input_search.val() == '' )
+					$( '#s-posts' ).slideDown('fast');
 			}, 'json' );
 		}, 600 );
 	}
 
 	function copy_post( callback ) {
-		var post_id = $( 'div.copy-posts li input.selected' ).attr( 'id' ).substr( 3, $( 'div.copy-posts li input.selected' ).attr('id').length );
-		var isSwitchable = typeof switchEditors !== 'undefined';
+		var post_id = $( 'li input.selected', $block_posts )
+				.attr( 'id' )
+				.substr(3, $( 'div.copy-posts li input.selected' ).attr('id').length ),
+			isSwitchable = typeof switchEditors !== 'undefined';
 
 		if( isSwitchable )
 			switchEditors.go('content', 'html');
@@ -300,13 +321,13 @@ jQuery( function( $ ) {
 			'nonce': WritingHelperBox.nonce
 		}, function( post ) {
 
-			$( 'div.copy-posts input' ).prop( 'disabled', false );
-			$( 'div.copy-posts li' ).animate({ 'opacity': 1 }, 'fast' );
-			$( 'div.confirm-copy' ).slideUp( 'fast', function() {
-				$( '.confirm-copy p.copying' ).hide();
-				$( '.confirm-copy p.confirm' ).show();
+			$( 'input', $block_posts ).prop( 'disabled', false );
+			$( 'li', $block_posts ).animate({ 'opacity': 1 }, 'fast' );
+			$block_confirm.slideUp( 'fast', function() {
+				$( 'p.copying', $block_confirm ).hide();
+				$( 'p.confirm', $block_confirm ).show();
 			} );
-			$( 'div.copy-posts li input.selected' ).removeClass('selected');
+			$( 'li input.selected', $block_posts ).removeClass('selected');
 
 			// Title
 			$( 'input#title' ).val( post.post_title );

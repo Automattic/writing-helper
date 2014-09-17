@@ -1,6 +1,10 @@
 jQuery(document).ready(function($) {
+	var display_error, hide_error,
+		$textarea_feedback = $( '#feedback-text' ),
+		$first_screen = $( '.draftfeedback-first-screen' ),
+		$second_screen = $( '.draftfeedback-second-screen' );
 
-	var display_error = function( id, notice, hide_on_keydown ) {
+	display_error = function( id, notice, hide_on_keydown ) {
 		var error_container = $( '#draft-error' );
 		if ( error_container.length) {
 			hide_error( false, true ).done( function() {
@@ -21,7 +25,7 @@ jQuery(document).ready(function($) {
 		}
 	}
 
-	var hide_error = function( delayed, fast ) {
+	hide_error = function( delayed, fast ) {
 		var error_container = $('#draft-error');
 
 		if ( delayed ) {
@@ -38,7 +42,7 @@ jQuery(document).ready(function($) {
 		e.preventDefault();
 
 		// Don't send empty feedback
-		if ( '' == $('#feedback-text').val() ) {
+		if ( '' == $textarea_feedback.val() ) {
 			display_error(
 				'#feedback-text',
 				DraftFeedback.i18n.error_empty_feedback,
@@ -52,7 +56,7 @@ jQuery(document).ready(function($) {
 			url: DraftFeedback.ajaxurl,
 			data: {
 				action: 'add_feedback',
-				feedback: $('#feedback-text').val(),
+				feedback: $textarea_feedback.val(),
 				shareadraft: DraftFeedback.shareadraft,
 				nonce: DraftFeedback.nonce,
 				post_ID: DraftFeedback.post_ID
@@ -72,13 +76,13 @@ jQuery(document).ready(function($) {
 				} else {
 
 					// Starting to fade out the first screen of the feedback interface
-					promise = $( '.draftfeedback-first-screen' ).fadeOut( 400 ).promise();
+					promise = $first_screen.fadeOut( 400 ).promise();
 
 					promise.done(function(){
 
 						// Fading is done, resetting the form and fading in the thank you screen
-						$( '#feedback-text' ).val( '' );
-						$( '.draftfeedback-second-screen' ).fadeIn( 400 );
+						$textarea_feedback.val( '' );
+						$second_screen.fadeIn( 400 );
 					});
 				}
 			},
@@ -96,22 +100,22 @@ jQuery(document).ready(function($) {
 		});
 	});
 	$( '#feedback-more' ).on( 'click', function( event ) {
-		var promise = $( '.draftfeedback-second-screen' ).fadeOut( 400 ).promise();
+		var promise = $second_screen.fadeOut( 400 ).promise();
 
 		promise.done(function() {
 
 			// When the second screen is completely faded away, we start fading the first screen in
-			$( '.draftfeedback-first-screen' ).fadeIn( 400 ).promise().done(function() {
+			$first_screen.fadeIn( 400 ).promise().done(function() {
 
 				// After the first screen is visible, we focus on the textarea
-				$('#feedback-text').focus();
+				$textarea_feedback.focus();
 			});
 		});
 	});
 	$( '#draftfeedback-activate' ).on( 'click', function( event ) {
 		event.preventDefault();
-		$( '.draftfeedback-first-screen' ).show();
-		$( '.draftfeedback-second-screen' ).hide();
+		$first_screen.show();
+		$second_screen.hide();
 		$( 'body' ).removeClass( 'draftfeedback-closed' ).addClass( 'draftfeedback-open' );
 		$( window ).triggerHandler( 'resize' );
 	});
@@ -119,7 +123,7 @@ jQuery(document).ready(function($) {
 		event.preventDefault();
 		$( 'body' ).removeClass( 'draftfeedback-open' ).addClass( 'draftfeedback-closed' );
 	});
-	$('#feedback-text').focus();
+	$textarea_feedback.focus();
 
 
 	// If the body inner width is less than this number, the feedback helper for
