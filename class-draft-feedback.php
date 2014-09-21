@@ -472,7 +472,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 			);
 		}
 
-		die( json_encode( array( 'response' => $this->_get_meta_box_content( $post_id ) ) ) );
+		die( json_encode( array( 'response' => $this->_get_feedback_table_content( $post_id ) ) ) );
 	}
 
 	/**
@@ -483,7 +483,14 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 		return strtolower( trim( $email ) ); // light sanitization
 	}
 
-	private function _get_meta_box_content( $post_id ) {
+	/**
+	 * Returns a part of the meta box HTML for the table that contains all
+	 * feedback requests for the specified post ID and all available feedback.
+	 *
+	 * @param Integer $post_id
+	 * @return String an html string
+	 */
+	private function _get_feedback_table_content( $post_id ) {
 		ob_start();
 		Writing_Helper()->meta_box_content(
 			$post_id,
@@ -544,7 +551,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 				);
 		$this->save_requests( $post_id, $requests );
 		do_action( 'wh_draftfeedback_generate_link' );
-		die( json_encode( array( 'response' => $this->_get_meta_box_content( $post_id ) ) ) );
+		die( json_encode( array( 'response' => $this->_get_feedback_table_content( $post_id ) ) ) );
 	}
 
 	static function array_map_deep( $value, $function ) {
