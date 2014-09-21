@@ -65,8 +65,14 @@
 						<?php endif; ?>
 						<span class="name"><?php echo $display_name ?></span>
 						<span class="added">
-							<?php _ex( 'added on', 'Feedback request date prefix', 'writing-helper' ); ?>
-							<?php echo esc_html( $requested_on ); ?>
+							<?php printf(
+								 _x(
+									'added on %s',
+									'added on {creation_date}',
+									'writing-helper'
+								),
+								esc_html( $requested_on )
+							); ?>
 						</span>
 					</p>
 			
