@@ -38,7 +38,7 @@
 			<p class="copying">
 				<img
 						src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/ajax-loader.gif' ); ?>"
-						alt="Loading" />
+						alt="<?php esc_attr_e( 'Loading', 'writing-helper' ); ?>" />
 				<?php echo esc_html( $cap_strings['copying'] ); ?>
 			</p>
 		</div>
@@ -56,7 +56,7 @@
 										'post_type'				=> $post_type,
 									);
 
-					$stickies = new WP_Query( $stickies_args );
+				$stickies = new WP_Query( $stickies_args );
 				?>
 				<?php while( $stickies->have_posts() ) : $stickies->the_post(); ?>
 					<li>

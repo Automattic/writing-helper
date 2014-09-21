@@ -74,7 +74,7 @@ Thanks,
 						<div id="df-getting-link" style="display:none">
 							<img
 									src="<?php echo esc_url( Writing_Helper()->plugin_url . 'i/ajax-loader.gif' ); ?>"
-									alt="Loading" />
+									alt="<?php esc_attr_e( 'Loading', 'writing-helper' ); ?>" />
 							<?php _e( 'Getting a link...', 'writing-helper' ) ?>
 						</div>
 						<a
