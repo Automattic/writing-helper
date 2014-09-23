@@ -330,6 +330,7 @@ Regards,
 				'post_ID' => $this->shared_post->ID,
 				'shareadraft' => esc_attr( $_GET['shareadraft'] ),
 				'nonce' => wp_create_nonce( 'add_feedback_nonce' ),
+				'handheld_media_query' => Writing_Helper::HANDHELD_MEDIA_QUERY,
 				'i18n' => array (
 					'error_empty_feedback' => __(
 						'The feedback text can not be blank.',

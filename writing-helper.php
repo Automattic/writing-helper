@@ -21,6 +21,8 @@ class Writing_Helper {
 
 	public $plugin_url;
 
+	const HANDHELD_MEDIA_QUERY = '(min-width : 320px) and (max-width : 720px)';
+
 	private static $instance;
 
 	public static function instance() {
@@ -90,11 +92,19 @@ class Writing_Helper {
 
 	public static function enqueue_front_end_scripts() {
 		wp_enqueue_style(
-			'writing_helper_style',
+			'writing_helper_feedback_form',
 			Writing_Helper()->plugin_url . 'css/feedback-form.css',
 			array(),
 			WH_VERSION
 		);
+		wp_enqueue_style(
+			'writing_helper_feedback_form_handheld',
+			Writing_Helper()->plugin_url . 'css/feedback-form-handheld.css',
+			array( 'writing_helper_feedback_form' ),
+			WH_VERSION,
+			Writing_Helper::HANDHELD_MEDIA_QUERY
+		);
+
 		wp_enqueue_script(
 			'writing_helper_script',
 			Writing_Helper()->plugin_url . 'js/feedback-form.js',

@@ -130,9 +130,7 @@ jQuery(document).ready(function($) {
 
 	// If the body width matches this media selector, the feedback helper
 	// will start in minimized state
-	var matcher = window.matchMedia(
-		'(min-width : 320px) and (max-width : 720px)'
-	);
+	var matcher = window.matchMedia( DraftFeedback.handheld_media_query );
 
 	var resize_handler = function() {
 
