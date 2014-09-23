@@ -112,40 +112,74 @@ jQuery(document).ready(function($) {
 			});
 		});
 	});
-	$( '#draftfeedback-activate' ).on( 'click', function( event ) {
-		event.preventDefault();
-		$first_screen.show();
-		$second_screen.hide();
-		$( 'body' ).removeClass( 'draftfeedback-closed' ).addClass( 'draftfeedback-open' );
-		$( window ).triggerHandler( 'resize' );
-	});
-	$( '.draftfeedback-feedback-form' ).on( 'click', '.draftfeedback-deactivate', function( event ) {
-		event.preventDefault();
-		$( 'body' ).removeClass( 'draftfeedback-open' ).addClass( 'draftfeedback-closed' );
-	});
 	$textarea_feedback.focus();
+});
 
+/**
+ * Feedback form interface controls
+ */
+jQuery(document).ready(function($) {
+	var feedback_textarea = $( '#feedbackform textarea' ),
+		$button_activate = $( '#draftfeedback-activate' ),
+		$block_floater = $( '#feedback-floater' ),
+		$block_intro = $( "#draftfeedback-intro" ),
+		$buttons_return = $( '.draftfeedback-return' ),
+		scroll_top_offset;
 
-	// If the body inner width is less than this number, the feedback helper for
+	$( 'body' ).addClass('draftfeedback');
+
+	// If the body width matches this media selector, the feedback helper
 	// will start in minimized state
-	var body_width_threshold = 720;
-	var feedback_textarea = $('#feedbackform textarea');
+	var matcher = window.matchMedia(
+		'(min-width : 320px) and (max-width : 720px)'
+	);
+
 	var resize_handler = function() {
+
+		// For smaller screens the feedback textarea is located below the
+		// post, so no action is required.
+		if ( matcher.matches ) {
+			 return;
+		}
+
 		var sidebar_height = $( '.draftfeedback-feedback-form' ).height();
 		var intro_height = $( '.draftfeedback-intro' ).height();
 		var textarea_height = sidebar_height - intro_height;
 		feedback_textarea.css( 'height', (textarea_height - 130) + 'px' );
 	};
 
-	if ( $( 'body' ).innerWidth() < body_width_threshold ) {
-		$( 'body' ).addClass( 'draftfeedback-closed' );
-	} else {
-
-		// Hiding the buttons that minimize the helper - they are not needed on a large screen
-		$( '.draftfeedback-deactivate' ).hide();
-		$( 'body' ).addClass( 'draftfeedback-open' );
-	}
-
 	$( window ).resize( resize_handler );
 	resize_handler();
+
+	// Clicking the activate button should take us to the form
+	$button_activate.on( 'click', function( event ) {
+		scroll_top_offset = $( window ).scrollTop();
+		$buttons_return.show();
+		$( 'html, body' ).animate({
+			scrollTop: $( "#draftfeedback-intro" ).offset().top
+		}, 400 );
+	});
+
+	// Clicking the return button should take us to where we were
+	$buttons_return.on( 'click', function( event) {
+		$( 'html, body' ).animate({
+			scrollTop: scroll_top_offset
+		}, 400 );
+	});
+
+	// The feedback floater block should get hidden when the
+	// window is scrolled down to the form
+	$( window ).on( 'scroll resize', function() {
+		if ( ! matcher.matches ) {
+			 return;
+		}
+
+		var offset = $block_intro.offset().top - window.innerHeight;
+
+		if ( $( window ).scrollTop() > offset ) {
+			$block_floater.fadeOut( 'fast' );
+		} else {
+			$block_floater.fadeIn( 'fast' );
+		}
+	});
 });

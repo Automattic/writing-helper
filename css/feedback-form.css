@@ -7,19 +7,23 @@
  * 2. Button and textarea styles
  * 3. Post controls styles
  * 4. Error container styles
+ * 5. Handheld-specific styles
  */
 
 
 /* 1. Container styles */
 
+body.draftfeedback {
+	margin-left: 320px;
+}
+
 .draftfeedback-container {
-	display: none;
 	width: 300px;
 	position: fixed;
 	left: 0;
 	top: 0;
 	padding: 30px 20px 20px 20px;
-	background-color: #f4f8fa;
+	background: #f4f8fa;
 }
 
 .draftfeedback-container * {
@@ -38,32 +42,23 @@
 	margin-bottom: 15px;
 }
 
+.draftfeedback-container .button.draftfeedback-return {
+	display: none;
+}
+
 .draftfeedback-thanks {
 	display: none;
 }
 
-.draftfeedback-open {
-	margin-left: 320px;
-}
-
 .draftfeedback-feedback-pulldown {
 	z-index: 99;
-	background: #f4f8fa;
 	border-color: #ccc;
 	border-style: solid;
 	border-width: 0 1px 1px 0;
 }
 
-.draftfeedback-open .draftfeedback-feedback-form {
-	display: block;
-}
-
-.draftfeedback-closed .draftfeedback-feedback-pulldown {
-	display: block;
-}
-
 /**
- * 2. Button and textarea styles 
+ * 2. Button and textarea styles
  * Note: those styles have been copied over from the WordPress admin stylesheets
  * located in the wp-admin/css/forms.css file.
  */
@@ -247,6 +242,7 @@
 .draftfeedback-feedback-form {
 	z-index: 100;
 	height: 100%;
+	min-height: 70px;
 	background: #f7f7f7;
 	border-right: 1px solid #ccc;
 }
@@ -308,4 +304,47 @@
 	margin:.5em 0;
 	padding:2px;
 	font-size: 12px;
+}
+
+/* 5. Handheld-specific styles */
+
+@media (min-width : 320px) and (max-width : 720px) {
+
+	body.draftfeedback {
+		margin-left: 0;
+	}
+
+	.draftfeedback-container {
+		width: auto;
+		padding: 20px;
+		position: static;
+		left: auto;
+		top: auto;
+	}
+
+	.draftfeedback-feedback-form textarea {
+		width: 92%;
+		padding: 4%;
+	}
+
+	body .draftfeedback-feedback-pulldown {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+	}
+
+	body .draftfeedback-feedback-pulldown h3 {
+		float: left;
+		font-size: 90%;
+		font-weight: bold;
+		line-height: 1.5;
+		margin: 10px 0 0 0;
+	}
+
+	body .draftfeedback-feedback-pulldown .button {
+		float: right;
+		margin: 6px 0 0 10px;
+	}
+
 }

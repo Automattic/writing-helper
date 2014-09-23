@@ -4,7 +4,7 @@
  */
 ?>
 
-<div class="draftfeedback-container draftfeedback-feedback-pulldown">
+<div class="draftfeedback-container draftfeedback-feedback-pulldown" id="feedback-floater">
 	<h3><?php the_author(); ?> <?php _e( 'would like your feedback.', 'writing-helper' ); ?></h3>
 	<input
 			type="button"
@@ -26,7 +26,7 @@
 				value="<?php _e( 'Send More Feedback', 'writing-helper' ); ?>" />
 		<input
 				type="button"
-				class="button draftfeedback-deactivate"
+				class="button draftfeedback-return"
 				value="<?php _e( 'Back to post', 'writing-helper' ); ?>" />
 	</div>
 	<div class="draftfeedback-intro draftfeedback-first-screen" id="draftfeedback-intro">
@@ -47,7 +47,7 @@
 				value="<?php _e( 'Send Feedback', 'writing-helper' ); ?>" />
 		<input
 				type="button"
-				class="button draftfeedback-deactivate"
+				class="button draftfeedback-return"
 				value="<?php _e( 'Back to post', 'writing-helper' ); ?>" />
 	</form>
 </div>
