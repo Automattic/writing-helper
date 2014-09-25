@@ -15,7 +15,7 @@
 		</div>
 		<div class="clear"></div>
 	</li>
-	<?php if ( is_array( $requests ) && !empty( $requests ) ): ?>
+	<?php if ( $show_feedback_button || ( is_array( $requests ) && !empty( $requests ) ) ): ?>
 		<li class="requestfeedback">
 			<div class="border-box">
 				<div class="iconbox">
