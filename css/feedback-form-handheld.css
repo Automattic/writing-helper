@@ -11,6 +11,7 @@ body.draftfeedback {
 	position: static;
 	left: auto;
 	top: auto;
+	box-sizing: border-box;
 }
 
 .draftfeedback-feedback-form textarea {

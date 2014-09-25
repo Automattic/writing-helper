@@ -39,6 +39,7 @@ body.draftfeedback {
 
 .draftfeedback-container p {
 	margin-bottom: 15px;
+	line-height: 1.5;
 }
 
 .draftfeedback-container .button.draftfeedback-return {
