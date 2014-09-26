@@ -42,10 +42,10 @@ jQuery(document).ready(function($) {
 		e.preventDefault();
 
 		// Don't send empty feedback
-		if ( '' == $textarea_feedback.val() ) {
+		if ( $textarea_feedback.val().length < DraftFeedback.minimum_feedback_length ) {
 			display_error(
 				'#feedback-text',
-				DraftFeedback.i18n.error_empty_feedback,
+				DraftFeedback.i18n.error_minimum_feedback_length,
 				'#feedback-text'
 			);
 			return false;

@@ -36,6 +36,11 @@ class Writing_Helper_Draft_Feedback {
 	 */
 	const requests_metakey = 'draftfeedback_requests';
 
+	/**
+	 * Minimum feedback text length
+	 */
+	const MIN_FEEDBACK_LENGTH = 5;
+
 	function init() {
 		// should work even if not logged in (for testing)
 		if ( isset( $_REQUEST['shareadraft'] ) ) {
@@ -141,9 +146,15 @@ Regards,
 		$feedback = isset( $_REQUEST['feedback'] )? $_REQUEST['feedback'] : '';
 		$callback = isset( $_REQUEST['callback'] )? $_REQUEST['callback'] : '';
 
-		if ( mb_strlen( $feedback ) < 5 )
+		if ( mb_strlen( $feedback ) < self::MIN_FEEDBACK_LENGTH )
 			$this->jsonp_die_with_error(
-				__( 'Please, write a feedback.', 'writing-helper' ),
+				sprintf(
+					__(
+						'The feedback text should be at least %d characters long.',
+						'writing-helper'
+					),
+					self::MIN_FEEDBACK_LENGTH
+				),
 				$callback
 			);
 
@@ -331,10 +342,14 @@ Regards,
 				'shareadraft' => esc_attr( $_GET['shareadraft'] ),
 				'nonce' => wp_create_nonce( 'add_feedback_nonce' ),
 				'handheld_media_query' => Writing_Helper::HANDHELD_MEDIA_QUERY,
+				'minimum_feedback_length' => self::MIN_FEEDBACK_LENGTH,
 				'i18n' => array (
-					'error_empty_feedback' => __(
-						'The feedback text can not be blank.',
-						'writing-helper'
+					'error_minimum_feedback_length' => sprintf(
+						__(
+							'The feedback text should be at least %d characters long.',
+							'writing-helper'
+						),
+						self::MIN_FEEDBACK_LENGTH
 					),
 					'error_message' => sprintf(
 						__( 'Internal Server Error: %s', 'writing-helper' ), '{error}'
