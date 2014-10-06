@@ -4,12 +4,12 @@ Plugin Name: Writing Helper
 Plugin URI: http://wordpress.org/extend/plugins/writing-helper/
 Description: Helps you write your posts
 Author: Nikolay Bachiyski, Daniel Bachhuber, Prasath Nadarajah, Automattic
-Version: 1.0-alpha
+Version: 1.0-rc1
 Author URI: http://automattic.com/
 Text Domain: writing-helper
 */
 
-define( 'WH_VERSION', '1.0-alpha' );
+define( 'WH_VERSION', '1.0-rc1' );
 
 foreach( glob( dirname(__FILE__). '/class-*.php' ) as $wh_php_file_name ) {
 	require $wh_php_file_name;
