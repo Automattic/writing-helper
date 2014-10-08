@@ -1,0 +1,41 @@
+/* This file was automatically generated on Sep 26 2014 11:22:15 */
+
+
+/* Handheld-specific styles */
+
+body.draftfeedback {
+	margin-right: 0;
+}
+
+.draftfeedback-container {
+	width: auto;
+	padding: 20px;
+	position: static;
+	right: auto;
+	top: auto;
+	box-sizing: border-box;
+}
+
+.draftfeedback-feedback-form textarea {
+	width: 92%;
+}
+
+body .draftfeedback-feedback-pulldown {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	width: 100%;
+}
+
+body .draftfeedback-feedback-pulldown h3 {
+	float: right;
+	font-size: 90%;
+	font-weight: bold;
+	line-height: 1.5;
+	margin: 10px 0 0 0;
+}
+
+body .draftfeedback-feedback-pulldown .button {
+	float: left;
+	margin: 6px 10px 0 0;
+}

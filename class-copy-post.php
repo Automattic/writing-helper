@@ -1,8 +1,8 @@
 <?php
 
-WritingHelper()->add_helper( 'copy_post', new WH_CopyPost() );
+Writing_Helper()->add_helper( 'copy_post', new Writer_Helper_Copy_Post() );
 
-class WH_CopyPost {
+class Writer_Helper_Copy_Post {
 
 	function init() {
 
@@ -30,11 +30,14 @@ class WH_CopyPost {
 				}
 
 				if ( $post_type == 'post' ) {
-					$submenu_page_label = __( 'Copy a Post' );
+					$submenu_page_label = __( 'Copy a Post', 'writing-helper' );
 				} else if ( $post_type == 'page' ) {
-					$submenu_page_label = __( 'Copy a Page' );
+					$submenu_page_label = __( 'Copy a Page', 'writing-helper' );
 				} else {
-					$submenu_page_label =  sprintf( _x( 'Copy a %s', 'Copy a {post_type}' ), $post_type_obj->labels->singular_name );
+					$submenu_page_label = sprintf(
+						_x( 'Copy a %s', 'Copy a {post_type}', 'writing-helper' ),
+						$post_type_obj->labels->singular_name
+					);
 				}
 
 				$submenu_page_link = add_query_arg( 'cap#cap', '', str_replace( 'edit.php', '/post-new.php', $submenu_page ) );
@@ -55,7 +58,9 @@ class WH_CopyPost {
 		$posts = false;
 		$post_type = ! empty( $_REQUEST['post_type'] ) ? sanitize_key( $_REQUEST['post_type'] ) : 'post';
 
-		if ( empty( $search_terms ) || __( 'Search for posts by title' ) == $search_terms ) {
+		if (
+				empty( $search_terms )
+				|| __( 'Search for posts by title', 'writing-helper' ) == $search_terms ) {
 			$sticky_posts = get_option( 'copy_a_post_sticky_posts' );
 			$args = array(
 					'post_type'   => $post_type,
@@ -144,4 +149,3 @@ class WH_CopyPost {
 		die( '1' );
 	}
 }
-

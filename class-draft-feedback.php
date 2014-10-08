@@ -1,6 +1,6 @@
 <?php
 
-WritingHelper()->add_helper( 'draft_feedback', new WH_DraftFeedback() );
+Writing_Helper()->add_helper( 'draft_feedback', new Writing_Helper_Draft_Feedback() );
 
 /**
  * Handle the "Share a Draft" and commenting.
@@ -17,7 +17,7 @@ WritingHelper()->add_helper( 'draft_feedback', new WH_DraftFeedback() );
  * - feedbackrequest-pageview: someone has viewed a post and feedback form
  * - feedbackrequest-feedback-received: a feedback has been submitted
  */
-class WH_DraftFeedback {
+class Writing_Helper_Draft_Feedback {
 	/**
 	 * Temporary holder of post object if user is permed to view a draft
 	 */
@@ -35,6 +35,11 @@ class WH_DraftFeedback {
 	 * - user_id: the person who made the request (writer)
 	 */
 	const requests_metakey = 'draftfeedback_requests';
+
+	/**
+	 * Minimum feedback text length
+	 */
+	const MIN_FEEDBACK_LENGTH = 5;
 
 	function init() {
 		// should work even if not logged in (for testing)
@@ -77,7 +82,7 @@ class WH_DraftFeedback {
 	private function email_post_published( $email, $post, $request ) {
 		$sender =  get_userdata( $request['user_id'] );
 		$subject = sprintf(
-			__( '%1$s&#8217;s draft titled "%2$s" has been published' ),
+			__( '%1$s’s draft titled "%2$s" has been published', 'writing-helper' ),
 			$sender->display_name,
 			$post->post_title
 		);
@@ -88,11 +93,12 @@ Recently you were kind enough to give feedback on my draft "%1$s".
 
 It is now published! Thanks so much for your help.
 
-Here&#8217;s the published version, and please share if you wish:
+Here’s the published version, and please share if you wish:
 %2$s
 
 Regards,
-%3$s' ), $post->post_title, get_permalink( $post->ID ), $sender->display_name );
+%3$s', 'writing-helper' ), $post->post_title, get_permalink( $post->ID ), $sender->display_name );
+
 		wp_mail( $email, $subject, $body, $this->email_headers( $sender  ) );
 	}
 
@@ -138,18 +144,31 @@ Regards,
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = isset( $_REQUEST['post_ID'] )? (int) $_REQUEST['post_ID'] : 0;
 		$feedback = isset( $_REQUEST['feedback'] )? $_REQUEST['feedback'] : '';
-		if ( mb_strlen( $feedback ) < 5 )
-			$this->json_die_with_error( __( 'Please, write a feedback.' ) );
+		$callback = isset( $_REQUEST['callback'] )? $_REQUEST['callback'] : '';
+
+		if ( mb_strlen( $feedback ) < self::MIN_FEEDBACK_LENGTH )
+			$this->jsonp_die_with_error(
+				sprintf(
+					__(
+						'The feedback text should be at least %d characters long.',
+						'writing-helper'
+					),
+					self::MIN_FEEDBACK_LENGTH
+				),
+				$callback
+			);
 
 		$secret = isset( $_REQUEST['shareadraft'] )? $_REQUEST['shareadraft'] : '';
-		$callback = isset( $_REQUEST['callback'] )? $_REQUEST['callback'] : '';
 
 		if ( $this->can_view( $post_id ) ) {
 			$this->shared_post = get_post( $post_id );
 			$this->add_feedback( $post_id, $this->request_email, $feedback );
 			$this->email_feedback_received( $feedback );
 		} else {
-			$this->jsonp_die_with_error( __( "Sorry, you can't post feedbacks here." ), $callback );
+			$this->jsonp_die_with_error(
+				__( "Sorry, you can't post feedbacks here.", 'writing-helper' ),
+				$callback
+			);
 		}
 
 		die( $callback . '(' . json_encode( array() ) . ')' );
@@ -246,7 +265,11 @@ Regards,
 		global $current_user;
 		$email_text = str_replace( '[feedback-link]', ' ' . $this->generate_secret_link( $post_id, $request['key'] ) . ' ', $email_text );
 		$post = get_post( $post_id );
-		$subject = sprintf( __( '%1$s asked you for feedback on a new draft: "%2$s"' ), $current_user->display_name, $post->post_title );
+		$subject = sprintf(
+			__( '%1$s asked you for feedback on a new draft: "%2$s"', 'writing-helper' ),
+			$current_user->display_name,
+			$post->post_title
+		);
 		wp_mail( $email, $subject, $email_text, $this->email_headers( $current_user ) );
 		do_action( 'wh_draftfeedback_sent_request' );
 		return true;
@@ -309,7 +332,7 @@ Regards,
 		}
 		if ( $overwrite_post ) {
 			do_action( 'wh_draftfeedback_load_feedback_form' );
-			WritingHelper()->enqueue_script();
+			Writing_Helper()->enqueue_front_end_scripts();
 			wp_localize_script( 'writing_helper_script', 'DraftFeedback', array(
 				/* Use scheme of current page, instead of obeying force_ssl_admin().
 				 * Otherwise we might end up with Ajax request to a URL with a different scheme, which is not allowed by browsers
@@ -318,6 +341,25 @@ Regards,
 				'post_ID' => $this->shared_post->ID,
 				'shareadraft' => esc_attr( $_GET['shareadraft'] ),
 				'nonce' => wp_create_nonce( 'add_feedback_nonce' ),
+				'handheld_media_query' => Writing_Helper::HANDHELD_MEDIA_QUERY,
+				'minimum_feedback_length' => self::MIN_FEEDBACK_LENGTH,
+				'i18n' => array (
+					'error_minimum_feedback_length' => sprintf(
+						__(
+							'The feedback text should be at least %d characters long.',
+							'writing-helper'
+						),
+						self::MIN_FEEDBACK_LENGTH
+					),
+					'error_message' => sprintf(
+						__( 'Internal Server Error: %s', 'writing-helper' ), '{error}'
+					),
+					'button_send_feedback' => __( 'Send Feedback', 'writing-helper' ),
+					'button_sending_feedback' => __(
+						'Sending Feedback...',
+						'writing-helper'
+					)
+				)
 			) );
 			add_action( 'wp_footer', array( $this, 'inject_feedback_form' ) );
 			return array( &$this->shared_post );
@@ -343,9 +385,17 @@ Regards,
 		$post_author = get_userdata( $this->shared_post->post_author );
 
 		if ( ! empty( $reviewer ) ) {
-			$subject = sprintf( __( 'Feedback received from %1$s for "%2$s"' ), $reviewer, $this->shared_post->post_title );
+			$subject = sprintf(
+				__( 'Feedback received from %1$s for "%2$s"', 'writing-helper' ),
+				$reviewer,
+				$this->shared_post->post_title
+		);
 		} else {
-			$subject = sprintf( __( 'Feedback received from your friend for "%2$s"' ), $reviewer, $this->shared_post->post_title );
+			$subject = sprintf(
+				__( 'Feedback received from your friend for "%2$s"', 'writing-helper' ),
+				$reviewer,
+				$this->shared_post->post_title
+			);
 		}
 		// Note: Keep in one string for easier i18n.
 		$body = sprintf( __(
@@ -358,7 +408,7 @@ Your friend %2$s has read your draft titled "%3$s" and provided feedback for you
 You can also see their feedback here:
 %5$s
 
-Thanks for flying with WordPress.com' ),
+Thanks for flying with WordPress.com', 'writing-helper' ),
 			$post_author->display_name,
 			$reviewer,
 			$this->shared_post->post_title,
@@ -370,11 +420,11 @@ Thanks for flying with WordPress.com' ),
 	}
 
 	function inject_feedback_form() {
-		include( dirname(__FILE__) . '/feedback-form.tpl.php' );
+		include( dirname(__FILE__) . '/templates/feedback-form.tpl.php' );
 	}
 
 	function inject_published_notice() {
-		include( dirname(__FILE__) . '/post-published.tpl.php' );
+		include( dirname(__FILE__) . '/templates/post-published.tpl.php' );
 	}
 
 	private function _do_template( $file, $template_vars = array() ) {
@@ -399,11 +449,13 @@ Thanks for flying with WordPress.com' ),
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0;
 		if ( !$this->can_mail( $post_id ) )
-			$this->json_die_with_error( __( 'Access denied' ) );
+			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
 
 		$emails = isset( $_REQUEST['emails'] )? trim( $_REQUEST['emails'] ) : '';
 		if ( !$emails )
-			$this->json_die_with_error( __( 'You need to enter an email address for someone you know before sending.' ) );
+			$this->json_die_with_error(
+				__( 'You need to enter an email address for someone you know before sending.', 'writing-helper' )
+			);
 
 		$email_text = isset( $_REQUEST['email_text'] )? trim( $_REQUEST['email_text'] ) : '';
 
@@ -414,20 +466,29 @@ Thanks for flying with WordPress.com' ),
 				continue;
 			}
 			if ( !is_email( $email ) ) {
-				$this->json_die_with_error( __( 'Invalid email address' ) . ' ' . $email );
+				$this->json_die_with_error(
+					__( 'Invalid email address', 'writing-helper' ) . ' ' . $email
+				);
 			}
 		}
 		if ( !$email_text ) {
-			$this->json_die_with_error( __( 'E-mail text cannot be empty' ) );
+			$this->json_die_with_error(
+				__( 'E-mail text cannot be empty', 'writing-helper' )
+			);
 		}
 		if ( strpos( $email_text, '[feedback-link]' ) === false ) {
-			$this->json_die_with_error( __( 'You must include [feedback-link] in the e-mail text' ) );
+			$this->json_die_with_error(
+				__( 'You must include [feedback-link] in the e-mail text', 'writing-helper' )
+			);
 		}
 		$res = $this->add_request( $post_id, $single_emails, $email_text );
 		if ( !$res ) {
-			$this->json_die_with_error( __( 'Error in adding the request' ) );
+			$this->json_die_with_error(
+				__( 'Error in adding the request', 'writing-helper' )
+			);
 		}
-		die( json_encode( array() ) );
+
+		die( json_encode( array( 'response' => $this->_get_feedback_table_content( $post_id ) ) ) );
 	}
 
 	/**
@@ -439,6 +500,30 @@ Thanks for flying with WordPress.com' ),
 	}
 
 	/**
+	 * Returns a part of the meta box HTML for the table that contains all
+	 * feedback requests for the specified post ID and all available feedback.
+	 *
+	 * @param Integer $post_id
+	 * @return String an html string
+	 */
+	private function _get_feedback_table_content( $post_id ) {
+		ob_start();
+		Writing_Helper()->meta_box_content(
+			$post_id,
+			NULL,
+			array(
+				'show_helper_selector' => false,
+				'show_copy_block' => false,
+				'show_feedback_block' => true,
+				'wrap_feedback_table' => false
+			)
+		);
+		$response = ob_get_contents();
+		ob_end_clean();
+		return $response;
+	}
+
+	/**
 	 * Toggle revoke/grant access
 	 */
 	function revoke_draft_access_ajax_endpoint() {
@@ -446,7 +531,7 @@ Thanks for flying with WordPress.com' ),
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0;
 		if ( !$this->can_mail( $post_id ) )
-			$this->json_die_with_error( __( 'Access denied' ) );
+			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
 
 		$revoke_email = ( isset( $_REQUEST['email'] ) ) ? $this->_normalize_email( $_REQUEST['email'] ) : '';
 		$requests = $this->get_requests( $post_id );
@@ -464,14 +549,14 @@ Thanks for flying with WordPress.com' ),
 		}
 
 		if ( !$res )
-			$this->json_die_with_error( __( 'Action failed' ) );
+			$this->json_die_with_error( __( 'Action failed', 'writing-helper' ) );
 	}
 
 	function get_draft_link_ajax_endpoint() {
 		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
 		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0;
 		if ( !$post_id || !$this->can_mail( $post_id ) )
-			$this->json_die_with_error( __( 'Access denied' ) );
+			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
 
 		$key = uniqid();
 		$requests = $this->get_requests( $post_id );
@@ -482,7 +567,7 @@ Thanks for flying with WordPress.com' ),
 				);
 		$this->save_requests( $post_id, $requests );
 		do_action( 'wh_draftfeedback_generate_link' );
-		die( json_encode( array( 'link' => $this->generate_secret_link( $post_id, $key ) ) ) );
+		die( json_encode( array( 'response' => $this->_get_feedback_table_content( $post_id ) ) ) );
 	}
 
 	static function array_map_deep( $value, $function ) {
