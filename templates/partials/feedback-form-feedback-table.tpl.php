@@ -127,6 +127,6 @@
 		<?php endforeach; ?>
 	</tbody>
 </table>
-<?php
-endif;
-?>
+<?php else: ?>
+<input type="hidden" id="requests-list" />
+<?php endif; ?>
