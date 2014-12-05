@@ -283,18 +283,23 @@ jQuery( function( $ ) {
 				'post_type': typenow,
 				'nonce': WritingHelperBox.nonce
 			}, function( posts ) {
-				$( '#l-posts li', $block_posts ).remove();
+				var $l_posts = $( '#l-posts', $block_posts );
+				$l_posts.find( 'li' ).remove();
 
 				$.each( posts, function( i, post ) {
-					$tmp = $('<div></div>')
-					$tmp.html( post.post_content.substr(0,200) );
-					$( '#l-posts', $block_posts ).append( '\
-						<li>\
-							<input type="button" value="Copy" class="button-secondary" id="cp-' + post.ID + '" /> &nbsp;\
-							<span class="title">' + post.post_title + '</span> \
-							<span class="excerpt">' + $tmp.text() + '</span> \
-						</li>\
-					' );
+					var excerpt, title;
+
+					// Strip tags: Doesn't have to be perfect. Just has to be not terrible.
+					title = post.post_title.replace( /<[^>]*>/g, '' );
+					excerpt = post.post_content.substr( 0, 400 ).replace( /<[^>]*>/g, '' ).substr( 0, 200 )
+
+					var $li = $( '<li />' ).
+						append( $( '<input type="button" value="Copy" class="button-secondary" />' ).attr( 'id', 'cp-' + post.ID ) ).
+						append( ' &nbsp;' ).
+						append( $( '<span class="title">' ).text( title ) ).
+						append( $( '<span class="excerpt">' ).text( excerpt ) );
+
+					$l_posts.append( $li );
 				} );
 
 				$( 'li', $block_posts ).css( {'opacity': 0} ).animate({ 'opacity': 1 }, 'fast' );
