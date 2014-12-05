@@ -446,12 +446,14 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	}
 
 	function json_die_with_error( $message ) {
+		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 		die( json_encode( array( 'error' => $message ) ) );
 	}
 
 	function jsonp_die_with_error( $message, $callback ) {
 		$callback = $this->sanitize_callback( $callback );
 		if ( !$callback ) $this->json_die_with_error( $message );
+		@header( 'Content-Type: text/javascript; charset=' . get_option( 'blog_charset' ) );
 		die( $callback . '(' . json_encode( array( 'error' => $message ) ) . ')' );
 	}
 
@@ -500,6 +502,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 			);
 		}
 
+		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 		die( json_encode( array( 'response' => $this->_get_feedback_table_content( $post_id ) ) ) );
 	}
 
@@ -579,6 +582,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 				);
 		$this->save_requests( $post_id, $requests );
 		do_action( 'wh_draftfeedback_generate_link' );
+		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 		die( json_encode( array( 'response' => $this->_get_feedback_table_content( $post_id ) ) ) );
 	}
 

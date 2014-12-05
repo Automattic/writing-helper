@@ -68,6 +68,7 @@ class Writer_Helper_Copy_Post {
 					'numberposts' => 20,
 					'exclude' => implode( ',', (array) $sticky_posts ),
 				);
+			@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 			die( json_encode( get_posts( $args ) ) );
 		}
 
@@ -86,6 +87,7 @@ class Writer_Helper_Copy_Post {
 
 		do_action( 'wh_copypost_searched_posts' );
 
+		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 		die( json_encode( $posts ) );
 	}
 
@@ -109,6 +111,7 @@ class Writer_Helper_Copy_Post {
 
 		do_action( 'wh_copypost_copied_post', $post );
 
+		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 		die( json_encode( $post ) );
 	}
 
