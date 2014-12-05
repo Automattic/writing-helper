@@ -171,7 +171,7 @@ Regards,
 			);
 		}
 
-		die( $callback . '(' . json_encode( array() ) . ')' );
+		$this->jsonp_return( array(),  $callback );
 	}
 
 	function get_feedbacks( $post_id ) {
@@ -443,6 +443,17 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 		die( $callback . '(' . json_encode( array( 'error' => $message ) ) . ')' );
 	}
 
+	function jsonp_return( $value, $callback ) {
+
+		// Explicitly setting the content type to avoid errors in browsers with
+		// strict mime-type policies
+		header(
+			'Content-Type: application/javascript; charset='
+				. get_option( 'blog_charset' ),
+			true
+		);
+		die( $callback . '(' . json_encode( $value ) . ')' );
+	}
 
 	function add_request_ajax_endpoint() {
 		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
@@ -488,7 +499,12 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 			);
 		}
 
-		die( json_encode( array( 'response' => $this->_get_feedback_table_content( $post_id ) ) ) );
+		$this->jsonp_return(
+			array(
+				'response' => $this->_get_feedback_table_content( $post_id )
+			),
+			$callback
+		);
 	}
 
 	/**
@@ -567,7 +583,11 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 				);
 		$this->save_requests( $post_id, $requests );
 		do_action( 'wh_draftfeedback_generate_link' );
-		die( json_encode( array( 'response' => $this->_get_feedback_table_content( $post_id ) ) ) );
+
+		$this->jsonp_return(
+			array( 'response' => $this->_get_feedback_table_content( $post_id ) ),
+			$callback
+		);
 	}
 
 	static function array_map_deep( $value, $function ) {
