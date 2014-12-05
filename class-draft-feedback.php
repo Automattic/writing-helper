@@ -180,7 +180,7 @@ Regards,
 				$callback
 			);
 		}
-
+		@header( 'Content-Type: text/javascript; charset=' . get_option( 'blog_charset' ) );
 		$callback = $this->sanitize_callback( $callback );
 		die( $callback . '(' . json_encode( array() ) . ')' );
 	}
