@@ -52,6 +52,11 @@ class Writer_Helper_Copy_Post {
 
 		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
 
+		// @todo 'perm' => 'readable'?
+		if ( ! is_user_member_of_blog() ) {
+			exit;
+		}
+
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$search_terms = $_REQUEST['search'];
 
@@ -96,6 +101,11 @@ class Writer_Helper_Copy_Post {
 
 		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
 
+		// @todo current_user_can( 'read_post', $post_id )?
+		if ( ! is_user_member_of_blog() ) {
+			exit;
+		}
+
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = (int) $_REQUEST['post_id'];
 
@@ -117,6 +127,10 @@ class Writer_Helper_Copy_Post {
 
 	function add_ajax_stick_post_endpoint() {
 		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
+
+		if ( ! is_user_member_of_blog() ) {
+			exit;
+		}
 
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = (int) $_REQUEST['post_id'];
