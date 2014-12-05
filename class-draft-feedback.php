@@ -139,6 +139,16 @@ Regards,
 			add_post_meta( $post_id, self::feedback_metakey, self::addslashes_deep( $feedbacks ) );
 	}
 
+	function sanitize_callback( $callback ) {
+		$callback = preg_replace( '/[^a-z0-9_.]/i', '', (string) $callback );
+
+		if ( ! strlen( $callback ) ) {
+			return '';
+		}
+
+		return "/**/$callback";
+	}
+
 	function add_feedback_ajax_endpoint() {
 		check_ajax_referer( 'add_feedback_nonce', 'nonce' );
 		$_REQUEST = stripslashes_deep( $_REQUEST );
@@ -171,6 +181,7 @@ Regards,
 			);
 		}
 
+		$callback = $this->sanitize_callback( $callback );
 		die( $callback . '(' . json_encode( array() ) . ')' );
 	}
 
@@ -439,6 +450,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	}
 
 	function jsonp_die_with_error( $message, $callback ) {
+		$callback = $this->sanitize_callback( $callback );
 		if ( !$callback ) $this->json_die_with_error( $message );
 		die( $callback . '(' . json_encode( array( 'error' => $message ) ) . ')' );
 	}
