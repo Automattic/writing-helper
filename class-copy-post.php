@@ -52,7 +52,6 @@ class Writer_Helper_Copy_Post {
 
 		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
 
-		// @todo 'perm' => 'readable'?
 		if ( ! is_user_member_of_blog() ) {
 			exit;
 		}
@@ -60,19 +59,28 @@ class Writer_Helper_Copy_Post {
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$search_terms = $_REQUEST['search'];
 
+		$args = array();
 		$posts = false;
 		$post_type = ! empty( $_REQUEST['post_type'] ) ? sanitize_key( $_REQUEST['post_type'] ) : 'post';
+		if ( ! current_user_can( 'edit_others_posts' ) ) {
+
+			// Limiting the author's copying capabilities to own posts only
+			$args['author'] = get_current_user_id();
+		}
 
 		if (
 				empty( $search_terms )
 				|| __( 'Search for posts by title', 'writing-helper' ) == $search_terms ) {
 			$sticky_posts = get_option( 'copy_a_post_sticky_posts' );
-			$args = array(
+			$args = array_merge(
+				$args,
+				array(
 					'post_type'   => $post_type,
 					'post_status' => 'any',
 					'numberposts' => 20,
 					'exclude' => implode( ',', (array) $sticky_posts ),
-				);
+				)
+			);
 			@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 			die( json_encode( get_posts( $args ) ) );
 		}
@@ -82,11 +90,15 @@ class Writer_Helper_Copy_Post {
 
 		if ( !empty( $post_ids ) ) {
 			$post_ids = implode( ',', (array) $post_ids );
-			$args = array(
+			$args = array_merge(
+				$args,
+				array(
 					'post_type'   => $post_type,
 					'post_status' => 'any',
 					'include' => $post_ids,
-				);
+				)
+			);
+
 			$posts = get_posts( $args );
 		}
 
@@ -101,8 +113,7 @@ class Writer_Helper_Copy_Post {
 
 		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
 
-		// @todo current_user_can( 'read_post', $post_id )?
-		if ( ! is_user_member_of_blog() ) {
+		if ( ! current_user_can( 'read_post', $post_id ) ) {
 			exit;
 		}
 

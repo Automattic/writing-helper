@@ -56,6 +56,12 @@
 										'post_type'				=> $post_type,
 									);
 
+					if ( ! current_user_can( 'edit_others_posts' ) ) {
+
+						// Limiting the author's copying capabilities to own posts only
+						$stickies_args['author'] = get_current_user_id();
+					}
+
 				$stickies = new WP_Query( $stickies_args );
 				?>
 				<?php while( $stickies->have_posts() ) : $stickies->the_post(); ?>
@@ -87,6 +93,12 @@
 											'post_status'		=> 'any',
 											'post_type'			=> $post_type,
 										);
+
+					if ( ! current_user_can( 'edit_others_posts' ) ) {
+
+						// Limiting the author's copying capabilities to own posts only
+						$latest_posts_args['author'] = get_current_user_id();
+					}
 
 					$latest_posts = new WP_Query( $latest_posts_args );
 				?>
