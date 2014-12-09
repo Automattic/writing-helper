@@ -150,7 +150,6 @@ Regards,
 	}
 
 	function add_feedback_ajax_endpoint() {
-		check_ajax_referer( 'add_feedback_nonce', 'nonce' );
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = isset( $_REQUEST['post_ID'] )? (int) $_REQUEST['post_ID'] : 0;
 		$feedback = isset( $_REQUEST['feedback'] )? $_REQUEST['feedback'] : '';
@@ -169,6 +168,16 @@ Regards,
 			);
 
 		$secret = isset( $_REQUEST['shareadraft'] )? $_REQUEST['shareadraft'] : '';
+
+		check_ajax_referer(
+			'add_feedback_nonce_'
+				. get_current_blog_id()
+				. '_'
+				. $post_id
+				. '_'
+				. $secret,
+			'nonce'
+		);
 
 		if ( $this->can_view( $post_id ) ) {
 			$this->shared_post = get_post( $post_id );
@@ -351,7 +360,14 @@ Regards,
 				'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl()? 'https' : 'http' ),
 				'post_ID' => $this->shared_post->ID,
 				'shareadraft' => esc_attr( $_GET['shareadraft'] ),
-				'nonce' => wp_create_nonce( 'add_feedback_nonce' ),
+				'nonce' => wp_create_nonce(
+					'add_feedback_nonce_'
+						. get_current_blog_id()
+						. '_'
+						. $this->shared_post->ID
+						. '_'
+						. $_GET['shareadraft']
+				),
 				'handheld_media_query' => Writing_Helper::HANDHELD_MEDIA_QUERY,
 				'minimum_feedback_length' => self::MIN_FEEDBACK_LENGTH,
 				'i18n' => array (
@@ -459,9 +475,14 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 
 
 	function add_request_ajax_endpoint() {
-		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0;
+
+		check_ajax_referer(
+			'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id,
+			'nonce'
+		);
+
 		if ( !$this->can_mail( $post_id ) )
 			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
 
@@ -542,9 +563,14 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	 * Toggle revoke/grant access
 	 */
 	function revoke_draft_access_ajax_endpoint() {
-		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0;
+
+		check_ajax_referer(
+			'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id,
+			'nonce'
+		);
+
 		if ( !$this->can_mail( $post_id ) )
 			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
 
@@ -568,8 +594,13 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	}
 
 	function get_draft_link_ajax_endpoint() {
-		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
 		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0;
+
+		check_ajax_referer(
+			'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id,
+			'nonce'
+		);
+
 		if ( !$post_id || !$this->can_mail( $post_id ) )
 			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
 

@@ -124,7 +124,10 @@ class Writing_Helper {
 		}
 
 		$object_values = array(
-			'nonce' => wp_create_nonce( 'writing_helper_nonce' ),
+			'blog_nonce' => wp_create_nonce( 'writing_helper_nonce_' . get_current_blog_id() ),
+			'post_nonce' => wp_create_nonce(
+				'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id
+			),
 			'i18n' => array (
 				'error_message' => sprintf(
 					__( 'Internal Server Error: %s', 'writing-helper' ), '{error}'
