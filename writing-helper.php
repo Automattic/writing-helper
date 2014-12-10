@@ -190,14 +190,6 @@ class Writing_Helper {
 	 */
 	public static function jsonp_return( $value, $callback ) {
 
-		// Explicitly setting the content type to avoid errors in browsers with
-		// strict mime-type policies
-		header(
-			'Content-Type: application/javascript; charset='
-				. get_option( 'blog_charset' ),
-			true
-		);
-
 		// Sanitizing the callback function name
 		$callback = preg_replace( '/[^a-z0-9_.]/i', '', (string) $callback );
 
@@ -206,21 +198,33 @@ class Writing_Helper {
 		}
 
 		// Preventing Rosetta by prepending /**/
-		die( "/**/" . $callback . '(' . json_encode( $value ) . ')' );
+		die( "/**/" . $callback . '(' . self::json_prepare( $value, true ) . ')' );
 	}
 
 	public static function json_return( $value ) {
+		die( self::json_prepare( $value ) );
+	}
+
+	public static function json_prepare( $value, $is_jsonp = false ) {
+		$charset = get_option( 'blog_charset' );
+
+		if ( function_exists( 'wp_json_encode' ) ) {
+			$value = wp_json_encode( $value );
+			$charset = 'UTF-8';
+		} else {
+			$value = json_encode( $value );
+		}
 
 		// Explicitly setting the content type to avoid errors in browsers with
 		// strict mime-type policies
 		header(
-			'Content-Type: application/json; charset='
-				. get_option( 'blog_charset' ),
+			'Content-Type: application/'
+			. $is_jsonp ? 'javascript' : 'json'
+			. '; charset=' . $charset,
 			true
 		);
 
-		// Preventing Rosetta by prepending /**/
-		die( json_encode( $value ) );
+		return $value;
 	}
 }
 
