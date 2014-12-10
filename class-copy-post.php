@@ -81,8 +81,8 @@ class Writer_Helper_Copy_Post {
 					'exclude' => implode( ',', (array) $sticky_posts ),
 				)
 			);
-			@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
-			die( json_encode( get_posts( $args ) ) );
+
+			Writing_Helper::json_return( get_posts( $args ) );
 		}
 
 		$like = like_escape( $search_terms );
@@ -104,8 +104,7 @@ class Writer_Helper_Copy_Post {
 
 		do_action( 'wh_copypost_searched_posts' );
 
-		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
-		die( json_encode( $posts ) );
+		Writing_Helper::json_return( $posts );
 	}
 
 	function add_ajax_get_post_endpoint() {
@@ -132,8 +131,7 @@ class Writer_Helper_Copy_Post {
 
 		do_action( 'wh_copypost_copied_post', $post );
 
-		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
-		die( json_encode( $post ) );
+		Writing_Helper::json_return( $post );
 	}
 
 	function add_ajax_stick_post_endpoint() {

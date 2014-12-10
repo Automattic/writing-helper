@@ -139,16 +139,6 @@ Regards,
 			add_post_meta( $post_id, self::feedback_metakey, self::addslashes_deep( $feedbacks ) );
 	}
 
-	function sanitize_callback( $callback ) {
-		$callback = preg_replace( '/[^a-z0-9_.]/i', '', (string) $callback );
-
-		if ( ! strlen( $callback ) ) {
-			return '';
-		}
-
-		return "/**/$callback";
-	}
-
 	function add_feedback_ajax_endpoint() {
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = isset( $_REQUEST['post_ID'] )? (int) $_REQUEST['post_ID'] : 0;
@@ -189,7 +179,7 @@ Regards,
 				$callback
 			);
 		}
-		$this->jsonp_return( array(),  $callback );
+		Writing_Helper::jsonp_return( array(),  $callback );
 	}
 
 	function get_feedbacks( $post_id ) {
@@ -460,27 +450,13 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	}
 
 	function json_die_with_error( $message ) {
-		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
-		die( json_encode( array( 'error' => $message ) ) );
+		Writing_Helper::json_return( array( 'error' => $message ) );
 	}
 
 	function jsonp_die_with_error( $message, $callback ) {
-		$callback = $this->sanitize_callback( $callback );
 		if ( !$callback ) $this->json_die_with_error( $message );
-		@header( 'Content-Type: text/javascript; charset=' . get_option( 'blog_charset' ) );
-		die( $callback . '(' . json_encode( array( 'error' => $message ) ) . ')' );
-	}
 
-	function jsonp_return( $value, $callback ) {
-
-		// Explicitly setting the content type to avoid errors in browsers with
-		// strict mime-type policies
-		header(
-			'Content-Type: application/javascript; charset='
-				. get_option( 'blog_charset' ),
-			true
-		);
-		die( $callback . '(' . json_encode( $value ) . ')' );
+		Writing_Helper::jsonp_return( array( 'error' => $message ), $callback );
 	}
 
 	function add_request_ajax_endpoint() {
@@ -532,11 +508,10 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 			);
 		}
 
-		$this->jsonp_return(
+		Writing_Helper::json_return(
 			array(
 				'response' => $this->_get_feedback_table_content( $post_id )
-			),
-			$callback
+			)
 		);
 	}
 
@@ -627,9 +602,8 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 		$this->save_requests( $post_id, $requests );
 		do_action( 'wh_draftfeedback_generate_link' );
 
-		$this->jsonp_return(
-			array( 'response' => $this->_get_feedback_table_content( $post_id ) ),
-			$callback
+		Writing_Helper::json_return(
+			array( 'response' => $this->_get_feedback_table_content( $post_id ) )
 		);
 	}
 

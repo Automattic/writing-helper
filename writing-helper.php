@@ -180,6 +180,48 @@ class Writing_Helper {
 	function add_helper( $helper_name, $helper_obj ) {
 		$this->helpers[ $helper_name ] = $helper_obj;
 	}
+
+	/**
+	 * JSONP response wrapper function that will take care of callback sanitization,
+	 * content-type header setting and printing the output.
+	 *
+	 * @param Mixed $value
+	 * @param String $callback
+	 */
+	public static function jsonp_return( $value, $callback ) {
+
+		// Explicitly setting the content type to avoid errors in browsers with
+		// strict mime-type policies
+		header(
+			'Content-Type: application/javascript; charset='
+				. get_option( 'blog_charset' ),
+			true
+		);
+
+		// Sanitizing the callback function name
+		$callback = preg_replace( '/[^a-z0-9_.]/i', '', (string) $callback );
+
+		if ( ! strlen( $callback ) ) {
+			return '';
+		}
+
+		// Preventing Rosetta by prepending /**/
+		die( "/**/" . $callback . '(' . json_encode( $value ) . ')' );
+	}
+
+	public static function json_return( $value ) {
+
+		// Explicitly setting the content type to avoid errors in browsers with
+		// strict mime-type policies
+		header(
+			'Content-Type: application/json; charset='
+				. get_option( 'blog_charset' ),
+			true
+		);
+
+		// Preventing Rosetta by prepending /**/
+		die( json_encode( $value ) );
+	}
 }
 
 function Writing_Helper() {
