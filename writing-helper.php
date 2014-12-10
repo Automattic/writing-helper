@@ -223,6 +223,7 @@ class Writing_Helper {
 			. '; charset=' . $charset,
 			true
 		);
+		send_nosniff_header();
 
 		return $value;
 	}
