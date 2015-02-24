@@ -48,8 +48,6 @@ class Writer_Helper_Copy_Post {
 	}
 
 	function add_ajax_search_posts_endpoint() {
-		global $wpdb;
-
 		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
 
 		if ( ! is_user_member_of_blog() ) {
@@ -57,54 +55,68 @@ class Writer_Helper_Copy_Post {
 		}
 
 		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$search_terms = $_REQUEST['search'];
+		$search_terms = trim( $_REQUEST['search'] );
 
-		$args = array();
-		$posts = false;
-		$post_type = ! empty( $_REQUEST['post_type'] ) ? sanitize_key( $_REQUEST['post_type'] ) : 'post';
+		$post_type = ! empty( $_REQUEST['post_type'] ) ?
+			sanitize_key( $_REQUEST['post_type'] ) : 'post';
+
+		Writing_Helper::json_return( self::get_candidate_posts( $post_type, $search_terms ) );
+	}
+
+	function get_candidate_posts( $post_type = 'post', $search_terms = '', $sticky = false ) {
+		global $wpdb;
+
+		// Constructing a query that will find returned posts
+		$query_string =
+			"SELECT ID FROM {$wpdb->posts} "
+			. "WHERE post_type = %s AND post_status <> %s ";
+		$arguments = array( $post_type, 'auto-draft' );
+
 		if ( ! current_user_can( 'edit_others_posts' ) ) {
 
-			// Limiting the author's copying capabilities to own posts only
-			$args['author'] = get_current_user_id();
+			// Limiting the author's copying capabilities to own posts and public posts
+			$query_string .= "AND ( post_author = %d OR post_status = 'publish' ) ";
+
+			array_push( $arguments, get_current_user_id() );
 		}
 
-		if (
-				empty( $search_terms )
-				|| __( 'Search for posts by title', 'writing-helper' ) == $search_terms ) {
-			$sticky_posts = get_option( 'copy_a_post_sticky_posts' );
-			$args = array_merge(
-				$args,
-				array(
-					'post_type'   => $post_type,
-					'post_status' => 'any',
-					'numberposts' => 20,
-					'exclude' => implode( ',', (array) $sticky_posts ),
-				)
-			);
+		$sticky_posts = get_option( 'copy_a_post_sticky_posts' );
+		$limit = 20;
+		if ( $sticky ) {
 
-			Writing_Helper::json_return( get_posts( $args ) );
+			// Including only sticky posts as required
+			$query_string .=
+				"AND ID IN ( "
+				. implode( ',', (array) $sticky_posts )
+				. " ) ";
+
+			$limit = 3;
+
+		} elseif ( empty( $search_terms ) ) {
+
+			// Excluding sticky posts from results because they will be shown separately
+			$query_string .=
+				"AND ID NOT IN ( "
+				. implode( ',', (array) $sticky_posts )
+				. " ) ";
+		} else {
+			$query_string .= "AND ( post_title LIKE %s OR post_content LIKE %s ) ";
+			array_push( $arguments, "%" . like_escape( $search_terms ) . "%" );
+
+			// Duplicating the last entry
+			array_push( $arguments, end( $arguments ) );
+
+			do_action( 'wh_copypost_searched_posts' );
 		}
+		$query_string .= "ORDER BY post_date DESC LIMIT $limit";
 
-		$like = like_escape( $search_terms );
-		$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s AND post_type = %s LIMIT 20", "%$like%", $post_type ) );
+		// Extracting post IDs
+		$post_ids = wp_list_pluck(
+			$wpdb->get_results( $wpdb->prepare( $query_string, $arguments) ),
+			'ID'
+		);
 
-		if ( !empty( $post_ids ) ) {
-			$post_ids = implode( ',', (array) $post_ids );
-			$args = array_merge(
-				$args,
-				array(
-					'post_type'   => $post_type,
-					'post_status' => 'any',
-					'include' => $post_ids,
-				)
-			);
-
-			$posts = get_posts( $args );
-		}
-
-		do_action( 'wh_copypost_searched_posts' );
-
-		Writing_Helper::json_return( $posts );
+		return get_posts( array( 'post__in' => $post_ids ) );
 	}
 
 	function add_ajax_get_post_endpoint() {
