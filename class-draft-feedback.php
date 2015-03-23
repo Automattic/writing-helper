@@ -148,8 +148,10 @@ Regards,
 		if ( mb_strlen( $feedback ) < self::MIN_FEEDBACK_LENGTH )
 			$this->jsonp_die_with_error(
 				sprintf(
-					__(
+					_n(
+						'The feedback text should be at least %d character long.',
 						'The feedback text should be at least %d characters long.',
+						self::MIN_FEEDBACK_LENGTH,
 						'writing-helper'
 					),
 					self::MIN_FEEDBACK_LENGTH
@@ -360,8 +362,10 @@ Regards,
 				'minimum_feedback_length' => self::MIN_FEEDBACK_LENGTH,
 				'i18n' => array (
 					'error_minimum_feedback_length' => sprintf(
-						__(
+						_n(
+							'The feedback text should be at least %d character long.',
 							'The feedback text should be at least %d characters long.',
+							self::MIN_FEEDBACK_LENGTH,
 							'writing-helper'
 						),
 						self::MIN_FEEDBACK_LENGTH

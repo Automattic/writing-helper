@@ -82,22 +82,22 @@ class Writer_Helper_Copy_Post {
 
 		$sticky_posts = get_option( 'copy_a_post_sticky_posts' );
 		$limit = 20;
-		if ( $sticky ) {
+		if ( $sticky && ! empty( $sticky_posts ) ) {
 
 			// Including only sticky posts as required
 			$query_string .=
 				"AND ID IN ( "
-				. implode( ',', (array) $sticky_posts )
+				. rtrim( implode( ',', (array) $sticky_posts ), ',' )
 				. " ) ";
 
 			$limit = 3;
 
-		} elseif ( empty( $search_terms ) ) {
+		} elseif ( empty( $search_terms ) && ! empty( $sticky_posts ) ) {
 
 			// Excluding sticky posts from results because they will be shown separately
 			$query_string .=
 				"AND ID NOT IN ( "
-				. implode( ',', (array) $sticky_posts )
+				. rtrim( implode( ',', (array) $sticky_posts ), ',' )
 				. " ) ";
 		} else {
 			$query_string .= "AND ( post_title LIKE %s OR post_content LIKE %s ) ";
@@ -112,7 +112,7 @@ class Writer_Helper_Copy_Post {
 
 		// Extracting post IDs
 		$post_ids = wp_list_pluck(
-			$wpdb->get_results( $wpdb->prepare( $query_string, $arguments) ),
+			$wpdb->get_results( $wpdb->prepare( $query_string, $arguments ) ),
 			'ID'
 		);
 
@@ -124,12 +124,12 @@ class Writer_Helper_Copy_Post {
 
 		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
 
+		$_REQUEST = stripslashes_deep( $_REQUEST );
+		$post_id = (int) $_REQUEST['post_id'];
+
 		if ( ! current_user_can( 'read_post', $post_id ) ) {
 			exit;
 		}
-
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = (int) $_REQUEST['post_id'];
 
 		if ( empty( $post_id ) )
 			die( '-1' );

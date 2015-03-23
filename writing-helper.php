@@ -9,7 +9,7 @@ Author URI: http://automattic.com/
 Text Domain: writing-helper
 */
 
-define( 'WH_VERSION', '1.0-rc1' );
+define( 'WH_VERSION', '1.0.1' );
 
 foreach( glob( dirname(__FILE__). '/class-*.php' ) as $wh_php_file_name ) {
 	require $wh_php_file_name;
