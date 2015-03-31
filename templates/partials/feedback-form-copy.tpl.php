@@ -67,7 +67,7 @@
 								id="cp-<?php the_ID() ?>" />
 						&nbsp;
 						<span class="title"><?php the_title() ?></span>
-						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
+						<?php if ( strlen( $post->post_content ) > pow( 1024, 2 ) / 5 ) : ?>
 							<span class="excerpt">
 								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
 							</span>
@@ -99,7 +99,7 @@
 								id="cp-<?php the_ID() ?>" />
 						&nbsp;
 						<span class="title"><?php the_title() ?></span>
-						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
+						<?php if ( strlen( $post->post_content ) > pow( 1024, 2 ) / 5 ) : ?>
 							<span class="excerpt">
 								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
 							</span>
