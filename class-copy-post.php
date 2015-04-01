@@ -64,59 +64,33 @@ class Writer_Helper_Copy_Post {
 	}
 
 	function get_candidate_posts( $post_type = 'post', $search_terms = '', $sticky = false ) {
-		global $wpdb;
-
-		// Constructing a query that will find returned posts
-		$query_string =
-			"SELECT ID FROM {$wpdb->posts} "
-			. "WHERE post_type = %s AND post_status <> %s ";
-		$arguments = array( $post_type, 'auto-draft' );
-
-		if ( ! current_user_can( 'edit_others_posts' ) ) {
-
-			// Limiting the author's copying capabilities to own posts and public posts
-			$query_string .= "AND ( post_author = %d OR post_status = 'publish' ) ";
-
-			array_push( $arguments, get_current_user_id() );
-		}
-
 		$sticky_posts = get_option( 'copy_a_post_sticky_posts' );
-		$limit = 20;
+		$post_parameters = array(
+			'post_type' => $post_type,
+			'post_status' => array( 'publish', 'draft' ),
+			'posts_per_page' => 20,
+			'order_by' => 'date'
+		);
+
+
 		if ( $sticky && ! empty( $sticky_posts ) ) {
 
 			// Including only sticky posts as required
-			$query_string .=
-				"AND ID IN ( "
-				. rtrim( implode( ',', (array) $sticky_posts ), ',' )
-				. " ) ";
-
-			$limit = 3;
+			$post_parameters['post__in'] = (array) $sticky_posts;
+			$post_parameters['posts_per_page'] = 3;
 
 		} elseif ( empty( $search_terms ) && ! empty( $sticky_posts ) ) {
 
 			// Excluding sticky posts from results because they will be shown separately
-			$query_string .=
-				"AND ID NOT IN ( "
-				. rtrim( implode( ',', (array) $sticky_posts ), ',' )
-				. " ) ";
-		} else {
-			$query_string .= "AND ( post_title LIKE %s OR post_content LIKE %s ) ";
-			array_push( $arguments, "%" . like_escape( $search_terms ) . "%" );
+			$post_parameters['post__not_in'] = (array) $sticky_posts;
 
-			// Duplicating the last entry
-			array_push( $arguments, end( $arguments ) );
+		} else {
+			$post_parameters['s'] = $search_terms;
 
 			do_action( 'wh_copypost_searched_posts' );
 		}
-		$query_string .= "ORDER BY post_date DESC LIMIT $limit";
 
-		// Extracting post IDs
-		$post_ids = wp_list_pluck(
-			$wpdb->get_results( $wpdb->prepare( $query_string, $arguments ) ),
-			'ID'
-		);
-
-		return get_posts( array( 'post__in' => $post_ids ) );
+		return get_posts( $post_parameters );
 	}
 
 	function add_ajax_get_post_endpoint() {
