@@ -46,8 +46,8 @@
 			<?php $stickies = Writer_Helper_Copy_Post::get_candidate_posts( $post_type, '', true ); ?>
 			<?php if ( ! empty( $stickies ) ): ?>
 			<ul id="s-posts">
-				<?php foreach ( $stickies as $post ): ?>
-					<?php setup_postdata( $post ); ?>
+				<?php foreach ( $stickies as $sticky_post ): ?>
+					<?php setup_postdata( $sticky_post ); ?>
 					<li>
 						<input
 								type="button"
@@ -56,7 +56,7 @@
 								id="cp-<?php the_ID() ?>" />
 						&nbsp;
 						<span class="title"><?php the_title() ?></span>
-						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
+						<?php if ( strlen( $sticky_post->post_content ) > MB_IN_BYTES / 5 ) : ?>
 							<span class="excerpt">
 								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
 							</span>
@@ -70,29 +70,6 @@
 			<?php endif; ?>
 
 			<ul id="l-posts">
-				<?php
-					$candidate_posts = Writer_Helper_Copy_Post::get_candidate_posts( $post_type );
-				?>
-				<?php foreach ( $candidate_posts as $post ): ?>
-					<?php setup_postdata( $post ); ?>
-					<li>
-						<input
-								type="button"
-								value="<?php esc_attr_e( 'Copy', 'writing-helper' ) ?>"
-								class="button-secondary"
-								id="cp-<?php the_ID() ?>" />
-						&nbsp;
-						<span class="title"><?php the_title() ?></span>
-						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
-							<span class="excerpt">
-								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
-							</span>
-						<?php else: ?>
-							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
-						<?php endif; ?>
-					</li>
-				<?php endforeach; ?>
-				<?php wp_reset_postdata(); ?>
 			</ul>
 			<div class="loading">
 				<img

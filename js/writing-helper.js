@@ -266,11 +266,17 @@ jQuery( function( $ ) {
 		if (e.keyCode == 13 && $input_search.is(':focus') ) return false;
 	});
 
-	function search_posts(el) {
+	// Populating the posts search results
+	search_posts( $input_search, true );
+
+	function search_posts( el, immediately ) {
+		var search_term = $input_search.val();
+
 		$block_posts.scrollTo( 0, 'fast' );
 
-		if ( $input_search.val() != '' )
+		if ( search_term.trim() ) {
 			$( 'ul#s-posts' ).slideUp('fast');
+		}
 
 		$( 'li', $block_posts ).not( el.parent('li') ).animate({ 'opacity': 0.3 }, 'fast' );
 		$( '.loading', $block_posts ).fadeIn( 'fast' );
@@ -308,7 +314,7 @@ jQuery( function( $ ) {
 				if ( $input_search.val() == '' )
 					$( '#s-posts' ).slideDown('fast');
 			}, 'json' );
-		}, 600 );
+		}, immediately ? 0 : 600 );
 	}
 
 	function copy_post( callback ) {
