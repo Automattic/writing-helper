@@ -55,7 +55,7 @@
 								class="button-secondary"
 								id="cp-<?php the_ID() ?>" />
 						&nbsp;
-						<span class="title"><?php the_title() ?></span>
+						<span class="title"><?php echo $sticky_post->post_title ?></span>
 						<?php if ( strlen( $sticky_post->post_content ) > MB_IN_BYTES / 5 ) : ?>
 							<span class="excerpt">
 								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
