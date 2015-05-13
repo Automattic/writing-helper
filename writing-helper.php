@@ -11,6 +11,9 @@ Text Domain: writing-helper
 
 define( 'WH_VERSION', '1.0-rc1' );
 
+if ( ! defined( 'MB_IN_BYTES' ) )
+	define( 'MB_IN_BYTES', 1024 * 1024 );
+
 foreach( glob( dirname(__FILE__). '/class-*.php' ) as $wh_php_file_name ) {
 	require $wh_php_file_name;
 }
