@@ -113,7 +113,11 @@ Regards,
 	 * given the feedback.
 	 */
 	function generate_secret_link( $post_id, $secret ) {
-		return home_url( '?p=' . $post_id . '&shareadraft=' . $secret );
+		$query_args = array( 'p' => $post_id, 'shareadraft' => $secret );
+		if ( 'post' !== get_post_type( $post_id ) ) {
+			$query_args['post_type'] = get_post_type( $post_id );
+		}
+		return add_query_arg( $query_args, home_url() );
 	}
 
 	/**
