@@ -9,7 +9,7 @@ Author URI: http://automattic.com/
 Text Domain: writing-helper
 */
 
-define( 'WH_VERSION', '1.0-rc1' );
+define( 'WH_VERSION', '1.0.1' );
 
 if ( ! defined( 'MB_IN_BYTES' ) )
 	define( 'MB_IN_BYTES', 1024 * 1024 );
@@ -127,7 +127,10 @@ class Writing_Helper {
 		}
 
 		$object_values = array(
-			'nonce' => wp_create_nonce( 'writing_helper_nonce' ),
+			'blog_nonce' => wp_create_nonce( 'writing_helper_nonce_' . get_current_blog_id() ),
+			'post_nonce' => wp_create_nonce(
+				'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id
+			),
 			'i18n' => array (
 				'error_message' => sprintf(
 					__( 'Internal Server Error: %s', 'writing-helper' ), '{error}'
@@ -179,6 +182,53 @@ class Writing_Helper {
 
 	function add_helper( $helper_name, $helper_obj ) {
 		$this->helpers[ $helper_name ] = $helper_obj;
+	}
+
+	/**
+	 * JSONP response wrapper function that will take care of callback sanitization,
+	 * content-type header setting and printing the output.
+	 *
+	 * @param Mixed $value
+	 * @param String $callback
+	 */
+	public static function jsonp_return( $value, $callback ) {
+
+		// Sanitizing the callback function name
+		$callback = preg_replace( '/[^a-z0-9_.]/i', '', (string) $callback );
+
+		if ( ! strlen( $callback ) ) {
+			return '';
+		}
+
+		// Preventing Rosetta by prepending /**/
+		die( "/**/" . $callback . '(' . self::json_prepare( $value, true ) . ')' );
+	}
+
+	public static function json_return( $value ) {
+		die( self::json_prepare( $value ) );
+	}
+
+	public static function json_prepare( $value, $is_jsonp = false ) {
+		$charset = get_option( 'blog_charset' );
+
+		if ( function_exists( 'wp_json_encode' ) ) {
+			$value = wp_json_encode( $value );
+			$charset = 'UTF-8';
+		} else {
+			$value = json_encode( $value );
+		}
+
+		// Explicitly setting the content type to avoid errors in browsers with
+		// strict mime-type policies
+		header(
+			'Content-Type: application/'
+			. $is_jsonp ? 'javascript' : 'json'
+			. '; charset=' . $charset,
+			true
+		);
+		send_nosniff_header();
+
+		return $value;
 	}
 }
 

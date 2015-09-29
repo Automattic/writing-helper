@@ -56,7 +56,7 @@ jQuery(function($) {
 				action: 'request_feedback',
 				emails: $textarea_invite.val(),
 				email_text: $textarea_custom.val(),
-				nonce: WritingHelperBox.nonce,
+				nonce: WritingHelperBox.post_nonce,
 				post_id: $('#post_ID').val()
 			},
 			dataType: 'json',
@@ -145,7 +145,7 @@ jQuery(function($) {
 			url: ajaxurl,
 			data: {
 				action: 'get_draft_link',
-				nonce: WritingHelperBox.nonce,
+				nonce: WritingHelperBox.post_nonce,
 				post_id: $( this ).data('post-id')
 			},
 			dataType: 'json',
@@ -198,7 +198,7 @@ function DraftRevokeAccess($, post_id, email, link_id){
 		data: {
 			action: 'revoke_draft_access',
 			email: email,
-			nonce: WritingHelperBox.nonce,
+			nonce: WritingHelperBox.post_nonce,
 			post_id: post_id
 		},
 		dataType: 'json',
@@ -266,11 +266,17 @@ jQuery( function( $ ) {
 		if (e.keyCode == 13 && $input_search.is(':focus') ) return false;
 	});
 
-	function search_posts(el) {
+	// Populating the posts search results
+	search_posts( $input_search, true );
+
+	function search_posts( el, immediately ) {
+		var search_term = $input_search.val();
+
 		$block_posts.scrollTo( 0, 'fast' );
 
-		if ( $input_search.val() != '' )
+		if ( search_term.trim() ) {
 			$( 'ul#s-posts' ).slideUp('fast');
+		}
 
 		$( 'li', $block_posts ).not( el.parent('li') ).animate({ 'opacity': 0.3 }, 'fast' );
 		$( '.loading', $block_posts ).fadeIn( 'fast' );
@@ -281,20 +287,25 @@ jQuery( function( $ ) {
 				'action': 'helper_search_posts',
 				'search': $input_search.val(),
 				'post_type': typenow,
-				'nonce': WritingHelperBox.nonce
+				'nonce': WritingHelperBox.blog_nonce
 			}, function( posts ) {
-				$( '#l-posts li', $block_posts ).remove();
+				var $l_posts = $( '#l-posts', $block_posts );
+				$l_posts.find( 'li' ).remove();
 
 				$.each( posts, function( i, post ) {
-					$tmp = $('<div></div>')
-					$tmp.html( post.post_content.substr(0,200) );
-					$( '#l-posts', $block_posts ).append( '\
-						<li>\
-							<input type="button" value="Copy" class="button-secondary" id="cp-' + post.ID + '" /> &nbsp;\
-							<span class="title">' + post.post_title + '</span> \
-							<span class="excerpt">' + $tmp.text() + '</span> \
-						</li>\
-					' );
+					var excerpt, title;
+
+					// Strip tags: Doesn't have to be perfect. Just has to be not terrible.
+					title = post.post_title.replace( /<[^>]*>/g, '' );
+					excerpt = post.post_content.substr( 0, 400 ).replace( /<[^>]*>/g, '' ).substr( 0, 200 )
+
+					var $li = $( '<li />' ).
+						append( $( '<input type="button" value="Copy" class="button-secondary" />' ).attr( 'id', 'cp-' + post.ID ) ).
+						append( ' &nbsp;' ).
+						append( $( '<span class="title">' ).text( title ) ).
+						append( $( '<span class="excerpt">' ).text( excerpt ) );
+
+					$l_posts.append( $li );
 				} );
 
 				$( 'li', $block_posts ).css( {'opacity': 0} ).animate({ 'opacity': 1 }, 'fast' );
@@ -303,7 +314,7 @@ jQuery( function( $ ) {
 				if ( $input_search.val() == '' )
 					$( '#s-posts' ).slideDown('fast');
 			}, 'json' );
-		}, 600 );
+		}, immediately ? 0 : 600 );
 	}
 
 	function copy_post( callback ) {
@@ -318,7 +329,7 @@ jQuery( function( $ ) {
 		$.post( ajaxurl, {
 			'action': 'helper_get_post',
 			'post_id': post_id,
-			'nonce': WritingHelperBox.nonce
+			'nonce': WritingHelperBox.blog_nonce
 		}, function( post ) {
 
 			$( 'input', $block_posts ).prop( 'disabled', false );
@@ -356,7 +367,7 @@ jQuery( function( $ ) {
 		$.post( ajaxurl, {
 			'action': 'helper_stick_post',
 			'post_id': post_id,
-			'nonce': WritingHelperBox.nonce
+			'nonce': WritingHelperBox.blog_nonce
 		}, function( result ) {});
 	}
 } );

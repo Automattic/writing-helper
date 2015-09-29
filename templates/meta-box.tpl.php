@@ -12,7 +12,7 @@ switch ( $post_type ) {
 			'Use an existing post as a template.', 'writing-helper'
 		);
 		$cap_strings['instructions'] = __(
-			"Pick a post and we'll copy the title, content, tags and categories. Recent posts are listed below. Search by title to find older posts. You can mark any post to keep it at the top.",
+			"Pick a post and we'll copy the title, content, tags and categories. Recent posts are listed below. Search by title to find older posts.",
 			'writing-helper'
 		);
 		$cap_strings['search'] = __(
@@ -29,7 +29,7 @@ switch ( $post_type ) {
 			'Use an existing page as a template.', 'writing-helper'
 		);
 		$cap_strings['instructions'] = __(
-			"Pick a post and we'll copy the title and content. Recent pages are listed below. Search by title to find older pages. You can mark any page to keep it at the top.",
+			"Pick a post and we'll copy the title and content. Recent pages are listed below. Search by title to find older pages.",
 			'writing-helper'
 		);
 		$cap_strings['search'] = __(
@@ -55,7 +55,7 @@ switch ( $post_type ) {
 		);
 		$cap_strings['instructions'] = sprintf(
 			_x(
-				'Pick a %1$s and we&#8217;ll copy the title and content. Recent %2$s are listed below. Search by title to find older %3$s. You can mark any %4$s to keep it at the top.',
+				'Pick a %1$s and we&#8217;ll copy the title and content. Recent %2$s are listed below. Search by title to find older %3$s.',
 				'Copy a {post_type}. First and fourth variables are single, second and third are plurals',
 				'writing-helper'
 			),

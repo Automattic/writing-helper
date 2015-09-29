@@ -48,54 +48,62 @@ class Writer_Helper_Copy_Post {
 	}
 
 	function add_ajax_search_posts_endpoint() {
-		global $wpdb;
+		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
 
-		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
+		if ( ! is_user_member_of_blog() ) {
+			exit;
+		}
 
 		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$search_terms = $_REQUEST['search'];
+		$search_terms = trim( $_REQUEST['search'] );
 
-		$posts = false;
-		$post_type = ! empty( $_REQUEST['post_type'] ) ? sanitize_key( $_REQUEST['post_type'] ) : 'post';
+		$post_type = ! empty( $_REQUEST['post_type'] ) ?
+			sanitize_key( $_REQUEST['post_type'] ) : 'post';
 
-		if (
-				empty( $search_terms )
-				|| __( 'Search for posts by title', 'writing-helper' ) == $search_terms ) {
-			$sticky_posts = get_option( 'copy_a_post_sticky_posts' );
-			$args = array(
-					'post_type'   => $post_type,
-					'post_status' => 'any',
-					'numberposts' => 20,
-					'exclude' => implode( ',', (array) $sticky_posts ),
-				);
-			die( json_encode( get_posts( $args ) ) );
+		Writing_Helper::json_return( self::get_candidate_posts( $post_type, $search_terms ) );
+	}
+
+	function get_candidate_posts( $post_type = 'post', $search_terms = '', $sticky = false ) {
+		$sticky_posts = get_option( 'copy_a_post_sticky_posts' );
+		$post_parameters = array(
+			'post_type' => $post_type,
+			'post_status' => array( 'publish', 'draft' ),
+			'posts_per_page' => 20,
+			'order_by' => 'date'
+		);
+
+
+		if ( $sticky && ! empty( $sticky_posts ) ) {
+
+			// Including only sticky posts as required
+			$post_parameters['post__in'] = (array) $sticky_posts;
+			$post_parameters['posts_per_page'] = 3;
+
+		} elseif ( empty( $search_terms ) && ! empty( $sticky_posts ) ) {
+
+			// Excluding sticky posts from results because they will be shown separately
+			$post_parameters['post__not_in'] = (array) $sticky_posts;
+
+		} else {
+			$post_parameters['s'] = $search_terms;
+
+			do_action( 'wh_copypost_searched_posts' );
 		}
 
-		$like = like_escape( $search_terms );
-		$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s AND post_type = %s LIMIT 20", "%$like%", $post_type ) );
-
-		if ( !empty( $post_ids ) ) {
-			$post_ids = implode( ',', (array) $post_ids );
-			$args = array(
-					'post_type'   => $post_type,
-					'post_status' => 'any',
-					'include' => $post_ids,
-				);
-			$posts = get_posts( $args );
-		}
-
-		do_action( 'wh_copypost_searched_posts' );
-
-		die( json_encode( $posts ) );
+		return get_posts( $post_parameters );
 	}
 
 	function add_ajax_get_post_endpoint() {
 		global $wpdb, $current_blog;
 
-		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
+		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
 
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = (int) $_REQUEST['post_id'];
+
+		if ( ! current_user_can( 'read_post', $post_id ) ) {
+			exit;
+		}
 
 		if ( empty( $post_id ) )
 			die( '-1' );
@@ -109,11 +117,15 @@ class Writer_Helper_Copy_Post {
 
 		do_action( 'wh_copypost_copied_post', $post );
 
-		die( json_encode( $post ) );
+		Writing_Helper::json_return( $post );
 	}
 
 	function add_ajax_stick_post_endpoint() {
-		check_ajax_referer( 'writing_helper_nonce', 'nonce' );
+		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
+
+		if ( ! is_user_member_of_blog() ) {
+			exit;
+		}
 
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = (int) $_REQUEST['post_id'];

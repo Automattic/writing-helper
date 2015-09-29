@@ -11,13 +11,12 @@
 		</p>
 
 		<div class="search-posts">
+			<!--[if lt IE 10]]><label for="search-posts"><?php echo $cap_strings['search']; ?></label><![endif]-->
 			<input
 					type="search"
 					name="search"
 					id="search-posts"
-					value="<?php echo esc_attr( $cap_strings['search'] ); ?>"
-					onfocus="if ( this.value == '<?php echo esc_js( $cap_strings['search'] ); ?>' ) this.value = '';"
-					onblur="if ( this.value == '' ) this.value = '<?php echo esc_js( $cap_strings['search'] ) ?>';" />
+					placeholder="<?php echo esc_attr( $cap_strings['search'] ); ?>" />
 		</div>
 
 		<div class="confirm-copy" style="display: none;">
@@ -44,21 +43,11 @@
 		</div>
 
 		<div class="copy-posts">
-			<?php $tmp_post = $post; ?>
-			<?php $sticky_posts = get_option( 'copy_a_post_sticky_posts' ); ?>
-			<?php if ( !empty( $sticky_posts ) ) : ?>
+			<?php $stickies = Writer_Helper_Copy_Post::get_candidate_posts( $post_type, '', true ); ?>
+			<?php if ( ! empty( $stickies ) ): ?>
 			<ul id="s-posts">
-				<?php
-					$stickies_args = array(
-										'posts_per_page'		=> 3,
-										'ignore_sticky_posts'	=> 1,
-										'post__in'				=> (array) $sticky_posts,
-										'post_type'				=> $post_type,
-									);
-
-				$stickies = new WP_Query( $stickies_args );
-				?>
-				<?php while( $stickies->have_posts() ) : $stickies->the_post(); ?>
+				<?php foreach ( $stickies as $sticky_post ): ?>
+					<?php setup_postdata( $sticky_post ); ?>
 					<li>
 						<input
 								type="button"
@@ -66,8 +55,8 @@
 								class="button-secondary"
 								id="cp-<?php the_ID() ?>" />
 						&nbsp;
-						<span class="title"><?php the_title() ?></span>
-						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
+						<span class="title"><?php echo $sticky_post->post_title ?></span>
+						<?php if ( strlen( $sticky_post->post_content ) > MB_IN_BYTES / 5 ) : ?>
 							<span class="excerpt">
 								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
 							</span>
@@ -75,40 +64,12 @@
 							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
 						<?php endif; ?>
 					</li>
-				<?php endwhile; ?>
+				<?php endforeach; ?>
+				<?php wp_reset_postdata(); ?>
 			</ul>
 			<?php endif; ?>
 
 			<ul id="l-posts">
-				<?php
-					$latest_posts_args = array(
-											'posts_per_page'	=> 20,
-											'posts__not_in'		=> (array) $sticky_posts,
-											'post_status'		=> 'any',
-											'post_type'			=> $post_type,
-										);
-
-					$latest_posts = new WP_Query( $latest_posts_args );
-				?>
-				<?php while( $latest_posts->have_posts() ) : $latest_posts->the_post(); ?>
-					<li>
-						<input
-								type="button"
-								value="<?php esc_attr_e( 'Copy', 'writing-helper' ) ?>"
-								class="button-secondary"
-								id="cp-<?php the_ID() ?>" />
-						&nbsp;
-						<span class="title"><?php the_title() ?></span>
-						<?php if ( strlen( $post->post_content ) > MB_IN_BYTES / 5 ) : ?>
-							<span class="excerpt">
-								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
-							</span>
-						<?php else: ?>
-							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
-						<?php endif; ?>
-					</li>
-				<?php endwhile; ?>
-				<?php wp_reset_query(); $post = $tmp_post; ?>
 			</ul>
 			<div class="loading">
 				<img
