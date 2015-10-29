@@ -270,7 +270,15 @@ jQuery( function( $ ) {
 	search_posts( $input_search, true );
 
 	function search_posts( el, immediately ) {
-		var search_term = $input_search.val();
+		var search_term;
+
+		// If there is no search input, we assume that the whole form is missing and
+		// don't do anything
+		if ( ! $input_search.length ) {
+			return;
+		}
+
+		search_term = $input_search.val();
 
 		$block_posts.scrollTo( 0, 'fast' );
 
