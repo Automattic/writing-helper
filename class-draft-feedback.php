@@ -312,6 +312,8 @@ Regards,
 	 * If you shared this post it stores the post locally.
 	 */
 	function posts_results_intercept( $posts ) {
+		remove_filter( 'posts_results', array( $this, 'posts_results_intercept' ) );
+
 		if (1 != count( $posts ) ) return $posts;
 		$post = &$posts[0];
 		/* Don't use get_post_status(), because it generates a DB query,
@@ -336,6 +338,8 @@ Regards,
 	 * If the post was stored locally, it returns it for rendering.
 	 */
 	function the_posts_intercept( $posts ) {
+		remove_filter( 'the_posts', array( $this, 'the_posts_intercept' ) );
+        
 		if ( !empty( $posts ) && ( isset( $_GET['nux'] ) && $_GET['nux'] == 'nuts' ) ) {
 			// site admins always have a post
 			$overwrite_post = true;
