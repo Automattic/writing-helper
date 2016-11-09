@@ -61,7 +61,7 @@ class Writing_Helper_Draft_Feedback {
 	}
 
 	function post_status_change( $new_status, $old_status, $post ) {
-		if ( $new_status !== 'publish' || $new_status === $old_status ) {
+		if ( 'publish' !== $new_status || $new_status === $old_status ) {
 			return;
 		}
 		if ( ! $requests = $this->get_requests( $post->ID ) ) {
@@ -344,7 +344,7 @@ Regards,
 	 * If the post was stored locally, it returns it for rendering.
 	 */
 	function the_posts_intercept( $posts ) {
-		if ( ! empty( $posts ) && ( isset( $_GET['nux'] ) && $_GET['nux'] === 'nuts' ) ) {
+		if ( ! empty( $posts ) && ( isset( $_GET['nux'] ) && 'nuts' === $_GET['nux'] ) ) {
 			// site admins always have a post
 			$overwrite_post = true;
 		} else if ( ! is_null( $this->shared_post ) ) {

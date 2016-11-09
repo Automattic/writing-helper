@@ -29,9 +29,9 @@ class Writer_Helper_Copy_Post {
 					$submenu_page .= '?post_type=' . $post_type;
 				}
 
-				if ( $post_type === 'post' ) {
+				if ( 'post' === $post_type ) {
 					$submenu_page_label = __( 'Copy a Post', 'writing-helper' );
-				} else if ( $post_type === 'page' ) {
+				} else if ( 'page' === $post_type ) {
 					$submenu_page_label = __( 'Copy a Page', 'writing-helper' );
 				} else {
 					$submenu_page_label = sprintf(
