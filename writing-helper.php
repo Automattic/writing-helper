@@ -218,7 +218,7 @@ class Writing_Helper {
 			$value = wp_json_encode( $value );
 			$charset = 'UTF-8';
 		} else {
-			$value = json_encode( $value );
+			$value = json_encode( $value ); // @codingStandardsIgnoreLine
 		}
 
 		// Explicitly setting the content type to avoid errors in browsers with
