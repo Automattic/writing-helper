@@ -54,11 +54,9 @@ class Writer_Helper_Copy_Post {
 			exit;
 		}
 
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$search_terms = isset( $_REQUEST['search'] ) ? trim( sanitize_text_field( wp_unslash( $_REQUEST['search'] ) ) ) : '';
-
-		$post_type = ! empty( $_REQUEST['post_type'] ) ?
-			sanitize_key( $_REQUEST['post_type'] ) : 'post';
+		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
+		$search_terms = isset( $_REQUEST['search'] ) ? trim( sanitize_text_field( wp_unslash( $_REQUEST['search'] ) ) ) : ''; // input var okay
+		$post_type = ! empty( $_REQUEST['post_type'] ) ? sanitize_key( $_REQUEST['post_type'] ) : 'post'; // input var okay
 
 		Writing_Helper::json_return( self::get_candidate_posts( $post_type, $search_terms ) );
 	}
@@ -97,8 +95,8 @@ class Writer_Helper_Copy_Post {
 
 		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
 
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0;
+		$_REQUEST = stripslashes_deep( $_REQUEST );  // input var okay
+		$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0; // input var okay
 
 		if ( ! current_user_can( 'read_post', $post_id ) ) {
 			exit;
@@ -127,8 +125,8 @@ class Writer_Helper_Copy_Post {
 			exit;
 		}
 
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0;
+		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
+		$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0; // input var okay
 
 		if ( empty( $post_id ) ) {
 			die( '-1' );
@@ -151,8 +149,8 @@ class Writer_Helper_Copy_Post {
 	}
 
 	function add_ajax_record_stat_endpoint() {
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$stat = isset( $_REQUEST['stat'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['stat'] ) ) : '';
+		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
+		$stat = isset( $_REQUEST['stat'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['stat'] ) ) : ''; // input var okay
 
 		if ( empty( $stat ) ) {
 			die( '-1' );
