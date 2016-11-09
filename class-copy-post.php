@@ -55,7 +55,7 @@ class Writer_Helper_Copy_Post {
 		}
 
 		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$search_terms = trim( $_REQUEST['search'] );
+		$search_terms = trim( sanitize_text_field( wp_unslash( $_REQUEST['search'] ) ) );
 
 		$post_type = ! empty( $_REQUEST['post_type'] ) ?
 			sanitize_key( $_REQUEST['post_type'] ) : 'post';
@@ -152,7 +152,7 @@ class Writer_Helper_Copy_Post {
 
 	function add_ajax_record_stat_endpoint() {
 		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$stat = $_REQUEST['stat'];
+		$stat = sanitize_text_field( wp_unslash( $_REQUEST['stat'] ) );
 
 		if ( empty( $stat ) ) {
 			die( '-1' );

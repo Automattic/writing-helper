@@ -149,8 +149,8 @@ Regards,
 	function add_feedback_ajax_endpoint() {
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = isset( $_REQUEST['post_ID'] )? (int) $_REQUEST['post_ID'] : 0;
-		$feedback = isset( $_REQUEST['feedback'] )? $_REQUEST['feedback'] : '';
-		$callback = isset( $_REQUEST['callback'] )? $_REQUEST['callback'] : '';
+		$feedback = isset( $_REQUEST['feedback'] )? sanitize_text_field( wp_unslash( $_REQUEST['feedback'] ) ) : '';
+		$callback = isset( $_REQUEST['callback'] )? sanitize_text_field( wp_unslash( $_REQUEST['callback'] ) ) : '';
 
 		if ( mb_strlen( $feedback ) < self::MIN_FEEDBACK_LENGTH ) {
 			$this->jsonp_die_with_error(
@@ -167,7 +167,7 @@ Regards,
 			);
 		}
 
-		$secret = isset( $_REQUEST['shareadraft'] )? $_REQUEST['shareadraft'] : '';
+		$secret = isset( $_REQUEST['shareadraft'] )? sanitize_text_field( wp_unslash( $_REQUEST['shareadraft'] ) ) : '';
 
 		check_ajax_referer(
 			'add_feedback_nonce_'
@@ -361,14 +361,14 @@ Regards,
 				 */
 				'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl()? 'https' : 'http' ),
 				'post_ID' => $this->shared_post->ID,
-				'shareadraft' => esc_attr( $_GET['shareadraft'] ),
+				'shareadraft' => esc_attr( sanitize_text_field( wp_unslash( $_GET['shareadraft'] ) ) ),
 				'nonce' => wp_create_nonce(
 					'add_feedback_nonce_'
 						. get_current_blog_id()
 						. '_'
 						. $this->shared_post->ID
 						. '_'
-						. $_GET['shareadraft']
+						. sanitize_text_field( wp_unslash( $_GET['shareadraft'] ) )
 				),
 				'handheld_media_query' => Writing_Helper::HANDHELD_MEDIA_QUERY,
 				'minimum_feedback_length' => self::MIN_FEEDBACK_LENGTH,
@@ -489,14 +489,14 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
 		}
 
-		$emails = isset( $_REQUEST['emails'] )? trim( $_REQUEST['emails'] ) : '';
+		$emails = isset( $_REQUEST['emails'] )? trim( sanitize_text_field( wp_unslash( $_REQUEST['emails'] ) ) ) : '';
 		if ( ! $emails ) {
 			$this->json_die_with_error(
 				__( 'You need to enter an email address for someone you know before sending.', 'writing-helper' )
 			);
 		}
 
-		$email_text = isset( $_REQUEST['email_text'] )? trim( $_REQUEST['email_text'] ) : '';
+		$email_text = isset( $_REQUEST['email_text'] )? trim( sanitize_text_field( wp_unslash( $_REQUEST['email_text'] ) ) ) : '';
 
 		$single_emails = preg_split( '/[,\s]+/', $emails );
 		foreach ( $single_emails as $email ) {
@@ -582,7 +582,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
 		}
 
-		$revoke_email = ( isset( $_REQUEST['email'] ) ) ? $this->_normalize_email( $_REQUEST['email'] ) : '';
+		$revoke_email = ( isset( $_REQUEST['email'] ) ) ? $this->_normalize_email( sanitize_text_field( wp_unslash( $_REQUEST['email'] ) ) ) : '';
 		$requests = $this->get_requests( $post_id );
 		$res = false;
 		foreach ( $requests as $email => $request ) {
