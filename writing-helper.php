@@ -204,11 +204,11 @@ class Writing_Helper {
 		}
 
 		// Preventing Rosetta by prepending /**/
-		die( '/**/' . $callback . '(' . self::json_prepare( $value, true ) . ')' );
+		die( '/**/' . esc_html( $callback . '(' . self::json_prepare( $value, true ) . ')' ) );
 	}
 
 	public static function json_return( $value ) {
-		die( self::json_prepare( $value ) );
+		die( esc_html( self::json_prepare( $value ) ) );
 	}
 
 	public static function json_prepare( $value, $is_jsonp = false ) {
