@@ -11,10 +11,11 @@ Text Domain: writing-helper
 
 define( 'WH_VERSION', '1.0.1' );
 
-if ( ! defined( 'MB_IN_BYTES' ) )
+if ( ! defined( 'MB_IN_BYTES' ) ) {
 	define( 'MB_IN_BYTES', 1024 * 1024 );
+}
 
-foreach( glob( dirname(__FILE__). '/class-*.php' ) as $wh_php_file_name ) {
+foreach ( glob( dirname( __FILE__ ). '/class-*.php' ) as $wh_php_file_name ) {
 	require $wh_php_file_name;
 }
 
@@ -56,15 +57,16 @@ class Writing_Helper {
 	public function action_init() {
 
 		// Helpers each have an init() method
-		foreach( $this->helpers as $helper ) {
-			if ( method_exists( $helper, 'init' ) )
+		foreach ( $this->helpers as $helper ) {
+			if ( method_exists( $helper, 'init' ) ) {
 				$helper->init();
+			}
 		}
 	}
 
 	function add_meta_box() {
 		$post_type = get_post_type();
-		if( post_type_supports( $post_type, 'writing-helper' ) ) {
+		if ( post_type_supports( $post_type, 'writing-helper' ) ) {
 			add_meta_box( 'writing_helper_meta_box', __( 'Writing Helper' ), array( $this, 'meta_box_content' ), $post_type, 'normal', 'high' );
 		}
 	}
@@ -72,8 +74,9 @@ class Writing_Helper {
 	public function action_admin_enqueue_scripts() {
 
 		$screen = get_current_screen();
-		if ( 'post' != $screen->base || ! post_type_supports( $screen->post_type, 'writing-helper' ) )
+		if ( 'post' !== $screen->base || ! post_type_supports( $screen->post_type, 'writing-helper' ) ) {
 			return;
+		}
 		self::enqueue_admin_scripts();
 	}
 
@@ -118,11 +121,11 @@ class Writing_Helper {
 	}
 
 	function meta_box_content(
-			$entry = NULL, $metabox = NULL, $parameters = array() ) {
+			$entry = null, $metabox = null, $parameters = array() ) {
 		global $post_id, $current_user, $post, $screen_layout_columns;
 
 		// If the function is called with a post ID
-		if( !is_object( $entry ) && isset( $entry ) && ! isset( $post_id ) ) {
+		if ( ! is_object( $entry ) && isset( $entry ) && ! isset( $post_id ) ) {
 			$post_id = $entry;
 		}
 
@@ -131,7 +134,7 @@ class Writing_Helper {
 			'post_nonce' => wp_create_nonce(
 				'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id
 			),
-			'i18n' => array (
+			'i18n' => array(
 				'error_message' => sprintf(
 					__( 'Internal Server Error: %s', 'writing-helper' ), '{error}'
 				),
@@ -143,8 +146,8 @@ class Writing_Helper {
 					__( 'Customize the message to %s and %s more', 'writing-helper' ),
 					'{whom}',
 					'{number}'
-				)
-			)
+				),
+			),
 		);
 
 		/**
@@ -154,7 +157,7 @@ class Writing_Helper {
 		 *		* {random} - a random number
 		 * The specified substrings will be replaced in the client side code
 		 */
-		if ( defined ( 'WH_TRACKING_IMAGE' ) ) {
+		if ( defined( 'WH_TRACKING_IMAGE' ) ) {
 			$object_values['tracking_image'] = WH_TRACKING_IMAGE;
 		}
 
@@ -165,14 +168,14 @@ class Writing_Helper {
 		);
 		$df       = $this->helpers['draft_feedback'];
 		$requests = $df->get_requests( $post_id, $sort = true );
-		$show_feedback_button = ( is_object( $post ) && 'publish' != $post->post_status );
+		$show_feedback_button = ( is_object( $post ) && 'publish' !== $post->post_status );
 
 		$parameters = array_merge(
 			array(
 				'show_helper_selector' => true,
 				'show_copy_block' => true,
 				'show_feedback_block' => true,
-				'wrap_feedback_table' => true
+				'wrap_feedback_table' => true,
 			),
 			$parameters
 		);
@@ -201,11 +204,11 @@ class Writing_Helper {
 		}
 
 		// Preventing Rosetta by prepending /**/
-		die( "/**/" . $callback . '(' . self::json_prepare( $value, true ) . ')' );
+		die( '/**/' . esc_html( $callback . '(' . self::json_prepare( $value, true ) . ')' ) );
 	}
 
 	public static function json_return( $value ) {
-		die( self::json_prepare( $value ) );
+		die( esc_html( self::json_prepare( $value ) ) );
 	}
 
 	public static function json_prepare( $value, $is_jsonp = false ) {
@@ -215,16 +218,12 @@ class Writing_Helper {
 			$value = wp_json_encode( $value );
 			$charset = 'UTF-8';
 		} else {
-			$value = json_encode( $value );
+			$value = json_encode( $value ); // @codingStandardsIgnoreLine
 		}
 
 		// Explicitly setting the content type to avoid errors in browsers with
 		// strict mime-type policies
-		header(
-			'Content-Type: application/'
-			. $is_jsonp ? 'javascript' : 'json'
-			. '; charset=' . $charset,
-			true
+		header( 'Content-Type: application/' . ( $is_jsonp ? 'javascript' : 'json' ) . '; charset=' . $charset, true
 		);
 		send_nosniff_header();
 

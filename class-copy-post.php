@@ -20,18 +20,18 @@ class Writer_Helper_Copy_Post {
 	 */
 	function add_submenu_page() {
 		$post_types = get_post_types();
-		foreach( $post_types as $post_type ) {
-			if( post_type_supports( $post_type, 'writing-helper' ) ) {
+		foreach ( $post_types as $post_type ) {
+			if ( post_type_supports( $post_type, 'writing-helper' ) ) {
 				$post_type_obj = get_post_type_object( $post_type );
 
 				$submenu_page = 'edit.php';
-				if ( 'post' != $post_type ) {
+				if ( 'post' !== $post_type ) {
 					$submenu_page .= '?post_type=' . $post_type;
 				}
 
-				if ( $post_type == 'post' ) {
+				if ( 'post' === $post_type ) {
 					$submenu_page_label = __( 'Copy a Post', 'writing-helper' );
-				} else if ( $post_type == 'page' ) {
+				} else if ( 'page' === $post_type ) {
 					$submenu_page_label = __( 'Copy a Page', 'writing-helper' );
 				} else {
 					$submenu_page_label = sprintf(
@@ -54,11 +54,9 @@ class Writer_Helper_Copy_Post {
 			exit;
 		}
 
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$search_terms = trim( $_REQUEST['search'] );
-
-		$post_type = ! empty( $_REQUEST['post_type'] ) ?
-			sanitize_key( $_REQUEST['post_type'] ) : 'post';
+		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
+		$search_terms = isset( $_REQUEST['search'] ) ? trim( sanitize_text_field( wp_unslash( $_REQUEST['search'] ) ) ) : ''; // input var okay
+		$post_type = ! empty( $_REQUEST['post_type'] ) ? sanitize_key( $_REQUEST['post_type'] ) : 'post'; // input var okay
 
 		Writing_Helper::json_return( self::get_candidate_posts( $post_type, $search_terms ) );
 	}
@@ -69,9 +67,8 @@ class Writer_Helper_Copy_Post {
 			'post_type' => $post_type,
 			'post_status' => array( 'publish', 'draft' ),
 			'posts_per_page' => 20,
-			'order_by' => 'date'
+			'order_by' => 'date',
 		);
-
 
 		if ( $sticky && ! empty( $sticky_posts ) ) {
 
@@ -90,7 +87,9 @@ class Writer_Helper_Copy_Post {
 			do_action( 'wh_copypost_searched_posts' );
 		}
 
-		return get_posts( $post_parameters );
+		$query = new WP_Query( $post_parameters );
+
+		return $query->posts;
 	}
 
 	function add_ajax_get_post_endpoint() {
@@ -98,19 +97,20 @@ class Writer_Helper_Copy_Post {
 
 		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
 
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = (int) $_REQUEST['post_id'];
+		$_REQUEST = stripslashes_deep( $_REQUEST );  // input var okay
+		$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0; // input var okay
 
 		if ( ! current_user_can( 'read_post', $post_id ) ) {
 			exit;
 		}
 
-		if ( empty( $post_id ) )
+		if ( empty( $post_id ) ) {
 			die( '-1' );
+		}
 
 		$post = get_post( $post_id );
 
-		if ( 'post' == $post->post_type ) {
+		if ( 'post' === $post->post_type ) {
 			$post->post_tags = implode( ', ', (array) $wpdb->get_col( $wpdb->prepare( "SELECT slug FROM {$wpdb->terms} AS t INNER JOIN {$wpdb->term_taxonomy} AS tt ON tt.term_id = t.term_id INNER JOIN {$wpdb->term_relationships} AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.taxonomy IN ( 'post_tag' ) AND tr.object_id = %d", $post_id ) ) );
 			$post->post_categories = get_the_category( $post_id );
 		}
@@ -127,34 +127,36 @@ class Writer_Helper_Copy_Post {
 			exit;
 		}
 
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = (int) $_REQUEST['post_id'];
+		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
+		$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0; // input var okay
 
-		if ( empty( $post_id ) )
+		if ( empty( $post_id ) ) {
 			die( '-1' );
+		}
 
 		// Get sticky posts for the blog.
 		$sticky_posts = (array) get_option( 'copy_a_post_sticky_posts' );
 
 		$existing = array_search( $post_id, $sticky_posts );
 		if ( false !== $existing ) {
-			unset( $sticky_posts[$existing] );
+			unset( $sticky_posts[ $existing ] );
 		} else if ( count( $sticky_posts ) > 2 ) {
 			array_pop( $sticky_posts );
 		}
 
 		array_unshift( $sticky_posts, $post_id );
-        update_option( 'copy_a_post_sticky_posts', $sticky_posts );
+		update_option( 'copy_a_post_sticky_posts', $sticky_posts );
 
-        die( '1' );
-    }
+		die( '1' );
+	}
 
 	function add_ajax_record_stat_endpoint() {
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$stat = $_REQUEST['stat'];
+		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
+		$stat = isset( $_REQUEST['stat'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['stat'] ) ) : ''; // input var okay
 
-		if ( empty( $stat ) )
+		if ( empty( $stat ) ) {
 			die( '-1' );
+		}
 
 		do_action( 'wh_copypost_ajax_stat', $stat );
 

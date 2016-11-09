@@ -43,7 +43,7 @@ class Writing_Helper_Draft_Feedback {
 
 	function init() {
 		// should work even if not logged in (for testing)
-		if ( isset( $_REQUEST['shareadraft'] ) ) {
+		if ( isset( $_REQUEST['shareadraft'] ) ) { // input var okay
 			add_filter( 'the_posts', array( $this, 'the_posts_intercept' ) );
 			add_filter( 'posts_results', array( $this, 'posts_results_intercept' ) );
 			add_action( 'wp_ajax_add_feedback', array( $this, 'add_feedback_ajax_endpoint' ) );
@@ -61,13 +61,14 @@ class Writing_Helper_Draft_Feedback {
 	}
 
 	function post_status_change( $new_status, $old_status, $post ) {
-		if ( $new_status != 'publish' || $new_status == $old_status )
+		if ( 'publish' !== $new_status || $new_status === $old_status ) {
 			return;
-		if ( !$requests = $this->get_requests( $post->ID ) ) {
+		}
+		if ( ! $requests = $this->get_requests( $post->ID ) ) {
 			return;
 		}
 		foreach ( $requests as $email => $request ) {
-			if ( !isset( $request['revoked'] ) && is_email( $email ) ) {
+			if ( ! isset( $request['revoked'] ) && is_email( $email ) ) {
 				$this->email_post_published( $email, $post, $request );
 			}
 		}
@@ -75,19 +76,19 @@ class Writing_Helper_Draft_Feedback {
 
 	private function email_headers( &$user ) {
 		$headers = 'Reply-To: ' . $user->display_name . ' <' . $user->user_email . ">\r\n";
-		$headers .= "From: " . $user->display_name . " <donotreply@wordpress.com>\r\n";
+		$headers .= 'From: ' . $user->display_name . " <donotreply@wordpress.com>\r\n";
 		return $headers;
 	}
 
 	private function email_post_published( $email, $post, $request ) {
-		$sender =  get_userdata( $request['user_id'] );
+		$sender = get_userdata( $request['user_id'] );
 		$subject = sprintf(
 			__( '%1$s’s draft titled "%2$s" has been published', 'writing-helper' ),
 			$sender->display_name,
 			$post->post_title
 		);
 		$body = sprintf( __(
-'Howdy!
+			'Howdy!
 
 Recently you were kind enough to give feedback on my draft "%1$s".
 
@@ -99,7 +100,7 @@ Here’s the published version, and please share if you wish:
 Regards,
 %3$s', 'writing-helper' ), $post->post_title, get_permalink( $post->ID ), $sender->display_name );
 
-		wp_mail( $email, $subject, $body, $this->email_headers( $sender  ) );
+		wp_mail( $email, $subject, $body, $this->email_headers( $sender ) );
 	}
 
 	/**
@@ -129,27 +130,29 @@ Regards,
 	function add_feedback( $post_id, $email, $feedback_text ) {
 		$feedbacks = get_post_meta( $post_id, self::feedback_metakey, true );
 
-		if ( !is_array( $feedbacks ) )
+		if ( ! is_array( $feedbacks ) ) {
 			$feedbacks = array();
+		}
 
-		if ( !isset( $feedbacks[$email] ) || !is_array( $feedbacks[$email] ) )
-			$feedbacks[$email] = array();
+		if ( ! isset( $feedbacks[ $email ] ) || ! is_array( $feedbacks[ $email ] ) ) {
+			$feedbacks[ $email ] = array();
+		}
 
-		$feedbacks[$email][] = array( 'time' => time(), 'content' => $feedback_text );
+		$feedbacks[ $email ][] = array( 'time' => time(), 'content' => $feedback_text );
 
-		if ( get_post_meta( $post_id, self::feedback_metakey, true ) )
+		if ( get_post_meta( $post_id, self::feedback_metakey, true ) ) {
 			update_post_meta( $post_id, self::feedback_metakey, self::addslashes_deep( $feedbacks ) );
-		else
-			add_post_meta( $post_id, self::feedback_metakey, self::addslashes_deep( $feedbacks ) );
+		} else { add_post_meta( $post_id, self::feedback_metakey, self::addslashes_deep( $feedbacks ) );
+		}
 	}
 
 	function add_feedback_ajax_endpoint() {
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = isset( $_REQUEST['post_ID'] )? (int) $_REQUEST['post_ID'] : 0;
-		$feedback = isset( $_REQUEST['feedback'] )? $_REQUEST['feedback'] : '';
-		$callback = isset( $_REQUEST['callback'] )? $_REQUEST['callback'] : '';
+		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
+		$post_id = isset( $_REQUEST['post_ID'] ) ? (int) $_REQUEST['post_ID'] : 0; // input var okay
+		$feedback = isset( $_REQUEST['feedback'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['feedback'] ) ) : ''; // input var okay
+		$callback = isset( $_REQUEST['callback'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['callback'] ) ) : ''; // input var okay
 
-		if ( mb_strlen( $feedback ) < self::MIN_FEEDBACK_LENGTH )
+		if ( mb_strlen( $feedback ) < self::MIN_FEEDBACK_LENGTH ) {
 			$this->jsonp_die_with_error(
 				sprintf(
 					_n(
@@ -162,8 +165,9 @@ Regards,
 				),
 				$callback
 			);
+		}
 
-		$secret = isset( $_REQUEST['shareadraft'] )? $_REQUEST['shareadraft'] : '';
+		$secret = isset( $_REQUEST['shareadraft'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['shareadraft'] ) ) : ''; // input var okay
 
 		check_ajax_referer(
 			'add_feedback_nonce_'
@@ -194,8 +198,9 @@ Regards,
 
 	function get_user_feedbacks( $post_id, $email ) {
 		$feedbacks = $this->get_feedbacks( $post_id );
-		if ( ! empty( $feedbacks[$email] ) )
-			return $feedbacks[$email];
+		if ( ! empty( $feedbacks[ $email ] ) ) {
+			return $feedbacks[ $email ];
+		}
 	}
 
 	function time_to_date( $timestamp ) {
@@ -212,44 +217,45 @@ Regards,
 	 */
 	function add_request( $post_id, $emails, $email_text ) {
 		global $current_user;
-		if ( !$emails || !is_array( $emails ) ) {
+		if ( ! $emails || ! is_array( $emails ) ) {
 			return false;
 		}
 		$requests = $this->get_requests( $post_id );
 		do_action( 'wh_draftfeedback_existing_requests', $requests );
 
-		foreach( $emails as $email ) {
+		foreach ( $emails as $email ) {
 			$email = $this->_normalize_email( $email );
-			if ( !isset( $requests[$email] ) ) {
-				$requests[$email] = array(
+			if ( ! isset( $requests[ $email ] ) ) {
+				$requests[ $email ] = array(
 					'key'		=> uniqid(),
 					'time'		=> time(),
 					'user_id' 	=> $current_user->ID,
 				);
 				$res = $this->save_requests( $post_id, $requests );
-				if ( !$res ) return false;
+				if ( ! $res ) { return false;
+				}
 			} else {
-				$requests[$email]['user_id'] = $current_user->ID;
+				$requests[ $email ]['user_id'] = $current_user->ID;
 			}
-			$this->email_feedback_request( $post_id, $email, $email_text, $requests[$email] );
+			$this->email_feedback_request( $post_id, $email, $email_text, $requests[ $email ] );
 		}
 		return true;
 	}
 
 	function save_requests( $post_id, $requests ) {
-		if ( get_post_meta( $post_id, self::requests_metakey, true ) )
+		if ( get_post_meta( $post_id, self::requests_metakey, true ) ) {
 			return update_post_meta( $post_id, self::requests_metakey, self::addslashes_deep( $requests ) );
-		else
-			return add_post_meta( $post_id, self::requests_metakey, self::addslashes_deep( $requests ) );
+		} else { return add_post_meta( $post_id, self::requests_metakey, self::addslashes_deep( $requests ) );
+		}
 	}
 
 	private function rsort_requests( $a, $b ) {
 		$a = $a['last_feedback'];
 		$b = $b['last_feedback'];
-		if ( $a == $b )
+		if ( $a === $b ) {
 			return 0;
-		else
-			return ( $a > $b ) ? -1 : 1;
+		} else { return ( $a > $b ) ? -1 : 1;
+		}
 	}
 
 	function get_requests( $post_id, $sort = false ) {
@@ -258,17 +264,18 @@ Regards,
 		// order by last received feedback, reverse chronological
 		if ( $sort && $requests && is_array( $requests ) ) {
 			$feedbacks = $this->get_feedbacks( $post_id );
-			foreach ( $requests as $email=>$values) {
-				if ( isset( $feedbacks[$email] ) ) {
-					$last_feedback = end( $feedbacks[$email] );
-					$requests[$email]['last_feedback'] = $last_feedback['time'];
+			foreach ( $requests as $email => $values ) {
+				if ( isset( $feedbacks[ $email ] ) ) {
+					$last_feedback = end( $feedbacks[ $email ] );
+					$requests[ $email ]['last_feedback'] = $last_feedback['time'];
 				} else {
-					$requests[$email]['last_feedback'] = $requests[$email]['time'];
+					$requests[ $email ]['last_feedback'] = $requests[ $email ]['time'];
 				}
 			}
 			uasort( $requests, array( &$this, 'rsort_requests' ) );
 		}
-		if ( !$requests ) $requests = array();
+		if ( ! $requests ) { $requests = array();
+		}
 		return $requests;
 	}
 
@@ -294,11 +301,11 @@ Regards,
 	 */
 	function can_view( $post_id ) {
 		$requests = $this->get_requests( $post_id );
-		if ( !isset($_REQUEST['shareadraft']) || !$requests ) {
+		if ( ! isset( $_REQUEST['shareadraft'] ) || ! $requests ) { // input var okay
 			return false;
 		}
 		foreach ( $requests as $email => $request ) {
-			if ( $request['key'] == $_REQUEST['shareadraft'] && !isset( $request['revoked'] ) ) {
+			if ( $request['key'] === $_REQUEST['shareadraft'] && ! isset( $request['revoked'] ) ) { // input var okay
 				$this->request_email = $email;
 				return true;
 			}
@@ -312,7 +319,8 @@ Regards,
 	 * If you shared this post it stores the post locally.
 	 */
 	function posts_results_intercept( $posts ) {
-		if (1 != count( $posts ) ) return $posts;
+		if ( 1 !== count( $posts ) ) { return $posts;
+		}
 		$post = &$posts[0];
 		/* Don't use get_post_status(), because it generates a DB query,
 		 * which messes up with FOUND_ROWS(): https://wpcom.trac.automattic.com/ticket/2165
@@ -320,7 +328,7 @@ Regards,
 		 * posts can be shared.
 		 * */
 		$status = $post->post_status;
-		if ( 'publish' != $status && $this->can_view( $post->ID ) ) {
+		if ( 'publish' !== $status && $this->can_view( $post->ID ) ) {
 			$this->shared_post = & $post;
 			add_filter( 'comments_open', '__return_false' );
 		} else if ( $this->can_view( $post->ID ) ) {
@@ -336,10 +344,10 @@ Regards,
 	 * If the post was stored locally, it returns it for rendering.
 	 */
 	function the_posts_intercept( $posts ) {
-		if ( !empty( $posts ) && ( isset( $_GET['nux'] ) && $_GET['nux'] == 'nuts' ) ) {
+		if ( ! empty( $posts ) && ( isset( $_GET['nux'] ) && 'nuts' === $_GET['nux'] ) ) { // input var okay
 			// site admins always have a post
 			$overwrite_post = true;
-		} else if ( !is_null( $this->shared_post ) ) {
+		} else if ( ! is_null( $this->shared_post ) ) {
 			$overwrite_post = true;
 		} else {
 			$overwrite_post = false;
@@ -351,20 +359,20 @@ Regards,
 				/* Use scheme of current page, instead of obeying force_ssl_admin().
 				 * Otherwise we might end up with Ajax request to a URL with a different scheme, which is not allowed by browsers
 				 */
-				'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl()? 'https' : 'http' ),
+				'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
 				'post_ID' => $this->shared_post->ID,
-				'shareadraft' => esc_attr( $_GET['shareadraft'] ),
+				'shareadraft' => isset( $_GET['shareadraft'] ) ? esc_attr( sanitize_text_field( wp_unslash( $_GET['shareadraft'] ) ) ) : '', // input var okay
 				'nonce' => wp_create_nonce(
 					'add_feedback_nonce_'
 						. get_current_blog_id()
 						. '_'
 						. $this->shared_post->ID
 						. '_'
-						. $_GET['shareadraft']
+						. sanitize_text_field( wp_unslash( $_GET['shareadraft'] ) ) // input var okay
 				),
 				'handheld_media_query' => Writing_Helper::HANDHELD_MEDIA_QUERY,
 				'minimum_feedback_length' => self::MIN_FEEDBACK_LENGTH,
-				'i18n' => array (
+				'i18n' => array(
 					'error_minimum_feedback_length' => sprintf(
 						_n(
 							'The feedback text should be at least %d character long.',
@@ -381,8 +389,8 @@ Regards,
 					'button_sending_feedback' => __(
 						'Sending Feedback...',
 						'writing-helper'
-					)
-				)
+					),
+				),
 			) );
 			add_action( 'wp_footer', array( $this, 'inject_feedback_form' ) );
 			return array( &$this->shared_post );
@@ -412,7 +420,7 @@ Regards,
 				__( 'Feedback received from %1$s for "%2$s"', 'writing-helper' ),
 				$reviewer,
 				$this->shared_post->post_title
-		);
+			);
 		} else {
 			$subject = sprintf(
 				__( 'Feedback received from your friend for "%2$s"', 'writing-helper' ),
@@ -422,7 +430,7 @@ Regards,
 		}
 		// Note: Keep in one string for easier i18n.
 		$body = sprintf( __(
-'Hi %1$s,
+			'Hi %1$s,
 
 Your friend %2$s has read your draft titled "%3$s" and provided feedback for you to read:
 
@@ -443,11 +451,11 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	}
 
 	function inject_feedback_form() {
-		include( dirname(__FILE__) . '/templates/feedback-form.tpl.php' );
+		include( dirname( __FILE__ ) . '/templates/feedback-form.tpl.php' );
 	}
 
 	function inject_published_notice() {
-		include( dirname(__FILE__) . '/templates/post-published.tpl.php' );
+		include( dirname( __FILE__ ) . '/templates/post-published.tpl.php' );
 	}
 
 	private function _do_template( $file, $template_vars = array() ) {
@@ -462,44 +470,47 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	}
 
 	function jsonp_die_with_error( $message, $callback ) {
-		if ( !$callback ) $this->json_die_with_error( $message );
+		if ( ! $callback ) { $this->json_die_with_error( $message );
+		}
 
 		Writing_Helper::jsonp_return( array( 'error' => $message ), $callback );
 	}
 
 	function add_request_ajax_endpoint() {
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0;
+		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
+		$post_id = isset( $_REQUEST['post_id'] ) ? (int) $_REQUEST['post_id'] : 0; // input var okay
 
 		check_ajax_referer(
 			'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id,
 			'nonce'
 		);
 
-		if ( !$this->can_mail( $post_id ) )
+		if ( ! $this->can_mail( $post_id ) ) {
 			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
+		}
 
-		$emails = isset( $_REQUEST['emails'] )? trim( $_REQUEST['emails'] ) : '';
-		if ( !$emails )
+		$emails = isset( $_REQUEST['emails'] ) ? trim( sanitize_text_field( wp_unslash( $_REQUEST['emails'] ) ) ) : ''; // input var okay
+		if ( ! $emails ) {
 			$this->json_die_with_error(
 				__( 'You need to enter an email address for someone you know before sending.', 'writing-helper' )
 			);
+		}
 
-		$email_text = isset( $_REQUEST['email_text'] )? trim( $_REQUEST['email_text'] ) : '';
+		$email_text = isset( $_REQUEST['email_text'] ) ? trim( sanitize_text_field( wp_unslash( $_REQUEST['email_text'] ) ) ) : ''; // input var okay
 
 		$single_emails = preg_split( '/[,\s]+/', $emails );
-		foreach( $single_emails as $email ) {
+		foreach ( $single_emails as $email ) {
 			$email = trim( $email );
-			if ( !$email ) {
+			if ( ! $email ) {
 				continue;
 			}
-			if ( !is_email( $email ) ) {
+			if ( ! is_email( $email ) ) {
 				$this->json_die_with_error(
 					__( 'Invalid email address', 'writing-helper' ) . ' ' . $email
 				);
 			}
 		}
-		if ( !$email_text ) {
+		if ( ! $email_text ) {
 			$this->json_die_with_error(
 				__( 'E-mail text cannot be empty', 'writing-helper' )
 			);
@@ -510,7 +521,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 			);
 		}
 		$res = $this->add_request( $post_id, $single_emails, $email_text );
-		if ( !$res ) {
+		if ( ! $res ) {
 			$this->json_die_with_error(
 				__( 'Error in adding the request', 'writing-helper' )
 			);
@@ -518,7 +529,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 
 		Writing_Helper::json_return(
 			array(
-				'response' => $this->_get_feedback_table_content( $post_id )
+				'response' => $this->_get_feedback_table_content( $post_id ),
 			)
 		);
 	}
@@ -542,12 +553,12 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 		ob_start();
 		Writing_Helper()->meta_box_content(
 			$post_id,
-			NULL,
+			null,
 			array(
 				'show_helper_selector' => false,
 				'show_copy_block' => false,
 				'show_feedback_block' => true,
-				'wrap_feedback_table' => false
+				'wrap_feedback_table' => false,
 			)
 		);
 		$response = ob_get_contents();
@@ -559,53 +570,56 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	 * Toggle revoke/grant access
 	 */
 	function revoke_draft_access_ajax_endpoint() {
-		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0;
+		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
+		$post_id = isset( $_REQUEST['post_id'] ) ? (int) $_REQUEST['post_id'] : 0; // input var okay
 
 		check_ajax_referer(
 			'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id,
 			'nonce'
 		);
 
-		if ( !$this->can_mail( $post_id ) )
+		if ( ! $this->can_mail( $post_id ) ) {
 			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
+		}
 
-		$revoke_email = ( isset( $_REQUEST['email'] ) ) ? $this->_normalize_email( $_REQUEST['email'] ) : '';
+		$revoke_email = ( isset( $_REQUEST['email'] ) ) ? $this->_normalize_email( sanitize_text_field( wp_unslash( $_REQUEST['email'] ) ) ) : ''; // input var okay
 		$requests = $this->get_requests( $post_id );
 		$res = false;
-		foreach ( $requests as $email=>$request ) {
-			if ( $email == $revoke_email ) {
-				if ( isset( $requests[$email]['revoked'] ) )
-					unset( $requests[$email]['revoked'] );
-				else
-					$requests[$email]['revoked'] = true;
+		foreach ( $requests as $email => $request ) {
+			if ( $email === $revoke_email ) {
+				if ( isset( $requests[ $email ]['revoked'] ) ) {
+					unset( $requests[ $email ]['revoked'] );
+				} else { $requests[ $email ]['revoked'] = true;
+				}
 
 				$res = $this->save_requests( $post_id, $requests );
 				break;
 			}
 		}
 
-		if ( !$res )
+		if ( ! $res ) {
 			$this->json_die_with_error( __( 'Action failed', 'writing-helper' ) );
+		}
 	}
 
 	function get_draft_link_ajax_endpoint() {
-		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0;
+		$post_id = isset( $_REQUEST['post_id'] ) ? (int) $_REQUEST['post_id'] : 0; // input var okay
 
 		check_ajax_referer(
 			'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id,
 			'nonce'
 		);
 
-		if ( !$post_id || !$this->can_mail( $post_id ) )
+		if ( ! $post_id || ! $this->can_mail( $post_id ) ) {
 			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
+		}
 
 		$key = uniqid();
 		$requests = $this->get_requests( $post_id );
-		$requests[$key] = array(
-					'key'		=> $key,
-					'time'		=> time(),
-					'user_id' 	=> get_current_user_id(),
+		$requests[ $key ] = array(
+					'key'     => $key,
+					'time'    => time(),
+					'user_id' => get_current_user_id(),
 				);
 		$this->save_requests( $post_id, $requests );
 		do_action( 'wh_draftfeedback_generate_link' );
@@ -617,8 +631,8 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 
 	static function array_map_deep( $value, $function ) {
 		if ( is_array( $value ) ) {
-			foreach( $value as $key => $data ) {
-				$value[$key] = self::array_map_deep( $data, $function );
+			foreach ( $value as $key => $data ) {
+				$value[ $key ] = self::array_map_deep( $data, $function );
 			}
 		} elseif ( is_object( $value ) ) {
 			$vars = get_object_vars( $value );
