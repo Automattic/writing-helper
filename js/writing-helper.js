@@ -1,25 +1,31 @@
 jQuery(function( $ ) {
 	var $requestfeedback = $( '#requestfeedback' ),
-		$textarea_custom = $( 'textarea.customize', $requestfeedback ),
-		$textarea_invite = $( '#invitelist', $requestfeedback ),
-		$link_cancel = $( 'a.cancel', $requestfeedback ),
-		$link_customize = $( 'a.customize', $requestfeedback ),
-		$section_modify = $( '#modify-email', $requestfeedback ),
-		$section_sent = $( '#add-request-sent', $requestfeedback ),
-		$section_invite = $( '#invitetoshare', $requestfeedback ),
-		$block_meta_box = $( '#writing_helper_meta_box' ),
-		$block_helpers = $( '#helpers' ),
-		$button_add = $( '#add-request', $requestfeedback ),
-		$button_add_custom = $( '#add-request-custom', $requestfeedback ),
-		default_email_text = $textarea_custom.val(),
-		$post_content = $( '#content' );
+		$textareaCustom = $( 'textarea.customize', $requestfeedback ),
+		$textareaInvite = $( '#invitelist', $requestfeedback ),
+		$linkCancel = $( 'a.cancel', $requestfeedback ),
+		$linkCustomize = $( 'a.customize', $requestfeedback ),
+		$sectionModify = $( '#modify-email', $requestfeedback ),
+		$sectionSent = $( '#add-request-sent', $requestfeedback ),
+		$sectionInvite = $( '#invitetoshare', $requestfeedback ),
+		$blockMetaBox = $( '#writing_helper_meta_box' ),
+		$blockHelpers = $( '#helpers' ),
+		$buttonAdd = $( '#add-request', $requestfeedback ),
+		$buttonAddCustom = $( '#add-request-custom', $requestfeedback ),
+		defaultEmailText = $textareaCustom.val(),
+		$postContent = $( '#content' ),
+		displayError,
+		publishNewRequests;
 
 	$.fn.replace_placeholders = function() {
 		return this.each(function() {
 			var $this = $( this );
-			if ( $this.data( 'replaced-placeholders' ) ) return;
-			var text = $this.val();
-			var excerpt = $post_content.text();
+			var text, excerpt;
+
+			if ( $this.data( 'replaced-placeholders' ) ) {
+				return;
+			}
+			text = $this.val();
+			excerpt = $postContent.text();
 			excerpt = $( '<div>' + excerpt + '</div>' ).text().replace( /\n+/g, ' ' );
 			if ( excerpt.length > 300 ) {
 				excerpt = excerpt.substr( 0, 300 ) + '...';
@@ -30,81 +36,86 @@ jQuery(function( $ ) {
 			$this.data( 'replaced-placeholders', true );
 		});
 	};
-	var display_error = function( id, notice ) {
+
+	displayError = function( id, notice ) {
 		$( id ).after( '<div id="draft-error" class="error"><p>' + notice + '</p></div>' );
 		$( '#draft-error' ).delay( 4000 ).fadeOut( 'slow' );
 	};
-	var publish_new_requests = function( data ) {
-		var $first_row, background_color;
+
+	publishNewRequests = function( data ) {
+		var $firstRow, backgroundColor;
 		$( '#requests-list' ).replaceWith( data.response );
 
 		// Getting the newly inserted requests list's first row
-		$first_row = $( '#requests-list tr:first' );
-		background_color = $first_row.css( 'background-color' );
+		$firstRow = $( '#requests-list tr:first' );
+		backgroundColor = $firstRow.css( 'background-color' );
 
 		// Highlighting the first row
-		$first_row.animate({ 'background-color': '#78dcfa' }).promise().done(function() {
-			$first_row.animate({ 'background-color': background_color });
+		$firstRow.animate({ 'background-color': '#78dcfa' }).promise().done(function() {
+			$firstRow.animate({ 'background-color': backgroundColor });
 		});
 	};
-	$button_add.add( $button_add_custom ).click(function() {
-		$textarea_custom.replace_placeholders();
+
+	$buttonAdd.add( $buttonAddCustom ).click(function() {
+		$textareaCustom.replace_placeholders();
 		$.ajax({
 			type: 'POST',
 			url: ajaxurl,
 			data: {
 				action: 'request_feedback',
-				emails: $textarea_invite.val(),
-				email_text: $textarea_custom.val(),
+				emails: $textareaInvite.val(),
+				email_text: $textareaCustom.val(),
 				nonce: WritingHelperBox.post_nonce,
 				post_id: $( '#post_ID' ).val()
 			},
 			dataType: 'json',
 			success: function( data, status, xhr ) {
-				if ( data['error'] )
-					display_error( $section_invite, data['error'] );
-				else {
-					publish_new_requests( data );
-					$textarea_invite.val( '' ).triggerHandler( 'keyup' );
-					$link_cancel.triggerHandler( 'click' );
-					$section_invite.hide();
-					$section_sent.show();
+				if ( data.error ) {
+					displayError( $sectionInvite, data.error );
+				} else {
+					publishNewRequests( data );
+					$textareaInvite.val( '' ).triggerHandler( 'keyup' );
+					$linkCancel.triggerHandler( 'click' );
+					$sectionInvite.hide();
+					$sectionSent.show();
 				}
 			},
 			error: function( xhr, status, error ) {
-				display_error(
+				displayError(
 					WritingHelperBox.i18n.error_message.replace( '{error}', error )
 				);
 			}
 		});
 		return false;
 	});
-	$link_customize.click(function() {
-		$textarea_custom.replace_placeholders().data( 'replaced-placeholders', false );
-		$section_modify.show();
-		$button_add.hide();
+	$linkCustomize.click(function() {
+		$textareaCustom.replace_placeholders().data( 'replaced-placeholders', false );
+		$sectionModify.show();
+		$buttonAdd.hide();
 		$( this ).hide();
 		return false;
 	});
-	$link_cancel.click(function() {
-		$textarea_custom
-			.val( default_email_text )
+	$linkCancel.click(function() {
+		$textareaCustom
+			.val( defaultEmailText )
 			.data( 'replaced-placeholders', false );
-		$section_modify.hide();
-		$button_add.show();
-		$link_customize.show();
+		$sectionModify.hide();
+		$buttonAdd.show();
+		$linkCustomize.show();
 		$( '.first-focus', $requestfeedback ).focus();
 		return false;
 	});
-	$textarea_invite.keyup(function() {
+	$textareaInvite.keyup(function() {
 		var i, parts,
 			emails = $( this ).val(),
-			to = $link_customize;
+			to = $linkCustomize;
 
 		emails = emails.replace( /^\s+/, '' ).replace( /\s+$/, '' );
 		parts = emails.split( /\s*[,\n]\s*/ );
 		for ( i = 0; i < parts.length; ++i ) {
-			if ( ! parts[i] ) parts.splice( i, 1 );
+			if ( ! parts[i] ) {
+				parts.splice( i, 1 );
+			}
 		}
 		if ( 0 == parts.length || ! emails ) {
 			to.html( WritingHelperBox.i18n.customize_message );
@@ -150,8 +161,8 @@ jQuery(function( $ ) {
 			},
 			dataType: 'json',
 			success: function( data ) {
-				if ( ! data['error'] ) {
-					publish_new_requests( data );
+				if ( ! data.error ) {
+					publishNewRequests( data );
 				}
 			},
 			complete: function() {
@@ -161,37 +172,39 @@ jQuery(function( $ ) {
 	});
 
 	/* JS to hide/show helper boxes */
-	$block_helpers.on( 'click', 'li', function( e ) {
-		var helper_container;
+	$blockHelpers.on( 'click', 'li', function( e ) {
+		var helperContainer, helperName;
+
 		e.preventDefault();
 
-		$block_helpers.hide();
-		helper_container = $( $( 'a', this ).attr( 'href' ) ).show();
-		helper_container.find( '.first-focus' ).focus();
+		$blockHelpers.hide();
+		helperContainer = $( $( 'a', this ).attr( 'href' ) ).show();
+		helperContainer.find( '.first-focus' ).focus();
+
 		// Ping stats
-		var helper_name = $( 'a', this ).attr( 'href' ).substr( 1 ); // Remove the #
+		helperName = $( 'a', this ).attr( 'href' ).substr( 1 ); // Remove the #
 
 		if ( WritingHelperBox.tracking_image ) {
 			new Image().src = WritingHelperBox
 				.tracking_image
-						.replace( '{helper_name}', helper_name )
+						.replace( '{helperName}', helperName )
 						.replace( '{random}', Math.random() );
 		}
 	});
-	$block_meta_box.on( 'click', '.back', function( event ) {
+	$blockMetaBox.on( 'click', '.back', function( event ) {
 		event.preventDefault();
-		$block_helpers.show();
+		$blockHelpers.show();
 		$( '.helper' ).hide();
 	});
-	$block_meta_box.on( 'click', '.back, #add-request-sent a', function( event ) {
+	$blockMetaBox.on( 'click', '.back, #add-request-sent a', function( event ) {
 		event.preventDefault();
-		$section_invite.show().find( '.first-focus' ).focus();
-		$section_sent.hide();
+		$sectionInvite.show().find( '.first-focus' ).focus();
+		$sectionSent.hide();
 	});
 });
 
 /* Toggle Revoke/Grant Access */
-function DraftRevokeAccess( $, post_id, email, link_id ) {
+function DraftRevokeAccess( $, postId, email, linkId ) {
 	$.ajax({
 		type: 'POST',
 		url: ajaxurl,
@@ -199,12 +212,13 @@ function DraftRevokeAccess( $, post_id, email, link_id ) {
 			action: 'revoke_draft_access',
 			email: email,
 			nonce: WritingHelperBox.post_nonce,
-			post_id: post_id
+			post_id: postId
 		},
 		dataType: 'json',
 		success: function( data, status, xhr ) {
-			if ( ! data['error'] ) {
-				var $link = $( link_id );
+			var $link;
+			if ( ! data.error ) {
+				$link = $( linkId );
 				$( '.revoke,.unrevoke', $link ).toggle();
 			}
 		},
@@ -214,139 +228,143 @@ function DraftRevokeAccess( $, post_id, email, link_id ) {
 }
 
 jQuery( function( $ ) {
-	var
-		$container_helper = $( '#copyapost' ),
-		$block_posts = $( '.copy-posts', $container_helper ),
-		$block_confirm = $( '.confirm-copy', $container_helper ),
-		$block_search = $( '.search-posts', $container_helper ),
-		$input_search = $( 'input', $block_search ),
-		post_search_timeout = null;
+	var $containerHelper = $( '#copyapost' ),
+		$blockPosts = $( '.copy-posts', $containerHelper ),
+		$blockConfirm = $( '.confirm-copy', $containerHelper ),
+		$blockSearch = $( '.search-posts', $containerHelper ),
+		$inputSearch = $( 'input', $blockSearch ),
+		postSearchTimeout = null;
 
-	$( 'ul', $block_posts ).on( 'click', 'input[type=button]', function() {
+	$( 'ul', $blockPosts ).on( 'click', 'input[type=button]', function() {
 		$( this ).addClass( 'selected' );
-		$( 'input', $block_posts ).prop( 'disabled', true );
-		$( 'li', $block_posts ).not( $( this ).parent( 'li' ) ).animate({ 'opacity': 0.3 }, 'fast' );
+		$( 'input', $blockPosts ).prop( 'disabled', true );
+		$( 'li', $blockPosts ).not( $( this ).parent( 'li' ) ).animate({ 'opacity': 0.3 }, 'fast' );
 
-		$block_confirm.slideDown( 'fast' );
+		$blockConfirm.slideDown( 'fast' );
 
-		if ( $( 'input#title' ).val() == '' ) {
-			$( 'p.copying', $block_confirm ).show();
-			$( 'p.confirm', $block_confirm ).hide();
-			copy_post();
+		if ( '' === $( 'input#title' ).val() ) {
+			$( 'p.copying', $blockConfirm ).show();
+			$( 'p.confirm', $blockConfirm ).hide();
+			copyPost();
 		}
 	});
 
-	$block_confirm.on( 'click', 'input#cancel-copy', function() {
-		$( 'li input.selected', $block_posts ).removeClass( 'selected' );
-		$( 'input', $block_posts ).prop( 'disabled', false );
-		$( 'li', $block_posts ).animate({ 'opacity': 1 }, 'fast' );
-		$block_confirm.slideUp( 'fast' );
+	$blockConfirm.on( 'click', 'input#cancel-copy', function() {
+		$( 'li input.selected', $blockPosts ).removeClass( 'selected' );
+		$( 'input', $blockPosts ).prop( 'disabled', false );
+		$( 'li', $blockPosts ).animate({ 'opacity': 1 }, 'fast' );
+		$blockConfirm.slideUp( 'fast' );
 	});
 
-	$block_confirm.on( 'click', 'input#confirm-copy', function() {
-		$( 'p.confirm', $block_confirm ).fadeOut( 'fast', function() {
-			$( 'p.copying', $block_confirm ).fadeIn( 'fast' );
+	$blockConfirm.on( 'click', 'input#confirm-copy', function() {
+		$( 'p.confirm', $blockConfirm ).fadeOut( 'fast', function() {
+			$( 'p.copying', $blockConfirm ).fadeIn( 'fast' );
 		});
-		copy_post();
+		copyPost();
 	});
 
-	$input_search.unbind( 'keyup' ).bind( 'keyup', function() {
-		search_posts( $( this ) );
+	$inputSearch.unbind( 'keyup' ).bind( 'keyup', function() {
+		searchPosts( $( this ) );
 	});
 
-	$block_search.on( 'click', 'input', function( e ) {
+	$blockSearch.on( 'click', 'input', function( e ) {
 		var offset = $( this ).offset();
 
-		if ( e.pageX > offset.left + $( this ).width() - 16 )
-			search_posts( $( this ) );
+		if ( e.pageX > offset.left + $( this ).width() - 16 ) {
+			searchPosts( $( this ) );
+		}
 	});
 
 	// Disable the enter key in the search posts box so ppl don't publish posts by mistake.
 	$( window ).on( 'keydown', function( e ) {
-		if ( e.keyCode == 13 && $input_search.is( ':focus' ) ) return false;
+		if ( 13 === e.keyCode && $inputSearch.is( ':focus' ) ) {
+			return false;
+		}
 	});
 
 	// Populating the posts search results
-	search_posts( $input_search, true );
+	searchPosts( $inputSearch, true );
 
-	function search_posts( el, immediately ) {
-		var search_term;
+	function searchPosts( el, immediately ) {
+		var searchTerm;
 
 		// If there is no search input, we assume that the whole form is missing and
 		// don't do anything
-		if ( ! $input_search.length ) {
+		if ( ! $inputSearch.length ) {
 			return;
 		}
 
-		search_term = $input_search.val();
+		searchTerm = $inputSearch.val();
 
-		$block_posts.scrollTo( 0, 'fast' );
+		$blockPosts.scrollTo( 0, 'fast' );
 
-		if ( search_term.trim() ) {
+		if ( searchTerm.trim() ) {
 			$( 'ul#s-posts' ).slideUp( 'fast' );
 		}
 
-		$( 'li', $block_posts ).not( el.parent( 'li' ) ).animate({ 'opacity': 0.3 }, 'fast' );
-		$( '.loading', $block_posts ).fadeIn( 'fast' );
+		$( 'li', $blockPosts ).not( el.parent( 'li' ) ).animate({ 'opacity': 0.3 }, 'fast' );
+		$( '.loading', $blockPosts ).fadeIn( 'fast' );
 
-		clearTimeout( post_search_timeout );
-		post_search_timeout = setTimeout( function() {
+		clearTimeout( postSearchTimeout );
+		postSearchTimeout = setTimeout( function() {
 			$.post( ajaxurl, {
-				'action': 'helper_search_posts',
-				'search': $input_search.val(),
+				'action': 'helper_searchPosts',
+				'search': $inputSearch.val(),
 				'post_type': typenow,
 				'nonce': WritingHelperBox.blog_nonce
 			}, function( posts ) {
-				var $l_posts = $( '#l-posts', $block_posts );
-				$l_posts.find( 'li' ).remove();
+				var $lPosts = $( '#l-posts', $blockPosts );
+				$lPosts.find( 'li' ).remove();
 
 				$.each( posts, function( i, post ) {
-					var excerpt, title;
+					var excerpt, title, $li;
 
 					// Strip tags: Doesn't have to be perfect. Just has to be not terrible.
 					title = post.post_title.replace( /<[^>]*>/g, '' );
 					excerpt = post.post_content.substr( 0, 400 ).replace( /<[^>]*>/g, '' ).substr( 0, 200 );
 
-					var $li = $( '<li />' ).
+					$li = $( '<li />' ).
 						append( $( '<input type="button" value="Copy" class="button-secondary" />' ).attr( 'id', 'cp-' + post.ID ) ).
 						append( ' &nbsp;' ).
 						append( $( '<span class="title">' ).text( title ) ).
 						append( $( '<span class="excerpt">' ).text( excerpt ) );
 
-					$l_posts.append( $li );
+					$lPosts.append( $li );
 				} );
 
-				$( 'li', $block_posts ).css( { 'opacity': 0 } ).animate({ 'opacity': 1 }, 'fast' );
-				$( '.loading', $block_posts ).fadeOut( 'fast' );
+				$( 'li', $blockPosts ).css( { 'opacity': 0 } ).animate({ 'opacity': 1 }, 'fast' );
+				$( '.loading', $blockPosts ).fadeOut( 'fast' );
 
-				if ( $input_search.val() == '' )
+				if ( '' === $inputSearch.val() ) {
 					$( '#s-posts' ).slideDown( 'fast' );
+				}
 			}, 'json' );
 		}, immediately ? 0 : 600 );
 	}
 
-	function copy_post( callback ) {
-		var post_id = $( 'li input.selected', $block_posts )
+	function copyPost( callback ) {
+		var postId = $( 'li input.selected', $blockPosts )
 				.attr( 'id' )
 				.substr( 3, $( 'div.copy-posts li input.selected' ).attr( 'id' ).length ),
-			isSwitchable = typeof switchEditors !== 'undefined';
+			isSwitchable = 'undefined' !== typeof switchEditors;
 
-		if ( isSwitchable )
+		if ( isSwitchable ) {
 			switchEditors.go( 'content', 'html' );
+		}
 
 		$.post( ajaxurl, {
 			'action': 'helper_get_post',
-			'post_id': post_id,
+			'post_id': postId,
 			'nonce': WritingHelperBox.blog_nonce
 		}, function( post ) {
 
-			$( 'input', $block_posts ).prop( 'disabled', false );
-			$( 'li', $block_posts ).animate({ 'opacity': 1 }, 'fast' );
-			$block_confirm.slideUp( 'fast', function() {
-				$( 'p.copying', $block_confirm ).hide();
-				$( 'p.confirm', $block_confirm ).show();
+			$( 'input', $blockPosts ).prop( 'disabled', false );
+			$( 'li', $blockPosts ).animate({ 'opacity': 1 }, 'fast' );
+			$blockConfirm.slideUp( 'fast', function() {
+				$( 'p.copying', $blockConfirm ).hide();
+				$( 'p.confirm', $blockConfirm ).show();
 			} );
-			$( 'li input.selected', $block_posts ).removeClass( 'selected' );
+			$( 'li input.selected', $blockPosts ).removeClass( 'selected' );
 
 			// Title
 			$( 'input#title' ).val( post.post_title );
@@ -354,8 +372,9 @@ jQuery( function( $ ) {
 
 			// Content
 			$( 'textarea#content' ).val( post.post_content );
-			if ( isSwitchable )
+			if ( isSwitchable ) {
 				switchEditors.go( 'content', 'tinymce' );
+			}
 
 			// Tags
 			$( 'div.taghint' ).hide();
@@ -366,15 +385,16 @@ jQuery( function( $ ) {
 				$( this ).prop( 'checked', false );
 			} );
 			$.each( post.post_categories, function( i, cat ) {
-				if ( cat.cat_ID != '' )
+				if ( '' !== cat.cat_ID ) {
 					$( 'input#in-category-' + cat.cat_ID ).prop( 'checked', true );
+				}
 			});
 		}, 'json' );
 
 		// Add the post to the list of recently copied posts to stick at the top.
 		$.post( ajaxurl, {
 			'action': 'helper_stick_post',
-			'post_id': post_id,
+			'post_id': postId,
 			'nonce': WritingHelperBox.blog_nonce
 		}, function( result ) {});
 	}

@@ -1,38 +1,38 @@
 jQuery( document ).ready(function( $ ) {
-	var display_error, hide_error,
-		$textarea_feedback = $( '#feedback-text' ),
-		$first_screen = $( '.draftfeedback-first-screen' ),
-		$second_screen = $( '.draftfeedback-second-screen' );
+	var displayError, hideError,
+		$textareaFeedback = $( '#feedback-text' ),
+		$firstScreen = $( '.draftfeedback-first-screen' ),
+		$secondScreen = $( '.draftfeedback-second-screen' );
 
-	display_error = function( id, notice, hide_on_keydown ) {
-		var error_container = $( '#draft-error' );
-		if ( error_container.length ) {
-			hide_error( false, true ).done( function() {
-				display_error( id, notice, hide_on_keydown );
+	displayError = function( id, notice, hideOnKeydown ) {
+		var errorContainer = $( '#draft-error' );
+		if ( errorContainer.length ) {
+			hideError( false, true ).done( function() {
+				displayError( id, notice, hideOnKeydown );
 			});
 			return;
 		} else {
-			error_container = '<div id="draft-error" class="error"><p>' + notice + '</p></div>';
+			errorContainer = '<div id="draft-error" class="error"><p>' + notice + '</p></div>';
 		}
 
-		$( id ).after( error_container );
-		if ( hide_on_keydown ) {
-			$( hide_on_keydown ).on( 'keydown', function() {
-				hide_error( false );
+		$( id ).after( errorContainer );
+		if ( hideOnKeydown ) {
+			$( hideOnKeydown ).on( 'keydown', function() {
+				hideError( false );
 			});
 		} else {
-			hide_error( true );
+			hideError( true );
 		}
 	};
 
-	hide_error = function( delayed, fast ) {
-		var error_container = $( '#draft-error' );
+	hideError = function( delayed, fast ) {
+		var errorContainer = $( '#draft-error' );
 
 		if ( delayed ) {
-			error_container = error_container.delay( 4000 );
+			errorContainer = errorContainer.delay( 4000 );
 		}
 
-		return error_container
+		return errorContainer
 			.fadeOut( fast ? 'fast' : 'slow' )
 				.promise()
 			.done( function() {
@@ -44,8 +44,8 @@ jQuery( document ).ready(function( $ ) {
 		e.preventDefault();
 
 		// Don't send empty feedback
-		if ( $textarea_feedback.val().length < DraftFeedback.minimum_feedback_length ) {
-			display_error(
+		if ( $textareaFeedback.val().length < DraftFeedback.minimum_feedback_length ) {
+			displayError(
 				'#feedback-text',
 				DraftFeedback.i18n.error_minimum_feedback_length,
 				'#feedback-text'
@@ -58,13 +58,14 @@ jQuery( document ).ready(function( $ ) {
 			url: DraftFeedback.ajaxurl,
 			data: {
 				action: 'add_feedback',
-				feedback: $textarea_feedback.val(),
+				feedback: $textareaFeedback.val(),
 				shareadraft: DraftFeedback.shareadraft,
 				nonce: DraftFeedback.nonce,
 				post_ID: DraftFeedback.post_ID
 			},
 			dataType: 'jsonp',
 			beforeSend: function() {
+
 				// Disable the button so it can't be clicked more than once to submit
 				$( '#feedbackform input:submit' )
 					.val( DraftFeedback.i18n.button_sending_feedback )
@@ -73,23 +74,23 @@ jQuery( document ).ready(function( $ ) {
 			success: function( data, status, xhr ) {
 				var promise;
 
-				if ( data['error'] ) {
-					display_error( '#feedback-text', data['error'] );
+				if ( data.error ) {
+					displayError( '#feedback-text', data.error );
 				} else {
 
 					// Starting to fade out the first screen of the feedback interface
-					promise = $first_screen.fadeOut( 400 ).promise();
+					promise = $firstScreen.fadeOut( 400 ).promise();
 
 					promise.done(function() {
 
 						// Fading is done, resetting the form and fading in the thank you screen
-						$textarea_feedback.val( '' );
-						$second_screen.fadeIn( 400 );
+						$textareaFeedback.val( '' );
+						$secondScreen.fadeIn( 400 );
 					});
 				}
 			},
 			error: function( xhr, status, error ) {
-				display_error(
+				displayError(
 					'#feedback-text',
 					DraftFeedback.i18n.error_message.replace( '{error}', error )
 				);
@@ -102,84 +103,91 @@ jQuery( document ).ready(function( $ ) {
 		});
 	});
 	$( '#feedback-more' ).on( 'click', function( event ) {
-		var promise = $second_screen.fadeOut( 400 ).promise();
+		var promise = $secondScreen.fadeOut( 400 ).promise();
 
 		promise.done(function() {
 
 			// When the second screen is completely faded away, we start fading the first screen in
-			$first_screen.fadeIn( 400 ).promise().done(function() {
+			$firstScreen.fadeIn( 400 ).promise().done(function() {
 
 				// After the first screen is visible, we focus on the textarea
-				$textarea_feedback.focus();
+				$textareaFeedback.focus();
 			});
 		});
 	});
-	$textarea_feedback.focus();
+	$textareaFeedback.focus();
 });
 
 /**
  * Feedback form interface controls
  */
 jQuery( document ).ready(function( $ ) {
-	var feedback_textarea = $( '#feedbackform textarea' ),
-		$button_activate = $( '#draftfeedback-activate' ),
-		$block_floater = $( '#feedback-floater' ),
-		$block_intro = $( '#draftfeedback-intro' ),
-		$buttons_return = $( '.draftfeedback-return' ),
-		scroll_top_offset;
+	var feedbackTextarea = $( '#feedbackform textarea' ),
+		$buttonActivate = $( '#draftfeedback-activate' ),
+		$blockFloater = $( '#feedback-floater' ),
+		$blockIntro = $( '#draftfeedback-intro' ),
+		$buttonsReturn = $( '.draftfeedback-return' ),
+		scrollTopOffset,
+		matcher,
+		resizeHandler,
+		sidebarHeight,
+		introHeight,
+		textareaHeight;
 
 	$( 'body' ).addClass( 'draftfeedback' );
 
 	// If the body width matches this media selector, the feedback helper
 	// will start in minimized state
-	var matcher = window.matchMedia( DraftFeedback.handheld_media_query );
+	matcher = window.matchMedia( DraftFeedback.handheld_media_query );
 
-	var resize_handler = function() {
+	resizeHandler = function() {
 
 		// For smaller screens the feedback textarea is located below the
 		// post, so no action is required.
 		if ( matcher.matches ) {
-			 return;
+			return;
 		}
 
-		var sidebar_height = $( '.draftfeedback-feedback-form' ).height();
-		var intro_height = $( '.draftfeedback-intro' ).height();
-		var textarea_height = sidebar_height - intro_height;
-		feedback_textarea.css( 'height', ( textarea_height - 130 ) + 'px' );
+		sidebarHeight = $( '.draftfeedback-feedback-form' ).height();
+		introHeight = $( '.draftfeedback-intro' ).height();
+		textareaHeight = sidebarHeight - introHeight;
+		feedbackTextarea.css( 'height', ( textareaHeight - 130 ) + 'px' );
 	};
 
-	$( window ).resize( resize_handler );
-	resize_handler();
+	$( window ).resize( resizeHandler );
+	resizeHandler();
 
 	// Clicking the activate button should take us to the form
-	$button_activate.on( 'click', function( event ) {
-		scroll_top_offset = $( window ).scrollTop();
-		$buttons_return.show();
+	$buttonActivate.on( 'click', function( event ) {
+		scrollTopOffset = $( window ).scrollTop();
+		$buttonsReturn.show();
 		$( 'html, body' ).animate({
 			scrollTop: $( '#draftfeedback-intro' ).offset().top
 		}, 400 );
 	});
 
 	// Clicking the return button should take us to where we were
-	$buttons_return.on( 'click', function( event ) {
+	$buttonsReturn.on( 'click', function( event ) {
 		$( 'html, body' ).animate({
-			scrollTop: scroll_top_offset
+			scrollTop: scrollTopOffset
 		}, 400 );
 	});
 
 	// The feedback floater block should get hidden when the
 	// window is scrolled down to the form
 	$( window ).on( 'scroll resize', function() {
+		var offset;
+
 		if ( ! matcher.matches ) {
-			 return;
+			return;
 		}
 
-		var offset = $block_intro.offset().top - window.innerHeight;
+		offset = $blockIntro.offset().top - window.innerHeight;
 
 		if ( $( window ).scrollTop() > offset ) {
-			$block_floater.fadeOut( 'fast' );
+			$blockFloater.fadeOut( 'fast' );
 		} else {
-			$block_floater.fadeIn( 'fast' );
+			$blockFloater.fadeIn( 'fast' );
 		}
 	});
 });
@@ -192,12 +200,4 @@ jQuery( document ).ready(function( $ ) {
 
 /*! matchMedia() polyfill - Test a CSS media type/query in JS. Authors & copyright (c) 2012: Scott Jehl, Paul Irish, Nicholas Zakas, David Knight. Dual MIT/BSD license */
 
-window.matchMedia || ( window.matchMedia = function() {
-var c = window.styleMedia || window.media;if ( ! c ) {
-var a = document.createElement( 'style' ), d = document.getElementsByTagName( 'script' )[0], e = null;a.type = 'text/css';a.id = 'matchmediajs-test';d.parentNode.insertBefore( a, d );e = 'getComputedStyle'in window && window.getComputedStyle( a, null ) || a.currentStyle;c = { matchMedium:function( b ) {
-b = '@media ' + b + '{ #matchmediajs-test { width: 1px; } }';a.styleSheet ? a.styleSheet.cssText = b : a.textContent = b;return '1px' === e.width;
-} };
-}return function( a ) {
-return { matches:c.matchMedium( a || 'all' ), media:a || 'all' };
-};
-}() );
+window.matchMedia||(window.matchMedia=function(){var c=window.styleMedia||window.media;if(!c){var a=document.createElement("style"),d=document.getElementsByTagName("script")[0],e=null;a.type="text/css";a.id="matchmediajs-test";d.parentNode.insertBefore(a,d);e="getComputedStyle"in window&&window.getComputedStyle(a,null)||a.currentStyle;c={matchMedium:function(b){b="@media "+b+"{ #matchmediajs-test { width: 1px; } }";a.styleSheet?a.styleSheet.cssText=b:a.textContent=b;return"1px"===e.width}}}return function(a){return{matches:c.matchMedium(a|| "all"),media:a||"all"}}}());
