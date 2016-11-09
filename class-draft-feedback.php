@@ -148,9 +148,9 @@ Regards,
 
 	function add_feedback_ajax_endpoint() {
 		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
-		$post_id = isset( $_REQUEST['post_ID'] )? (int) $_REQUEST['post_ID'] : 0; // input var okay
-		$feedback = isset( $_REQUEST['feedback'] )? sanitize_text_field( wp_unslash( $_REQUEST['feedback'] ) ) : ''; // input var okay
-		$callback = isset( $_REQUEST['callback'] )? sanitize_text_field( wp_unslash( $_REQUEST['callback'] ) ) : ''; // input var okay
+		$post_id = isset( $_REQUEST['post_ID'] ) ? (int) $_REQUEST['post_ID'] : 0; // input var okay
+		$feedback = isset( $_REQUEST['feedback'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['feedback'] ) ) : ''; // input var okay
+		$callback = isset( $_REQUEST['callback'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['callback'] ) ) : ''; // input var okay
 
 		if ( mb_strlen( $feedback ) < self::MIN_FEEDBACK_LENGTH ) {
 			$this->jsonp_die_with_error(
@@ -167,7 +167,7 @@ Regards,
 			);
 		}
 
-		$secret = isset( $_REQUEST['shareadraft'] )? sanitize_text_field( wp_unslash( $_REQUEST['shareadraft'] ) ) : ''; // input var okay
+		$secret = isset( $_REQUEST['shareadraft'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['shareadraft'] ) ) : ''; // input var okay
 
 		check_ajax_referer(
 			'add_feedback_nonce_'
@@ -359,7 +359,7 @@ Regards,
 				/* Use scheme of current page, instead of obeying force_ssl_admin().
 				 * Otherwise we might end up with Ajax request to a URL with a different scheme, which is not allowed by browsers
 				 */
-				'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl()? 'https' : 'http' ),
+				'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
 				'post_ID' => $this->shared_post->ID,
 				'shareadraft' => isset( $_GET['shareadraft'] ) ? esc_attr( sanitize_text_field( wp_unslash( $_GET['shareadraft'] ) ) ) : '', // input var okay
 				'nonce' => wp_create_nonce(
@@ -478,7 +478,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 
 	function add_request_ajax_endpoint() {
 		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
-		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0; // input var okay
+		$post_id = isset( $_REQUEST['post_id'] ) ? (int) $_REQUEST['post_id'] : 0; // input var okay
 
 		check_ajax_referer(
 			'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id,
@@ -489,14 +489,14 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 			$this->json_die_with_error( __( 'Access denied', 'writing-helper' ) );
 		}
 
-		$emails = isset( $_REQUEST['emails'] )? trim( sanitize_text_field( wp_unslash( $_REQUEST['emails'] ) ) ) : ''; // input var okay
+		$emails = isset( $_REQUEST['emails'] ) ? trim( sanitize_text_field( wp_unslash( $_REQUEST['emails'] ) ) ) : ''; // input var okay
 		if ( ! $emails ) {
 			$this->json_die_with_error(
 				__( 'You need to enter an email address for someone you know before sending.', 'writing-helper' )
 			);
 		}
 
-		$email_text = isset( $_REQUEST['email_text'] )? trim( sanitize_text_field( wp_unslash( $_REQUEST['email_text'] ) ) ) : ''; // input var okay
+		$email_text = isset( $_REQUEST['email_text'] ) ? trim( sanitize_text_field( wp_unslash( $_REQUEST['email_text'] ) ) ) : ''; // input var okay
 
 		$single_emails = preg_split( '/[,\s]+/', $emails );
 		foreach ( $single_emails as $email ) {
@@ -571,7 +571,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	 */
 	function revoke_draft_access_ajax_endpoint() {
 		$_REQUEST = stripslashes_deep( $_REQUEST ); // input var okay
-		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0; // input var okay
+		$post_id = isset( $_REQUEST['post_id'] ) ? (int) $_REQUEST['post_id'] : 0; // input var okay
 
 		check_ajax_referer(
 			'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id,
@@ -603,7 +603,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 	}
 
 	function get_draft_link_ajax_endpoint() {
-		$post_id = isset( $_REQUEST['post_id'] )? (int) $_REQUEST['post_id'] : 0; // input var okay
+		$post_id = isset( $_REQUEST['post_id'] ) ? (int) $_REQUEST['post_id'] : 0; // input var okay
 
 		check_ajax_referer(
 			'writing_helper_nonce_' . get_current_blog_id() . '_' . $post_id,
