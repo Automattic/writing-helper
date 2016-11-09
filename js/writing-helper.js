@@ -1,4 +1,4 @@
-jQuery(function($) {
+jQuery(function( $ ) {
 	var $requestfeedback = $( '#requestfeedback' ),
 		$textarea_custom = $( 'textarea.customize', $requestfeedback ),
 		$textarea_invite = $( '#invitelist', $requestfeedback ),
@@ -9,38 +9,38 @@ jQuery(function($) {
 		$section_invite = $( '#invitetoshare', $requestfeedback ),
 		$block_meta_box = $( '#writing_helper_meta_box' ),
 		$block_helpers = $( '#helpers' ),
-		$button_add = $( '#add-request', $requestfeedback),
-		$button_add_custom = $( '#add-request-custom', $requestfeedback),
+		$button_add = $( '#add-request', $requestfeedback ),
+		$button_add_custom = $( '#add-request-custom', $requestfeedback ),
 		default_email_text = $textarea_custom.val(),
 		$post_content = $( '#content' );
 
 	$.fn.replace_placeholders = function() {
 		return this.each(function() {
-			var $this = $(this);
-			if ($this.data('replaced-placeholders')) return;
+			var $this = $( this );
+			if ( $this.data( 'replaced-placeholders' ) ) return;
 			var text = $this.val();
 			var excerpt = $post_content.text();
-			excerpt = $('<div>'+excerpt+'</div>').text().replace(/\n+/g, ' ');
-			if (excerpt.length > 300) {
-				excerpt = excerpt.substr(0, 300)+'...';
+			excerpt = $( '<div>' + excerpt + '</div>' ).text().replace( /\n+/g, ' ' );
+			if ( excerpt.length > 300 ) {
+				excerpt = excerpt.substr( 0, 300 ) + '...';
 			}
-			text = text.replace(/\[title\]/g, $('#title').val());
-			text = text.replace(/\[excerpt\]/g, excerpt);
-			$this.val(text);
-			$this.data('replaced-placeholders', true);
+			text = text.replace( /\[title\]/g, $( '#title' ).val() );
+			text = text.replace( /\[excerpt\]/g, excerpt );
+			$this.val( text );
+			$this.data( 'replaced-placeholders', true );
 		});
 	};
-	var display_error = function(id, notice) {
-		$(id).after('<div id="draft-error" class="error"><p>' + notice + '</p></div>');
-		$('#draft-error').delay(4000).fadeOut('slow');
-	}
+	var display_error = function( id, notice ) {
+		$( id ).after( '<div id="draft-error" class="error"><p>' + notice + '</p></div>' );
+		$( '#draft-error' ).delay( 4000 ).fadeOut( 'slow' );
+	};
 	var publish_new_requests = function( data ) {
 		var $first_row, background_color;
 		$( '#requests-list' ).replaceWith( data.response );
 
 		// Getting the newly inserted requests list's first row
 		$first_row = $( '#requests-list tr:first' );
-		background_color = $first_row.css('background-color');
+		background_color = $first_row.css( 'background-color' );
 
 		// Highlighting the first row
 		$first_row.animate({ 'background-color': '#78dcfa' }).promise().done(function() {
@@ -57,12 +57,12 @@ jQuery(function($) {
 				emails: $textarea_invite.val(),
 				email_text: $textarea_custom.val(),
 				nonce: WritingHelperBox.post_nonce,
-				post_id: $('#post_ID').val()
+				post_id: $( '#post_ID' ).val()
 			},
 			dataType: 'json',
-			success: function(data, status, xhr) {
-				if (data['error'])
-					display_error( $section_invite, data['error']);
+			success: function( data, status, xhr ) {
+				if ( data['error'] )
+					display_error( $section_invite, data['error'] );
 				else {
 					publish_new_requests( data );
 					$textarea_invite.val( '' ).triggerHandler( 'keyup' );
@@ -71,7 +71,7 @@ jQuery(function($) {
 					$section_sent.show();
 				}
 			},
-			error: function(xhr, status, error) {
+			error: function( xhr, status, error ) {
 				display_error(
 					WritingHelperBox.i18n.error_message.replace( '{error}', error )
 				);
@@ -80,16 +80,16 @@ jQuery(function($) {
 		return false;
 	});
 	$link_customize.click(function() {
-		$textarea_custom.replace_placeholders().data('replaced-placeholders', false);
+		$textarea_custom.replace_placeholders().data( 'replaced-placeholders', false );
 		$section_modify.show();
 		$button_add.hide();
-		$(this).hide();
+		$( this ).hide();
 		return false;
 	});
 	$link_cancel.click(function() {
 		$textarea_custom
-			.val(default_email_text)
-			.data('replaced-placeholders', false);
+			.val( default_email_text )
+			.data( 'replaced-placeholders', false );
 		$section_modify.hide();
 		$button_add.show();
 		$link_customize.show();
@@ -98,23 +98,23 @@ jQuery(function($) {
 	});
 	$textarea_invite.keyup(function() {
 		var i, parts,
-			emails = $(this).val(),
+			emails = $( this ).val(),
 			to = $link_customize;
 
-		emails = emails.replace(/^\s+/, '').replace(/\s+$/, '');
-		parts = emails.split(/\s*[,\n]\s*/);
-		for( i = 0; i < parts.length; ++i ) {
-			if (!parts[i]) parts.splice(i, 1);
+		emails = emails.replace( /^\s+/, '' ).replace( /\s+$/, '' );
+		parts = emails.split( /\s*[,\n]\s*/ );
+		for ( i = 0; i < parts.length; ++i ) {
+			if ( ! parts[i] ) parts.splice( i, 1 );
 		}
-		if (0 == parts.length || !emails) {
+		if ( 0 == parts.length || ! emails ) {
 			to.html( WritingHelperBox.i18n.customize_message );
-		} else if (1 == parts.length) {
+		} else if ( 1 == parts.length ) {
 			to.text( WritingHelperBox.i18n.customize_message_single.replace( '{whom}', parts[0] ) );
 		} else {
 			to.text(
 				WritingHelperBox.i18n.customize_message_multiple
-						.replace('{whom}', parts[0])
-						.replace('{number}', parts.length - 1)
+						.replace( '{whom}', parts[0] )
+						.replace( '{number}', parts.length - 1 )
 			);
 		}
 	});
@@ -126,16 +126,16 @@ jQuery(function($) {
 
 	// Reverting changes to the link field
 	$requestfeedback.on( 'change', 'input.link', function() {
-		$(this).val( this.defaultValue );
+		$( this ).val( this.defaultValue );
 	});
 
-	$('ol.feedbacks-list li a', $requestfeedback).click(function() {
-		$(this).parents('li').children('.full,.truncated').toggle();
+	$( 'ol.feedbacks-list li a', $requestfeedback ).click(function() {
+		$( this ).parents( 'li' ).children( '.full,.truncated' ).toggle();
 		return false;
 	});
 
 	/* Get a link without sending an email */
-	$( '#df-share-link' ).on( 'click', function ( event ) {
+	$( '#df-share-link' ).on( 'click', function( event ) {
 		var elements = $( '#df-share-link,#df-getting-link' );
 		event.preventDefault();
 
@@ -146,30 +146,30 @@ jQuery(function($) {
 			data: {
 				action: 'get_draft_link',
 				nonce: WritingHelperBox.post_nonce,
-				post_id: $( this ).data('post-id')
+				post_id: $( this ).data( 'post-id' )
 			},
 			dataType: 'json',
-			success: function(data) {
-				if (!data['error']) {
+			success: function( data ) {
+				if ( ! data['error'] ) {
 					publish_new_requests( data );
 				}
 			},
-			complete: function(){
+			complete: function() {
 				elements.toggle();
 			}
 		});
 	});
 
 	/* JS to hide/show helper boxes */
-	$block_helpers.on( 'click', 'li', function(e) {
+	$block_helpers.on( 'click', 'li', function( e ) {
 		var helper_container;
 		e.preventDefault();
 
 		$block_helpers.hide();
-		helper_container = $( $( 'a', this).attr( 'href' ) ).show();
+		helper_container = $( $( 'a', this ).attr( 'href' ) ).show();
 		helper_container.find( '.first-focus' ).focus();
-		// ping stats
-		var helper_name = $( 'a', this).attr('href').substr(1); // remove the #
+		// Ping stats
+		var helper_name = $( 'a', this ).attr( 'href' ).substr( 1 ); // Remove the #
 
 		if ( WritingHelperBox.tracking_image ) {
 			new Image().src = WritingHelperBox
@@ -181,7 +181,7 @@ jQuery(function($) {
 	$block_meta_box.on( 'click', '.back', function( event ) {
 		event.preventDefault();
 		$block_helpers.show();
-		$('.helper').hide();
+		$( '.helper' ).hide();
 	});
 	$block_meta_box.on( 'click', '.back, #add-request-sent a', function( event ) {
 		event.preventDefault();
@@ -191,7 +191,7 @@ jQuery(function($) {
 });
 
 /* Toggle Revoke/Grant Access */
-function DraftRevokeAccess($, post_id, email, link_id){
+function DraftRevokeAccess( $, post_id, email, link_id ) {
 	$.ajax({
 		type: 'POST',
 		url: ajaxurl,
@@ -202,10 +202,10 @@ function DraftRevokeAccess($, post_id, email, link_id){
 			post_id: post_id
 		},
 		dataType: 'json',
-		success: function(data, status, xhr) {
-			if (!data['error']) {
-				var $link = $(link_id);
-				$('.revoke,.unrevoke', $link).toggle();
+		success: function( data, status, xhr ) {
+			if ( ! data['error'] ) {
+				var $link = $( link_id );
+				$( '.revoke,.unrevoke', $link ).toggle();
 			}
 		},
 		error: function() {
@@ -225,7 +225,7 @@ jQuery( function( $ ) {
 	$( 'ul', $block_posts ).on( 'click', 'input[type=button]', function() {
 		$( this ).addClass( 'selected' );
 		$( 'input', $block_posts ).prop( 'disabled', true );
-		$( 'li', $block_posts ).not( $(this).parent('li') ).animate({ 'opacity': 0.3 }, 'fast' );
+		$( 'li', $block_posts ).not( $( this ).parent( 'li' ) ).animate({ 'opacity': 0.3 }, 'fast' );
 
 		$block_confirm.slideDown( 'fast' );
 
@@ -251,19 +251,19 @@ jQuery( function( $ ) {
 	});
 
 	$input_search.unbind( 'keyup' ).bind( 'keyup', function() {
-		search_posts( $(this) );
+		search_posts( $( this ) );
 	});
 
-	$block_search.on( 'click', 'input', function(e) {
-		var offset = $(this).offset();
+	$block_search.on( 'click', 'input', function( e ) {
+		var offset = $( this ).offset();
 
-		if (e.pageX > offset.left + $(this).width() - 16 )
-			search_posts( $(this) );
+		if ( e.pageX > offset.left + $( this ).width() - 16 )
+			search_posts( $( this ) );
 	});
 
 	// Disable the enter key in the search posts box so ppl don't publish posts by mistake.
-	$(window).on( "keydown", function(e) {
-		if (e.keyCode == 13 && $input_search.is(':focus') ) return false;
+	$( window ).on( 'keydown', function( e ) {
+		if ( e.keyCode == 13 && $input_search.is( ':focus' ) ) return false;
 	});
 
 	// Populating the posts search results
@@ -283,10 +283,10 @@ jQuery( function( $ ) {
 		$block_posts.scrollTo( 0, 'fast' );
 
 		if ( search_term.trim() ) {
-			$( 'ul#s-posts' ).slideUp('fast');
+			$( 'ul#s-posts' ).slideUp( 'fast' );
 		}
 
-		$( 'li', $block_posts ).not( el.parent('li') ).animate({ 'opacity': 0.3 }, 'fast' );
+		$( 'li', $block_posts ).not( el.parent( 'li' ) ).animate({ 'opacity': 0.3 }, 'fast' );
 		$( '.loading', $block_posts ).fadeIn( 'fast' );
 
 		clearTimeout( post_search_timeout );
@@ -305,7 +305,7 @@ jQuery( function( $ ) {
 
 					// Strip tags: Doesn't have to be perfect. Just has to be not terrible.
 					title = post.post_title.replace( /<[^>]*>/g, '' );
-					excerpt = post.post_content.substr( 0, 400 ).replace( /<[^>]*>/g, '' ).substr( 0, 200 )
+					excerpt = post.post_content.substr( 0, 400 ).replace( /<[^>]*>/g, '' ).substr( 0, 200 );
 
 					var $li = $( '<li />' ).
 						append( $( '<input type="button" value="Copy" class="button-secondary" />' ).attr( 'id', 'cp-' + post.ID ) ).
@@ -316,11 +316,11 @@ jQuery( function( $ ) {
 					$l_posts.append( $li );
 				} );
 
-				$( 'li', $block_posts ).css( {'opacity': 0} ).animate({ 'opacity': 1 }, 'fast' );
+				$( 'li', $block_posts ).css( { 'opacity': 0 } ).animate({ 'opacity': 1 }, 'fast' );
 				$( '.loading', $block_posts ).fadeOut( 'fast' );
 
 				if ( $input_search.val() == '' )
-					$( '#s-posts' ).slideDown('fast');
+					$( '#s-posts' ).slideDown( 'fast' );
 			}, 'json' );
 		}, immediately ? 0 : 600 );
 	}
@@ -328,11 +328,11 @@ jQuery( function( $ ) {
 	function copy_post( callback ) {
 		var post_id = $( 'li input.selected', $block_posts )
 				.attr( 'id' )
-				.substr(3, $( 'div.copy-posts li input.selected' ).attr('id').length ),
+				.substr( 3, $( 'div.copy-posts li input.selected' ).attr( 'id' ).length ),
 			isSwitchable = typeof switchEditors !== 'undefined';
 
-		if( isSwitchable )
-			switchEditors.go('content', 'html');
+		if ( isSwitchable )
+			switchEditors.go( 'content', 'html' );
 
 		$.post( ajaxurl, {
 			'action': 'helper_get_post',
@@ -346,7 +346,7 @@ jQuery( function( $ ) {
 				$( 'p.copying', $block_confirm ).hide();
 				$( 'p.confirm', $block_confirm ).show();
 			} );
-			$( 'li input.selected', $block_posts ).removeClass('selected');
+			$( 'li input.selected', $block_posts ).removeClass( 'selected' );
 
 			// Title
 			$( 'input#title' ).val( post.post_title );
@@ -354,8 +354,8 @@ jQuery( function( $ ) {
 
 			// Content
 			$( 'textarea#content' ).val( post.post_content );
-			if( isSwitchable )
-				switchEditors.go('content', 'tinymce');
+			if ( isSwitchable )
+				switchEditors.go( 'content', 'tinymce' );
 
 			// Tags
 			$( 'div.taghint' ).hide();
@@ -363,7 +363,7 @@ jQuery( function( $ ) {
 
 			// Categories
 			$.each( $( 'ul#categorychecklist input[type=checkbox]' ), function() {
-				$(this).prop( 'checked', false );
+				$( this ).prop( 'checked', false );
 			} );
 			$.each( post.post_categories, function( i, cat ) {
 				if ( cat.cat_ID != '' )

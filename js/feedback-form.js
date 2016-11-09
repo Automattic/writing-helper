@@ -1,4 +1,4 @@
-jQuery(document).ready(function($) {
+jQuery( document ).ready(function( $ ) {
 	var display_error, hide_error,
 		$textarea_feedback = $( '#feedback-text' ),
 		$first_screen = $( '.draftfeedback-first-screen' ),
@@ -6,7 +6,7 @@ jQuery(document).ready(function($) {
 
 	display_error = function( id, notice, hide_on_keydown ) {
 		var error_container = $( '#draft-error' );
-		if ( error_container.length) {
+		if ( error_container.length ) {
 			hide_error( false, true ).done( function() {
 				display_error( id, notice, hide_on_keydown );
 			});
@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
 			error_container = '<div id="draft-error" class="error"><p>' + notice + '</p></div>';
 		}
 
-		$(id).after(error_container);
+		$( id ).after( error_container );
 		if ( hide_on_keydown ) {
 			$( hide_on_keydown ).on( 'keydown', function() {
 				hide_error( false );
@@ -23,10 +23,10 @@ jQuery(document).ready(function($) {
 		} else {
 			hide_error( true );
 		}
-	}
+	};
 
 	hide_error = function( delayed, fast ) {
-		var error_container = $('#draft-error');
+		var error_container = $( '#draft-error' );
 
 		if ( delayed ) {
 			error_container = error_container.delay( 4000 );
@@ -35,10 +35,12 @@ jQuery(document).ready(function($) {
 		return error_container
 			.fadeOut( fast ? 'fast' : 'slow' )
 				.promise()
-			.done( function() { $( '#draft-error' ).remove(); } );
+			.done( function() {
+ $( '#draft-error' ).remove();
+ } );
 	};
 
-	$('#feedbackform').submit(function( e ) {
+	$( '#feedbackform' ).submit(function( e ) {
 		e.preventDefault();
 
 		// Don't send empty feedback
@@ -68,17 +70,17 @@ jQuery(document).ready(function($) {
 					.val( DraftFeedback.i18n.button_sending_feedback )
 					.attr( 'disabled', true );
 			},
-			success: function(data, status, xhr) {
+			success: function( data, status, xhr ) {
 				var promise;
 
-				if (data['error']) {
-					display_error('#feedback-text', data['error']);
+				if ( data['error'] ) {
+					display_error( '#feedback-text', data['error'] );
 				} else {
 
 					// Starting to fade out the first screen of the feedback interface
 					promise = $first_screen.fadeOut( 400 ).promise();
 
-					promise.done(function(){
+					promise.done(function() {
 
 						// Fading is done, resetting the form and fading in the thank you screen
 						$textarea_feedback.val( '' );
@@ -86,7 +88,7 @@ jQuery(document).ready(function($) {
 					});
 				}
 			},
-			error: function(xhr, status, error) {
+			error: function( xhr, status, error ) {
 				display_error(
 					'#feedback-text',
 					DraftFeedback.i18n.error_message.replace( '{error}', error )
@@ -95,7 +97,7 @@ jQuery(document).ready(function($) {
 			complete: function() {
 				$( '#feedbackform input:submit' )
 					.val( DraftFeedback.i18n.button_send_feedback )
-					.removeAttr( 'disabled ');
+					.removeAttr( 'disabled ' );
 			}
 		});
 	});
@@ -118,15 +120,15 @@ jQuery(document).ready(function($) {
 /**
  * Feedback form interface controls
  */
-jQuery(document).ready(function($) {
+jQuery( document ).ready(function( $ ) {
 	var feedback_textarea = $( '#feedbackform textarea' ),
 		$button_activate = $( '#draftfeedback-activate' ),
 		$block_floater = $( '#feedback-floater' ),
-		$block_intro = $( "#draftfeedback-intro" ),
+		$block_intro = $( '#draftfeedback-intro' ),
 		$buttons_return = $( '.draftfeedback-return' ),
 		scroll_top_offset;
 
-	$( 'body' ).addClass('draftfeedback');
+	$( 'body' ).addClass( 'draftfeedback' );
 
 	// If the body width matches this media selector, the feedback helper
 	// will start in minimized state
@@ -143,7 +145,7 @@ jQuery(document).ready(function($) {
 		var sidebar_height = $( '.draftfeedback-feedback-form' ).height();
 		var intro_height = $( '.draftfeedback-intro' ).height();
 		var textarea_height = sidebar_height - intro_height;
-		feedback_textarea.css( 'height', (textarea_height - 130) + 'px' );
+		feedback_textarea.css( 'height', ( textarea_height - 130 ) + 'px' );
 	};
 
 	$( window ).resize( resize_handler );
@@ -154,12 +156,12 @@ jQuery(document).ready(function($) {
 		scroll_top_offset = $( window ).scrollTop();
 		$buttons_return.show();
 		$( 'html, body' ).animate({
-			scrollTop: $( "#draftfeedback-intro" ).offset().top
+			scrollTop: $( '#draftfeedback-intro' ).offset().top
 		}, 400 );
 	});
 
 	// Clicking the return button should take us to where we were
-	$buttons_return.on( 'click', function( event) {
+	$buttons_return.on( 'click', function( event ) {
 		$( 'html, body' ).animate({
 			scrollTop: scroll_top_offset
 		}, 400 );
@@ -190,4 +192,12 @@ jQuery(document).ready(function($) {
 
 /*! matchMedia() polyfill - Test a CSS media type/query in JS. Authors & copyright (c) 2012: Scott Jehl, Paul Irish, Nicholas Zakas, David Knight. Dual MIT/BSD license */
 
-window.matchMedia||(window.matchMedia=function(){var c=window.styleMedia||window.media;if(!c){var a=document.createElement("style"),d=document.getElementsByTagName("script")[0],e=null;a.type="text/css";a.id="matchmediajs-test";d.parentNode.insertBefore(a,d);e="getComputedStyle"in window&&window.getComputedStyle(a,null)||a.currentStyle;c={matchMedium:function(b){b="@media "+b+"{ #matchmediajs-test { width: 1px; } }";a.styleSheet?a.styleSheet.cssText=b:a.textContent=b;return"1px"===e.width}}}return function(a){return{matches:c.matchMedium(a|| "all"),media:a||"all"}}}());
+window.matchMedia || ( window.matchMedia = function() {
+var c = window.styleMedia || window.media;if ( ! c ) {
+var a = document.createElement( 'style' ), d = document.getElementsByTagName( 'script' )[0], e = null;a.type = 'text/css';a.id = 'matchmediajs-test';d.parentNode.insertBefore( a, d );e = 'getComputedStyle'in window && window.getComputedStyle( a, null ) || a.currentStyle;c = { matchMedium:function( b ) {
+b = '@media ' + b + '{ #matchmediajs-test { width: 1px; } }';a.styleSheet ? a.styleSheet.cssText = b : a.textContent = b;return '1px' === e.width;
+} };
+}return function( a ) {
+return { matches:c.matchMedium( a || 'all' ), media:a || 'all' };
+};
+}() );
