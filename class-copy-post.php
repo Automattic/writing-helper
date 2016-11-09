@@ -87,7 +87,9 @@ class Writer_Helper_Copy_Post {
 			do_action( 'wh_copypost_searched_posts' );
 		}
 
-		return get_posts( $post_parameters );
+		$query = new WP_Query( $post_parameters );
+
+		return $query->posts;
 	}
 
 	function add_ajax_get_post_endpoint() {
