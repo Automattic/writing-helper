@@ -617,9 +617,9 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 		$key = uniqid();
 		$requests = $this->get_requests( $post_id );
 		$requests[ $key ] = array(
-					'key'		=> $key,
-					'time'		=> time(),
-					'user_id' 	=> get_current_user_id(),
+					'key'     => $key,
+					'time'    => time(),
+					'user_id' => get_current_user_id(),
 				);
 		$this->save_requests( $post_id, $requests );
 		do_action( 'wh_draftfeedback_generate_link' );
