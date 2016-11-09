@@ -61,7 +61,7 @@ class Writing_Helper_Draft_Feedback {
 	}
 
 	function post_status_change( $new_status, $old_status, $post ) {
-		if ( $new_status != 'publish' || $new_status == $old_status ) {
+		if ( $new_status !== 'publish' || $new_status === $old_status ) {
 			return;
 		}
 		if ( ! $requests = $this->get_requests( $post->ID ) ) {
@@ -252,7 +252,7 @@ Regards,
 	private function rsort_requests( $a, $b ) {
 		$a = $a['last_feedback'];
 		$b = $b['last_feedback'];
-		if ( $a == $b ) {
+		if ( $a === $b ) {
 			return 0;
 		} else { return ( $a > $b ) ? -1 : 1;
 		}
@@ -305,7 +305,7 @@ Regards,
 			return false;
 		}
 		foreach ( $requests as $email => $request ) {
-			if ( $request['key'] == $_REQUEST['shareadraft'] && ! isset( $request['revoked'] ) ) {
+			if ( $request['key'] === $_REQUEST['shareadraft'] && ! isset( $request['revoked'] ) ) {
 				$this->request_email = $email;
 				return true;
 			}
@@ -319,7 +319,7 @@ Regards,
 	 * If you shared this post it stores the post locally.
 	 */
 	function posts_results_intercept( $posts ) {
-		if ( 1 != count( $posts ) ) { return $posts;
+		if ( 1 !== count( $posts ) ) { return $posts;
 		}
 		$post = &$posts[0];
 		/* Don't use get_post_status(), because it generates a DB query,
@@ -328,7 +328,7 @@ Regards,
 		 * posts can be shared.
 		 * */
 		$status = $post->post_status;
-		if ( 'publish' != $status && $this->can_view( $post->ID ) ) {
+		if ( 'publish' !== $status && $this->can_view( $post->ID ) ) {
 			$this->shared_post = & $post;
 			add_filter( 'comments_open', '__return_false' );
 		} else if ( $this->can_view( $post->ID ) ) {
@@ -344,7 +344,7 @@ Regards,
 	 * If the post was stored locally, it returns it for rendering.
 	 */
 	function the_posts_intercept( $posts ) {
-		if ( ! empty( $posts ) && ( isset( $_GET['nux'] ) && $_GET['nux'] == 'nuts' ) ) {
+		if ( ! empty( $posts ) && ( isset( $_GET['nux'] ) && $_GET['nux'] === 'nuts' ) ) {
 			// site admins always have a post
 			$overwrite_post = true;
 		} else if ( ! is_null( $this->shared_post ) ) {
@@ -586,7 +586,7 @@ Thanks for flying with WordPress.com', 'writing-helper' ),
 		$requests = $this->get_requests( $post_id );
 		$res = false;
 		foreach ( $requests as $email => $request ) {
-			if ( $email == $revoke_email ) {
+			if ( $email === $revoke_email ) {
 				if ( isset( $requests[ $email ]['revoked'] ) ) {
 					unset( $requests[ $email ]['revoked'] );
 				} else { $requests[ $email ]['revoked'] = true;

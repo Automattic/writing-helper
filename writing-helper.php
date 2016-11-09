@@ -74,7 +74,7 @@ class Writing_Helper {
 	public function action_admin_enqueue_scripts() {
 
 		$screen = get_current_screen();
-		if ( 'post' != $screen->base || ! post_type_supports( $screen->post_type, 'writing-helper' ) ) {
+		if ( 'post' !== $screen->base || ! post_type_supports( $screen->post_type, 'writing-helper' ) ) {
 			return;
 		}
 		self::enqueue_admin_scripts();
@@ -168,7 +168,7 @@ class Writing_Helper {
 		);
 		$df       = $this->helpers['draft_feedback'];
 		$requests = $df->get_requests( $post_id, $sort = true );
-		$show_feedback_button = ( is_object( $post ) && 'publish' != $post->post_status );
+		$show_feedback_button = ( is_object( $post ) && 'publish' !== $post->post_status );
 
 		$parameters = array_merge(
 			array(
