@@ -223,8 +223,7 @@ class Writing_Helper {
 
 		// Explicitly setting the content type to avoid errors in browsers with
 		// strict mime-type policies
-		header( 'Content-Type: application/' . ( $is_jsonp ? 'javascript' : 'json' ) . '; charset=' . $charset,
-			true
+		header( 'Content-Type: application/' . ( $is_jsonp ? 'javascript' : 'json' ) . '; charset=' . $charset, true
 		);
 		send_nosniff_header();
 
