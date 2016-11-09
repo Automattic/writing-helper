@@ -55,7 +55,7 @@ class Writer_Helper_Copy_Post {
 		}
 
 		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$search_terms = trim( sanitize_text_field( wp_unslash( $_REQUEST['search'] ) ) );
+		$search_terms = isset( $_REQUEST['search'] ) ? trim( sanitize_text_field( wp_unslash( $_REQUEST['search'] ) ) ) : '';
 
 		$post_type = ! empty( $_REQUEST['post_type'] ) ?
 			sanitize_key( $_REQUEST['post_type'] ) : 'post';
@@ -98,7 +98,7 @@ class Writer_Helper_Copy_Post {
 		check_ajax_referer( 'writing_helper_nonce_' . get_current_blog_id(), 'nonce' );
 
 		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = (int) $_REQUEST['post_id'];
+		$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0;
 
 		if ( ! current_user_can( 'read_post', $post_id ) ) {
 			exit;
@@ -128,7 +128,7 @@ class Writer_Helper_Copy_Post {
 		}
 
 		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$post_id = (int) $_REQUEST['post_id'];
+		$post_id = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0;
 
 		if ( empty( $post_id ) ) {
 			die( '-1' );
@@ -152,7 +152,7 @@ class Writer_Helper_Copy_Post {
 
 	function add_ajax_record_stat_endpoint() {
 		$_REQUEST = stripslashes_deep( $_REQUEST );
-		$stat = sanitize_text_field( wp_unslash( $_REQUEST['stat'] ) );
+		$stat = isset( $_REQUEST['stat'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['stat'] ) ) : '';
 
 		if ( empty( $stat ) ) {
 			die( '-1' );

@@ -361,7 +361,7 @@ Regards,
 				 */
 				'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl()? 'https' : 'http' ),
 				'post_ID' => $this->shared_post->ID,
-				'shareadraft' => esc_attr( sanitize_text_field( wp_unslash( $_GET['shareadraft'] ) ) ),
+				'shareadraft' => isset( $_GET['shareadraft'] ) ? esc_attr( sanitize_text_field( wp_unslash( $_GET['shareadraft'] ) ) ) : '',
 				'nonce' => wp_create_nonce(
 					'add_feedback_nonce_'
 						. get_current_blog_id()
