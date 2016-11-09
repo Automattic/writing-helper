@@ -20,8 +20,8 @@ class Writer_Helper_Copy_Post {
 	 */
 	function add_submenu_page() {
 		$post_types = get_post_types();
-		foreach( $post_types as $post_type ) {
-			if( post_type_supports( $post_type, 'writing-helper' ) ) {
+		foreach ( $post_types as $post_type ) {
+			if ( post_type_supports( $post_type, 'writing-helper' ) ) {
 				$post_type_obj = get_post_type_object( $post_type );
 
 				$submenu_page = 'edit.php';
@@ -69,9 +69,8 @@ class Writer_Helper_Copy_Post {
 			'post_type' => $post_type,
 			'post_status' => array( 'publish', 'draft' ),
 			'posts_per_page' => 20,
-			'order_by' => 'date'
+			'order_by' => 'date',
 		);
-
 
 		if ( $sticky && ! empty( $sticky_posts ) ) {
 
@@ -105,8 +104,9 @@ class Writer_Helper_Copy_Post {
 			exit;
 		}
 
-		if ( empty( $post_id ) )
+		if ( empty( $post_id ) ) {
 			die( '-1' );
+		}
 
 		$post = get_post( $post_id );
 
@@ -130,31 +130,33 @@ class Writer_Helper_Copy_Post {
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$post_id = (int) $_REQUEST['post_id'];
 
-		if ( empty( $post_id ) )
+		if ( empty( $post_id ) ) {
 			die( '-1' );
+		}
 
 		// Get sticky posts for the blog.
 		$sticky_posts = (array) get_option( 'copy_a_post_sticky_posts' );
 
 		$existing = array_search( $post_id, $sticky_posts );
 		if ( false !== $existing ) {
-			unset( $sticky_posts[$existing] );
+			unset( $sticky_posts[ $existing ] );
 		} else if ( count( $sticky_posts ) > 2 ) {
 			array_pop( $sticky_posts );
 		}
 
 		array_unshift( $sticky_posts, $post_id );
-        update_option( 'copy_a_post_sticky_posts', $sticky_posts );
+		update_option( 'copy_a_post_sticky_posts', $sticky_posts );
 
-        die( '1' );
-    }
+		die( '1' );
+	}
 
 	function add_ajax_record_stat_endpoint() {
 		$_REQUEST = stripslashes_deep( $_REQUEST );
 		$stat = $_REQUEST['stat'];
 
-		if ( empty( $stat ) )
+		if ( empty( $stat ) ) {
 			die( '-1' );
+		}
 
 		do_action( 'wh_copypost_ajax_stat', $stat );
 
