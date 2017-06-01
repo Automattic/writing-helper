@@ -1,4 +1,4 @@
-<div id="copyapost" class="helper"<?php if ( isset( $_GET['cap'] ) ) echo ' style="display:block"'; ?>>
+<div id="copyapost" class="helper"<?php if ( isset( $_GET['cap'] ) ) { echo ' style="display:block"';} ?>>
 	<div class="helper-header" id="cap">
 		<a href="" class="back"><?php _e( 'Back', 'writing-helper' ) ?><span></span></a>
 		<h5><?php echo esc_html( $cap_strings['title'] ); ?></h5>
@@ -21,7 +21,7 @@
 
 		<div class="confirm-copy" style="display: none;">
 			<p class="confirm">
-				<?php echo esc_html( $cap_strings['confirm']  ); ?>
+				<?php echo esc_html( $cap_strings['confirm'] ); ?>
 				&nbsp;
 				<input
 						type="button"
@@ -44,9 +44,9 @@
 
 		<div class="copy-posts">
 			<?php $stickies = Writer_Helper_Copy_Post::get_candidate_posts( $post_type, '', true ); ?>
-			<?php if ( ! empty( $stickies ) ): ?>
+			<?php if ( ! empty( $stickies ) ) : ?>
 			<ul id="s-posts">
-				<?php foreach ( $stickies as $sticky_post ): ?>
+				<?php foreach ( $stickies as $sticky_post ) : ?>
 					<?php setup_postdata( $sticky_post ); ?>
 					<li>
 						<input
@@ -60,7 +60,7 @@
 							<span class="excerpt">
 								<?php esc_html_e( 'Excerpt cannot be retrieved.', 'writing-helper' ); ?>
 							</span>
-						<?php else: ?>
+						<?php else : ?>
 							<span class="excerpt"><?php echo strip_tags( get_the_excerpt() ) ?></span>
 						<?php endif; ?>
 					</li>

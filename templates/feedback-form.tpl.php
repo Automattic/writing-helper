@@ -16,7 +16,7 @@
 <div
 		class="draftfeedback-container
 			draftfeedback-feedback-form
-			<?php if ( is_admin_bar_showing() ): ?>draftfeedback-admin-bar<?php endif; ?>">
+			<?php if ( is_admin_bar_showing() ) : ?>draftfeedback-admin-bar<?php endif; ?>">
 	<div class="draftfeedback-thanks draftfeedback-second-screen" id="draftfeedback-thanks">
 		<h3><?php _e( 'Thank you for your feedback!', 'writing-helper' ); ?></h3>
 		<p>

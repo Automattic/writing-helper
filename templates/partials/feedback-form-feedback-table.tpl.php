@@ -1,12 +1,12 @@
-<?php if ( is_array( $requests ) && !empty( $requests ) ): ?>
+<?php if ( is_array( $requests ) && ! empty( $requests ) ) : ?>
 <table
 		cellspacing="0"
 		cellpadding="0"
 		id="requests-list"
-		<?php if ( 1 == $screen_layout_columns ): ?>
+		<?php if ( 1 == $screen_layout_columns ) : ?>
 			class="wide"
 		<?php endif; ?> >
-	<?php if ( 1 == $screen_layout_columns ): ?>
+	<?php if ( 1 == $screen_layout_columns ) : ?>
 		<thead>
 			<tr>
 				<th class="user"><?php _e( 'User', 'writing-helper' ); ?></th>
@@ -17,7 +17,7 @@
 	<tbody>
 		<?php $i = 0; ?>
 
-		<?php foreach( $requests as $email => $data ): ?>
+		<?php foreach ( $requests as $email => $data ) : ?>
 			<?php
 			$feedbacks = $df->get_user_feedbacks( $post_id, $email );
 			$requested_on = $df->time_to_date( $data['time'] );
@@ -60,13 +60,13 @@
 						</a>
 					</div>
 					<p class="avatar <?php echo $avatar_class ?>">
-						<?php if ( 'anonymous' != $avatar_class ): ?>
+						<?php if ( 'anonymous' != $avatar_class ) : ?>
 							<?php echo get_avatar( $email, 24 ); ?>
 						<?php endif; ?>
 						<span class="name"><?php echo $display_name ?></span>
 						<span class="added">
 							<?php printf(
-								 _x(
+								_x(
 									'added on %s',
 									'added on {creation_date}',
 									'writing-helper'
@@ -76,16 +76,16 @@
 						</span>
 					</p>
 			
-					<?php if ( 1 == $screen_layout_columns ): ?>
+					<?php if ( 1 == $screen_layout_columns ) : ?>
 						</td>
 						<td>
 					<?php endif; ?>
 			
-					<?php if ( is_array( $feedbacks ) && !empty( $feedbacks ) ):
+					<?php if ( is_array( $feedbacks ) && ! empty( $feedbacks ) ) :
 						$multi_items_css = ( count( $feedbacks ) > 1 ) ? 'multiple' : ''; ?>
 						<ol class="feedbacks-list <?php echo esc_attr( $multi_items_css ) ?>">
 			
-							<?php foreach ( $feedbacks as $feedback ): ?>
+							<?php foreach ( $feedbacks as $feedback ) : ?>
 								<?php
 								$feedback_content = wpautop( esc_html( $feedback['content'] ) );
 								$feedback_content_truncated = ( mb_strlen( $feedback_content ) > 70 ) ?
@@ -111,13 +111,13 @@
 											<?php echo $feedback_content; ?>
 											<a href="#"><?php _e( '[-] Collapse', 'writing-helper' ); ?></a>
 										</div>
-									<?php else: ?>
+									<?php else : ?>
 										<?php echo $feedback_content; ?>
 									<?php endif; ?>
 								</li>
 							<?php endforeach; ?>
 						</ol>
-					<?php elseif ( empty( $feedbacks ) ): ?>
+					<?php elseif ( empty( $feedbacks ) ) : ?>
 						<span class="no-feedback">
 							<?php _e( 'No feedback has been given yet ', 'writing-helper' ); ?>
 						</span>
@@ -127,6 +127,6 @@
 		<?php endforeach; ?>
 	</tbody>
 </table>
-<?php else: ?>
+<?php else : ?>
 <input type="hidden" id="requests-list" />
 <?php endif; ?>

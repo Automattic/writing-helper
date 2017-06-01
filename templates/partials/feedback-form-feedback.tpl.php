@@ -1,9 +1,9 @@
-<?php if ( $parameters['wrap_feedback_table'] ): ?>
+<?php if ( $parameters['wrap_feedback_table'] ) : ?>
 
 	<div
 			id="requestfeedback"
 			class="helper"
-			<?php if ( isset( $_GET['requestfeedback'] ) ): ?>
+			<?php if ( isset( $_GET['requestfeedback'] ) ) : ?>
 				style="display:block"
 			<?php endif; ?> >
 		<div class="helper-header">
@@ -13,7 +13,7 @@
 
 		<div class="inside helper-content">
 
-			<?php if ( $show_feedback_button ): ?>
+			<?php if ( $show_feedback_button ) : ?>
 				<div id="invitetoshare">
 					<p>
 						<strong>
@@ -51,12 +51,12 @@ Beginning: %4$s
 Read more: %5$s
 Thanks,
 %6$s', 'writing-helper' ),
-	'[title]',
-	'[feedback-link]',
-	'[title]',
-	'[excerpt]',
-	'[feedback-link]',
-	$current_user->display_name
+		'[title]',
+		'[feedback-link]',
+		'[title]',
+		'[excerpt]',
+		'[feedback-link]',
+		$current_user->display_name
 ); ?>
 						</textarea>
 						<br />
@@ -85,7 +85,7 @@ Thanks,
 						</a>
 					</div>
 				</div>
-			<?php else: ?>
+			<?php else : ?>
 				<p>
 					<strong>
 						<?php _e( 'This post has already been published, so you can not request any more feedback, but you can see the feedback that has been provided before that. ', 'writing-helper' ); ?>
@@ -93,11 +93,11 @@ Thanks,
 				</p>
 			<?php endif; ?>
 			<div id="add-request-sent" class="add-request-message" style="display:none">
-				<h4><?php _e( "Requests sent.", 'writing-helper' ); ?></h4>
+				<h4><?php _e( 'Requests sent.', 'writing-helper' ); ?></h4>
 				<p>
 					<?php _e( "When your friends read your draft and give feedback, you'll get an email and the feedback will appear below.", 'writing-helper' ); ?>
 				</p>
-				<p><a href="#sendmore"><?php _e( "Send more requests.", 'writing-helper' );?></a></p>
+				<p><a href="#sendmore"><?php _e( 'Send more requests.', 'writing-helper' );?></a></p>
 			</div>
 
 			<?php require( dirname( __FILE__ ) . '/feedback-form-feedback-table.tpl.php' ); ?>
@@ -105,7 +105,7 @@ Thanks,
 		</div>
 	</div>
 
-<?php else: ?>
+<?php else : ?>
 
 	<?php require( dirname( __FILE__ ) . '/feedback-form-feedback-table.tpl.php' ); ?>
 
