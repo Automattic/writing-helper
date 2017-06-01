@@ -1,6 +1,6 @@
 <ul
 	id="helpers"
-	<?php if ( isset( $_GET['cap'] ) || isset( $_GET['requestfeedback'] ) ): ?>
+	<?php if ( isset( $_GET['cap'] ) || isset( $_GET['requestfeedback'] ) ) : ?>
 		style="display:none"
 	<?php endif; ?>>
 	<li class="copyapost">
@@ -15,7 +15,7 @@
 		</div>
 		<div class="clear"></div>
 	</li>
-	<?php if ( $show_feedback_button || ( is_array( $requests ) && !empty( $requests ) ) ): ?>
+	<?php if ( $show_feedback_button || ( is_array( $requests ) && ! empty( $requests ) ) ) : ?>
 		<li class="requestfeedback">
 			<div class="border-box">
 				<div class="iconbox">
@@ -25,11 +25,11 @@
 				<div class="helper-text">
 					<a href="#requestfeedback"><?php _e( 'Request Feedback', 'writing-helper' ) ?></a>
 					<h4><?php _e( 'Request Feedback', 'writing-helper' ) ?></h4>
-					<?php if ( $show_feedback_button ): ?>
+					<?php if ( $show_feedback_button ) : ?>
 						<p>
 							<?php _e( 'Get feedback on this draft before publishing.', 'writing-helper' ); ?>
 						</p>
-					<?php else: ?>
+					<?php else : ?>
 						<p>
 							<?php _e( 'See the feedback provided for a draft of this post.', 'writing-helper' ); ?>
 						</p>

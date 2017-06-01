@@ -31,7 +31,7 @@ class Writer_Helper_Copy_Post {
 
 				if ( $post_type == 'post' ) {
 					$submenu_page_label = __( 'Copy a Post', 'writing-helper' );
-				} else if ( $post_type == 'page' ) {
+				} elseif ( $post_type == 'page' ) {
 					$submenu_page_label = __( 'Copy a Page', 'writing-helper' );
 				} else {
 					$submenu_page_label = sprintf(
@@ -140,7 +140,7 @@ class Writer_Helper_Copy_Post {
 		$existing = array_search( $post_id, $sticky_posts );
 		if ( false !== $existing ) {
 			unset( $sticky_posts[ $existing ] );
-		} else if ( count( $sticky_posts ) > 2 ) {
+		} elseif ( count( $sticky_posts ) > 2 ) {
 			array_pop( $sticky_posts );
 		}
 

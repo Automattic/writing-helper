@@ -76,7 +76,7 @@ class Writing_Helper_Draft_Feedback {
 
 	private function email_headers( &$user ) {
 		$headers = 'Reply-To: ' . $user->display_name . ' <' . $user->user_email . ">\r\n";
-		$headers .= "From: " . $user->display_name . " <donotreply@wordpress.com>\r\n";
+		$headers .= 'From: ' . $user->display_name . " <donotreply@wordpress.com>\r\n";
 
 		/**
 		 * Filter the headers included in the outgoing feedback request email.
@@ -340,7 +340,7 @@ Regards,
 		if ( 'publish' != $status && $this->can_view( $post->ID ) ) {
 			$this->shared_post = & $post;
 			add_filter( 'comments_open', '__return_false' );
-		} else if ( $this->can_view( $post->ID ) ) {
+		} elseif ( $this->can_view( $post->ID ) ) {
 			add_action( 'wp_footer', array( &$this, 'inject_published_notice' ) );
 		}
 
@@ -356,7 +356,7 @@ Regards,
 		if ( ! empty( $posts ) && ( isset( $_GET['nux'] ) && $_GET['nux'] == 'nuts' ) ) {
 			// site admins always have a post
 			$overwrite_post = true;
-		} else if ( ! is_null( $this->shared_post ) ) {
+		} elseif ( ! is_null( $this->shared_post ) ) {
 			$overwrite_post = true;
 		} else {
 			$overwrite_post = false;
@@ -416,7 +416,7 @@ Regards,
 		global $current_user;
 		if ( $current_user && ! empty( $current_user->display_name ) ) {
 			$reviewer = $current_user->display_name;
-		} else if ( is_email( $this->request_email ) ) {
+		} elseif ( is_email( $this->request_email ) ) {
 			$reviewer = $this->request_email;
 		} else {
 			$reviewer = '';

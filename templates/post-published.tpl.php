@@ -20,5 +20,5 @@ jQuery(document).ready(function($) {
 }
 </style>
 <div id="draft-post-published">
-	<?php _e("The draft you're looking for has been published. Please, leave me a comment!", 'writing-helper'); ?>
+	<?php _e( "The draft you're looking for has been published. Please, leave me a comment!", 'writing-helper' ); ?>
 </div>
