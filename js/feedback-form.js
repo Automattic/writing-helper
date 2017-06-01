@@ -34,10 +34,10 @@ jQuery( document ).ready(function( $ ) {
 
 		return errorContainer
 			.fadeOut( fast ? 'fast' : 'slow' )
-				.promise()
+			.promise()
 			.done( function() {
- $( '#draft-error' ).remove();
- } );
+				$( '#draft-error' ).remove();
+			});
 	};
 
 	$( '#feedbackform' ).submit(function( e ) {
