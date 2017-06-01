@@ -76,8 +76,17 @@ class Writing_Helper_Draft_Feedback {
 
 	private function email_headers( &$user ) {
 		$headers = 'Reply-To: ' . $user->display_name . ' <' . $user->user_email . ">\r\n";
-		$headers .= 'From: ' . $user->display_name . " <donotreply@wordpress.com>\r\n";
-		return $headers;
+		$headers .= "From: " . $user->display_name . " <donotreply@wordpress.com>\r\n";
+
+		/**
+		 * Filter the headers included in the outgoing feedback request email.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string  $headers The "from" and "reply-to" headers.
+		 * @param WP_User $user    WP_User object of user requesting feedback.
+		 */
+		return apply_filters( 'writing_helper_feedback_email_headers', $headers, $user );
 	}
 
 	private function email_post_published( $email, $post, $request ) {
