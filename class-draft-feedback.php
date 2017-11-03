@@ -44,8 +44,8 @@ class Writing_Helper_Draft_Feedback {
 	function init() {
 		// should work even if not logged in (for testing)
 		if ( isset( $_REQUEST['shareadraft'] ) ) {
-			add_filter( 'the_posts', array( $this, 'the_posts_intercept' ) );
-			add_filter( 'posts_results', array( $this, 'posts_results_intercept' ) );
+			add_filter( 'the_posts', array( $this, 'the_posts_intercept' ), 10, 2 );
+			add_filter( 'posts_results', array( $this, 'posts_results_intercept' ), 10, 2 );
 			add_action( 'wp_ajax_add_feedback', array( $this, 'add_feedback_ajax_endpoint' ) );
 			add_action( 'wp_ajax_nopriv_add_feedback', array( &$this, 'add_feedback_ajax_endpoint' ) );
 		}
@@ -319,9 +319,16 @@ Regards,
 	 * Used to determine post results
 	 *
 	 * If you shared this post it stores the post locally.
+	 *
+	 * @param [WP_Post] $posts
+	 * @param WP_Query $query
+	 * @return [WP_Post]
 	 */
-	function posts_results_intercept( $posts ) {
-		if (1 != count( $posts ) ) return $posts;
+	function posts_results_intercept( $posts, $wp_query ) {
+		if ( ! $wp_query->is_main_query() || 1 !== count( $posts ) ) {
+			return $posts;
+		}
+
 		$post = &$posts[0];
 		/* Don't use get_post_status(), because it generates a DB query,
 		 * which messes up with FOUND_ROWS(): https://wpcom.trac.automattic.com/ticket/2165
@@ -343,16 +350,27 @@ Regards,
 	 * Used in the loop to render post
 	 *
 	 * If the post was stored locally, it returns it for rendering.
+	 *
+	 * @param [WP_Post] $posts
+	 * @param WP_Query $query
+	 * @return [WP_Post]
 	 */
-	function the_posts_intercept( $posts ) {
-		if ( !empty( $posts ) && ( isset( $_GET['nux'] ) && $_GET['nux'] == 'nuts' ) ) {
+	function the_posts_intercept( $posts, $wp_query ) {
+		if ( ! $wp_query->is_main_query() ) {
+			$overwrite_post = false;
+		} elseif (
+			! empty( $posts )
+			&& ( isset( $_GET['nux'] )
+			&& $_GET['nux'] == 'nuts' )
+		) {
 			// site admins always have a post
 			$overwrite_post = true;
-		} else if ( !is_null( $this->shared_post ) ) {
+		} elseif ( ! is_null( $this->shared_post ) ) {
 			$overwrite_post = true;
 		} else {
 			$overwrite_post = false;
 		}
+
 		if ( $overwrite_post ) {
 			do_action( 'wh_draftfeedback_load_feedback_form' );
 			Writing_Helper()->enqueue_front_end_scripts();
