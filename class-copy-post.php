@@ -63,7 +63,7 @@ class Writer_Helper_Copy_Post {
 		Writing_Helper::json_return( self::get_candidate_posts( $post_type, $search_terms ) );
 	}
 
-	function get_candidate_posts( $post_type = 'post', $search_terms = '', $sticky = false ) {
+	public static function get_candidate_posts( $post_type = 'post', $search_terms = '', $sticky = false ) {
 		$sticky_posts = get_option( 'copy_a_post_sticky_posts' );
 		$post_parameters = array(
 			'post_type' => $post_type,
